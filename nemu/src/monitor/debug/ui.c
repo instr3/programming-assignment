@@ -38,15 +38,12 @@ static int cmd_q(char *args) {
 
 static int cmd_si(char *args) 
 {
-	int i;
 	int step = 0;
-	printf("HERE3!\n");
-	for (i = 0; i <= 0; ++i)
-		printf("%p\n", args);
-	exit(0);
-	printf("HERE2!\n");
-	sscanf(args, "%d", &step);
-	printf("Step:%d\n", step);
+	if (args)
+	{
+		sscanf(args, "%d", &step);
+	}
+	else step = 1;
 	if (step <= 0)
 	{
 		printf("Usage:Si [N=1]\nExecute the next N instructions\n");
