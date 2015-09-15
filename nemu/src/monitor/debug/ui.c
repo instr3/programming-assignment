@@ -38,9 +38,11 @@ static int cmd_q(char *args) {
 
 static int cmd_si(char *args) 
 {
+	int i;
 	int step = 0;
 	printf("HERE1!\n");
-	printf("%s\n", args);
+	for (i = 0; i <= 10; ++i)
+		printf("%c\n", args[i]);
 	exit(0);
 	printf("HERE2!\n");
 	sscanf(args, "%d", &step);
