@@ -42,7 +42,7 @@ static int cmd_si(char *args)
 	int step = 0;
 	printf("HERE3!\n");
 	for (i = 0; i <= 0; ++i)
-		printf("%d\n", args[i]);
+		printf("%p\n", args);
 	exit(0);
 	printf("HERE2!\n");
 	sscanf(args, "%d", &step);
