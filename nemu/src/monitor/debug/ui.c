@@ -41,7 +41,7 @@ static int cmd_si(char *args)
 	int i;
 	int step = 0;
 	printf("HERE1!\n");
-	for (i = 0; i <= 10; ++i)
+	for (i = 0; i <= 0; ++i)
 		printf("%c\n", args[i]);
 	exit(0);
 	printf("HERE2!\n");
