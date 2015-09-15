@@ -40,6 +40,7 @@ static int cmd_si(char *args)
 {
 	int step = 0;
 	printf("HERE!\n");
+	printf("%s\n", args);
 	sscanf(args, "%d", &step);
 	printf("Step:%d\n", step);
 	if (step <= 0)
