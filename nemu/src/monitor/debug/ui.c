@@ -40,9 +40,9 @@ static int cmd_si(char *args)
 {
 	int i;
 	int step = 0;
-	printf("HERE1!\n");
+	printf("HERE3!\n");
 	for (i = 0; i <= 0; ++i)
-		printf("%c\n", args[i]);
+		printf("%d\n", args[i]);
 	exit(0);
 	printf("HERE2!\n");
 	sscanf(args, "%d", &step);
