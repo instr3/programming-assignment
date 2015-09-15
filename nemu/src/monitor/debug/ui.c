@@ -46,7 +46,7 @@ static int cmd_si(char *args)
 	else step = 1;
 	if (step <= 0)
 	{
-		printf("Usage:Si [N=1]\nExecute the next N instructions\n");
+		printf("[Argument Error]\nUsage:\nsi [N=1]\nExecute the next N instructions\n");
 		return 0;
 	}
 	cpu_exec(step);
