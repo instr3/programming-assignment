@@ -39,9 +39,10 @@ static int cmd_q(char *args) {
 static int cmd_si(char *args) 
 {
 	int step = 0;
+	printf("HERE1!\n");
 	printf("%s\n", args);
-	printf("HERE!\n");
 	exit(0);
+	printf("HERE2!\n");
 	sscanf(args, "%d", &step);
 	printf("Step:%d\n", step);
 	if (step <= 0)
