@@ -53,6 +53,16 @@ static int cmd_si(char *args)
 	return 0;
 }
 
+static int cmd_p(char *args)
+{
+	if (!args)
+	{
+		printf("[Parameter Error]\nUsage:\np EXPR\tEvaluate 'EXPR'\n");
+		return 0;
+	}
+
+	return 0;
+}
 static int cmd_help(char *args);
 
 static struct {
@@ -63,7 +73,8 @@ static struct {
 	{ "help", "Display informations about all supported commands", cmd_help },
 	{ "c", "Continue the execution of the program", cmd_c },
 	{ "q", "Exit NEMU", cmd_q },
-	{ "si", "Execute the next N instructions", cmd_si}
+	{ "si", "Execute the next N instructions", cmd_si},
+	{ "p", "Evaluate anything!",cmd_p }
 
 	/* TODO: Add more commands */
 
