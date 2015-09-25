@@ -126,7 +126,7 @@ uint32_t SubEvaluate(char *e, int ib, int ie)
 		{
 			i = bracketInfo[i] - 1;
 		}
-		if (e[i] == '<' || e[i] == '>')
+		if ((e[i] == '<' && e[i - 1] != '<') || (e[i] == '>'&& e[i - 1] != '>'))
 		{
 			int equalMark = i < ie&&e[i + 1] == '=';
 			if (!TestBinaryOp(e, i))continue;
