@@ -80,23 +80,80 @@ uint32_t SubEvaluate(char *e, int ib, int ie)
 	//////////////////////////////////////////////////////////////////////////
 	//Binary Operators
 	//////////////////////////////////////////////////////////////////////////
-	for (i = ie; i >= ib; --i)
-	{
-		if (e[i] == ')')
-		{
-			i = bracketInfo[i] - 1;
-		}
-		if (e[i] == '+' || e[i] == '-')
-		{
-			if (!TestBinaryOp(e, i))continue;
-			lfv = SubEvaluate(e, ib, i - 1);
-			if (errorCode != NO_ERROR)return 0;
-			rtv = SubEvaluate(e, i + 1, ie);
-			if (errorCode != NO_ERROR)return 0;
-			return e[i] == '+' ? lfv + rtv : lfv - rtv;
-		}
+	//1.&& ||
+#define Construct_binary_ops(length,cond,returnStatement,...) \
+	for (i = ie; i > ib; --i)\
+	{\
+	if (e[i] == ')')\
+	{\
+	i = bracketInfo[i] - 1; \
+	}\
+	if (cond)\
+	{\
+	if (!TestBinaryOp(e, i + 1 - length))continue; \
+	__VA_ARGS__\
+	lfv = SubEvaluate(e, ib, i - length); \
+	if (errorCode != NO_ERROR)return 0; \
+	rtv = SubEvaluate(e, i + 1, ie); \
+	if (errorCode != NO_ERROR)return 0; \
+	returnStatement\
+	}\
 	}
+	//1.&& ||
+	Construct_binary_ops(2, e[i] == '|' && e[i - 1] == '|',
+		return lfv || rtv;
+	);
+	Construct_binary_ops(2, e[i] == '&' && e[i - 1] == '&',
+		return lfv && rtv;
+	);
+	//2.& ^ |
+	Construct_binary_ops(1, e[i] == '|',
+		return lfv | rtv;
+	);
+	Construct_binary_ops(1, e[i] == '^',
+		return lfv ^ rtv;
+	);
+	Construct_binary_ops(1, e[i] == '&',
+		return lfv & rtv;
+	);
+	//3.== !=
+	Construct_binary_ops(2, e[i] == '=' && (e[i - 1] == '=' || e[i - 1] == '!'),
+		return e[i - 1] == '=' ? lfv == rtv : lfv != rtv;
+	);
+	//4.< <= > >=
+	Construct_binary_ops(1, e[i] == '<' || e[i] == '>',
+		if (equalMark)
+		{
+			e[i + 1] = '=';//Recover the '=' sign.
+		}
+		return (e[i] == '<' ? lfv < rtv : lfv > rtv) || (equalMark&&lfv == rtv);
+	,
+		bool equalMark = i < ie&&e[i + 1] == '=';
+		if (equalMark)
+		{
+			e[i + 1] = ' ';//First delete the '=' sign ,otherwise may cause error.
+		}
+	);
+	//5.<< >>
+	Construct_binary_ops(2, (e[i] == '<' && e[i - 1] == '<') || (e[i] == '>' && e[i - 1] == '>'),
+		return e[i] == '<' ? lfv << rtv : lfv >> rtv;
+	);
+	//6.+ -
+	Construct_binary_ops(1, e[i] == '+' || e[i]=='-',
+		return e[i] == '+' ? lfv + rtv : lfv - rtv;
+	);
+	//7.* / %
+	Construct_binary_ops(1, e[i] == '*' || e[i] == '/' || e[i] == '%',
+		if ((e[i] == '/' || e[i] == '%') && rtv == 0)
+		{
+			return_error(MATH_ERROR, ib, ie);
+		}
+		return e[i] == '*' ? lfv * rtv : e[i] == '/' ? lfv / rtv : lfv%rtv;
+	);
 
+
+	
+	/*
 
 	//1.Binary + -
 	for (i = ie; i >= ib; --i)
@@ -135,7 +192,7 @@ uint32_t SubEvaluate(char *e, int ib, int ie)
 			}
 			return e[i] == '*' ? lfv * rtv : lfv / rtv;
 		}
-	}
+	}*/
 	
 	//////////////////////////////////////////////////////////////////////////
 	//Unary operators
@@ -151,7 +208,6 @@ uint32_t SubEvaluate(char *e, int ib, int ie)
 	case '*':
 		//Assume it's always right.
 		return swaddr_read(SubEvaluate(e, ib + 1, ie),sizeof(uint32_t));
-
 	}
 
 
