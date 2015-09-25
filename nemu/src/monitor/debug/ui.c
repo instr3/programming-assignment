@@ -86,14 +86,16 @@ static int cmd_x(char *args)
 	char *arg;
 	if (args)
 	{
+		int tlen = strlen(args);
 		arg = strtok(NULL, " ");
 		printf("Parameter check:%s ", arg);
-		if (arg != NULL)
+		int tlen2 = strlen(arg);
+		if (tlen!=tlen2)
 		{
 			step = strtol(arg,NULL,10);
 			if (step > 0)
 			{
-				char *exprs = args + strlen(arg) + 1;
+				char *exprs = args + tlen2 + 1;
 				bool success;
 				printf("Parameter check:%s ", exprs);
 				uint32_t res = expr(exprs, &success);
