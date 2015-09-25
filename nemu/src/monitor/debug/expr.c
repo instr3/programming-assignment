@@ -80,6 +80,24 @@ uint32_t SubEvaluate(char *e, int ib, int ie)
 	//////////////////////////////////////////////////////////////////////////
 	//Binary Operators
 	//////////////////////////////////////////////////////////////////////////
+	for (i = ie; i >= ib; --i)
+	{
+		if (e[i] == ')')
+		{
+			i = bracketInfo[i] - 1;
+		}
+		if (e[i] == '+' || e[i] == '-')
+		{
+			if (!TestBinaryOp(e, i))continue;
+			lfv = SubEvaluate(e, ib, i - 1);
+			if (errorCode != NO_ERROR)return 0;
+			rtv = SubEvaluate(e, i + 1, ie);
+			if (errorCode != NO_ERROR)return 0;
+			return e[i] == '+' ? lfv + rtv : lfv - rtv;
+		}
+	}
+
+
 	//1.Binary + -
 	for (i = ie; i >= ib; --i)
 	{
