@@ -175,7 +175,12 @@ uint32_t expr(char *e, bool *success)
 {
 	InnerTrim(e);
 	int n = strlen(e);
-	if (n == 0)return 0;
+	if (n == 0)
+	{
+		printf("Empty expression encountered.\n");
+		success = false;
+		return 0;
+	}
 	bracketInfo = malloc(sizeof(int)*(n + 1));
 	bracketStack = malloc(sizeof(int)*(n + 1));
 	if (!bracketInfo || !bracketStack)

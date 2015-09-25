@@ -88,7 +88,6 @@ static int cmd_x(char *args)
 	{
 		int tlen = strlen(args);
 		arg = strtok(NULL, " ");
-		printf("Parameter check:%s ", arg);
 		int tlen2 = strlen(arg);
 		if (tlen!=tlen2)
 		{
