@@ -8,6 +8,7 @@
 #include <readline/history.h>
 
 void cpu_exec(uint32_t);
+void printRegInfo();
 
 /* We use the ``readline'' library to provide more flexibility to read from stdin. */
 char* rl_gets() {
@@ -68,6 +69,17 @@ static int cmd_p(char *args)
 	}
 	return 0;
 }
+static int cmd_info(char *args)
+{
+	if (args[0] == 'r')
+	{
+		printRegInfo();
+	}
+	printf("[Parameter Error]\nUsage:\ninfo r|w\tPrint register/watchpoint info.\n");
+
+	return 0;
+}
+
 static int cmd_help(char *args);
 
 static struct {
@@ -79,7 +91,8 @@ static struct {
 	{ "c", "Continue the execution of the program", cmd_c },
 	{ "q", "Exit NEMU", cmd_q },
 	{ "si", "Execute the next N instructions", cmd_si},
-	{ "p", "Print anything evaluable!",cmd_p }
+	{ "p", "Print anything evaluable!", cmd_p },
+	{ "info", "info r|w: Print register/watchpoint info.", cmd_info }
 
 	/* TODO: Add more commands */
 
