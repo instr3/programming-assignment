@@ -33,7 +33,8 @@ void init_monitor(int argc, char *argv[]) {
 	load_elf_tables(argc, argv);
 
 	/* Compile the regular expressions. */
-	init_regex();
+	//Do not use regex to compute.
+	//init_regex();
 
 	/* Initialize the watchpoint link list. */
 	init_wp_list();
