@@ -96,11 +96,10 @@ static int cmd_x(char *args)
 			{
 				char *exprs = args + tlen2 + 1;
 				bool success;
-				printf("Parameter check:%s ", exprs);
 				uint32_t res = expr(exprs, &success);
 				if (success)
 				{
-					void printMemoryInfo(uint32_t address, int len);
+					extern void printMemoryInfo(uint32_t address, int len);
 					printMemoryInfo(res, step);
 				}
 				return 0;
