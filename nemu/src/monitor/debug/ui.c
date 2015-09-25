@@ -100,7 +100,7 @@ static int cmd_x(char *args)
 				uint32_t res = expr(exprs, &success);
 				if (success)
 				{
-					extern void printMemoryInfo(uint32_t address, int len);
+					void printMemoryInfo(uint32_t address, int len);
 					printMemoryInfo(res, step);
 				}
 				return 0;
