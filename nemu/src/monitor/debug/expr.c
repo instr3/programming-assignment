@@ -37,7 +37,7 @@ enum ExprErrors
 {
 	NO_ERROR = 0,
 	MATH_ERROR = 1,//Divide by 0 etc.
-	SYNTEX_ERROR = 2,
+	SYNTAX_ERROR = 2,
 	MEMORY_ACCESS_ERROR = 3
 }errorCode;
 int errorFrom, errorTo;
@@ -69,7 +69,7 @@ uint32_t SubEvaluate(char *e, int ib, int ie)
 	if (e[ie] == ' ')--ie;
 	if (ib > ie)
 	{
-		return_error(SYNTEX_ERROR, ie, ib);
+		return_error(SYNTAX_ERROR, ie, ib);
 	}
 	if (e[ib] == '('&&e[ie] == ')'&&bracketInfo[ib] == ie)
 	{
@@ -133,7 +133,7 @@ uint32_t SubEvaluate(char *e, int ib, int ie)
 		if (!hasVariable)
 		{
 			e[ie + 1] = sc;//Recover the expr
-			return_error(SYNTEX_ERROR, ib, ie);
+			return_error(SYNTAX_ERROR, ib, ie);
 		}
 		e[ie + 1] = sc;//Recover the expr
 		return res;
@@ -158,7 +158,7 @@ uint32_t SubEvaluate(char *e, int ib, int ie)
 	if (!isnumber)
 	{
 		e[ie + 1] = sc;//Recover the expr
-		return_error(SYNTEX_ERROR, ib, ie);
+		return_error(SYNTAX_ERROR, ib, ie);
 	}
 	uint32_t res;
 	sscanf(e + ib, ishex ? "%x" : "%u", &res);
@@ -228,7 +228,7 @@ uint32_t expr(char *e, bool *success)
 	{
 		success = false;
 		if (errorCode == MATH_ERROR)printf("Math error");
-		if (errorCode == SYNTEX_ERROR)printf("Syntex error");
+		if (errorCode == SYNTAX_ERROR)printf("Syntax error");
 		if (errorCode == MEMORY_ACCESS_ERROR)printf("Memory access error");
 		printf(" occured in expr \"%s\" near '", e);
 		int i;
