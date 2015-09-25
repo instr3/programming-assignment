@@ -122,9 +122,21 @@ uint32_t SubEvaluate(char *e, int ib, int ie)
 	//Assert it's number
 	bool isnumber = true;// , isregister = false;
 	bool ishex = false;//0xBASE16
+	char sc = e[ie + 1];
+	e[ie + 1] = 0;//Create end of string
 	if (e[ib] == '$')//Get Variables
 	{
-
+		++ib;
+		bool hasVariable = false;
+		extern uint32_t GetRegByName(char *reg, bool *success);
+		uint32_t res=GetRegByName(e+ib, &hasVariable);
+		if (!hasVariable)
+		{
+			e[ie + 1] = sc;//Recover the expr
+			return_error(SYNTEX_ERROR, ib, ie);
+		}
+		e[ie + 1] = sc;//Recover the expr
+		return res;
 	}
 	if (ib + 1 < ie&&e[ib] == '0'&&e[ib + 1] == 'x')
 	{
@@ -145,10 +157,9 @@ uint32_t SubEvaluate(char *e, int ib, int ie)
 	}
 	if (!isnumber)
 	{
+		e[ie + 1] = sc;//Recover the expr
 		return_error(SYNTEX_ERROR, ib, ie);
 	}
-	char sc = e[ie + 1];
-	e[ie + 1] = 0;//Create end of string
 	uint32_t res;
 	sscanf(e + ib, ishex ? "%x" : "%u", &res);
 	e[ie + 1] = sc;//Recover the expr
