@@ -5,6 +5,9 @@
  * First init the brackets and then	deal with the expression by partition.
  * Algorithm Complexity: O(n).
  */
+
+//Todo :	delete 'malloc' and 'free'
+//			Add more ops.
 int *bracketInfo, *bracketStack, bracketStackCount;
 //BracketCompletion(e,in)
 //Find the corresponding bracket of e which length is in.
