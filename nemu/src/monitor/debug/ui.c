@@ -86,7 +86,8 @@ static int cmd_x(char *args)
 	char *arg;
 	if (args)
 	{
-		arg=strtok(NULL, " ");
+		arg = strtok(NULL, " ");
+		printf("Parameter check:%s ", arg);
 		if (arg != NULL)
 		{
 			step = strtol(arg,NULL,10);
