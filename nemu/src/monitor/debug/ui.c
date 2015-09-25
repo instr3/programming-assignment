@@ -58,7 +58,7 @@ static int cmd_p(char *args)
 {
 	if (!args)
 	{
-		printf("[Parameter Error]\nUsage:\np EXPR\tEvaluate 'EXPR'\n");
+		printf("[Parameter Error]\nUsage:\np expr\tEvaluate 'expr'\n");
 		return 0;
 	}
 	bool success;
@@ -71,13 +71,40 @@ static int cmd_p(char *args)
 }
 static int cmd_info(char *args)
 {
-	if (args[0] == 'r')
+	if (args&&args[0] == 'r')
 	{
 		printRegInfo();
 		return 0;
 	}
 	printf("[Parameter Error]\nUsage:\ninfo r|w\tPrint register/watchpoint info.\n");
 
+	return 0;
+}
+static int cmd_x(char *args)
+{
+	int step;
+	char *arg;
+	if (args)
+	{
+		arg=strtok(NULL, " ");
+		if (arg != NULL)
+		{
+			step = strtol(arg,NULL,10);
+			if (step > 0)
+			{
+				char *exprs = args + strlen(arg) + 1;
+				bool success;
+				uint32_t res = expr(exprs, &success);
+				if (success)
+				{
+					extern void printMemoryInfo(uint32_t address, int len);
+					printMemoryInfo(res, step);
+				}
+				return 0;
+			}
+		}
+	}
+	printf("[Parameter Error]\nUsage:\nx N expr\tPrint N units of continuous memory indexed from expr.\n");
 	return 0;
 }
 
@@ -92,8 +119,9 @@ static struct {
 	{ "c", "Continue the execution of the program", cmd_c },
 	{ "q", "Exit NEMU", cmd_q },
 	{ "si", "Execute the next N instructions", cmd_si},
-	{ "p", "Print anything evaluable!", cmd_p },
-	{ "info", "info r|w: Print register/watchpoint info.", cmd_info }
+	{ "p", "p expr: Print anything evaluable!", cmd_p },
+	{ "info", "info r|w: Print register/watchpoint info.", cmd_info },
+	{ "x", "x N expr: Print N units of continuous memory indexed from expr.", cmd_x }
 
 	/* TODO: Add more commands */
 

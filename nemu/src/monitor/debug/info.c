@@ -29,3 +29,27 @@ void printRegInfo()
 		printRegInfoByID(i);
 	}
 }
+
+inline void printMemoryByAddress(uint32_t address)
+{
+	printf("0x%X", swaddr_read(address, sizeof(uint32_t)));
+}
+inline void printMemoryPositionByAddress(uint32_t address)
+{
+	printf("0x%X:", address);
+}
+inline void printMemoryInfo(uint32_t address, int len)
+{
+	int i=0;
+	while (i < len)
+	{
+		if (i % 8 == 0)
+		{
+			if (i)putchar('\n');
+			printMemoryPositionByAddress(address);
+		}
+		putchar('\t');
+		printMemoryByAddress(address + sizeof(uint32_t)*i);
+		++i;
+	}
+}
