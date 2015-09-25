@@ -91,7 +91,6 @@ uint32_t SubEvaluate(char *e, int ib, int ie)
 	if (cond)\
 	{\
 	if (!TestBinaryOp(e, i + 1 - length))continue; \
-	__VA_ARGS__\
 	lfv = SubEvaluate(e, ib, i - length); \
 	if (errorCode != NO_ERROR)return 0; \
 	rtv = SubEvaluate(e, i + 1, ie); \
@@ -121,19 +120,23 @@ uint32_t SubEvaluate(char *e, int ib, int ie)
 		return e[i - 1] == '=' ? lfv == rtv : lfv != rtv;
 	);
 	//4.< <= > >=
-	Construct_binary_ops(1, e[i] == '<' || e[i] == '>',
-		if (equalMark)
+	for (i = ie; i > ib; --i)
+	{
+		if (e[i] == ')')
 		{
-			e[i + 1] = '=';//Recover the '=' sign.
+			i = bracketInfo[i] - 1;
 		}
-		return (e[i] == '<' ? lfv < rtv : lfv > rtv) || (equalMark&&lfv == rtv);
-	,
-		bool equalMark = i < ie&&e[i + 1] == '=';
-		if (equalMark)
+		if (e[i] == '<' || e[i] == '>')
 		{
-			e[i + 1] = ' ';//First delete the '=' sign ,otherwise may cause error.
+			int equalMark = i < ie&&e[i + 1] == '=';
+			if (!TestBinaryOp(e, i))continue;
+			lfv = SubEvaluate(e, ib, i - 1);
+			if (errorCode != NO_ERROR)return 0;
+			rtv = SubEvaluate(e, i + 1 + equalMark, ie);
+			if (errorCode != NO_ERROR)return 0;
+			return (e[i] == '<' ? lfv < rtv : lfv > rtv) || (equalMark&&lfv == rtv);
 		}
-	);
+	}
 	//5.<< >>
 	Construct_binary_ops(2, (e[i] == '<' && e[i - 1] == '<') || (e[i] == '>' && e[i - 1] == '>'),
 		return e[i] == '<' ? lfv << rtv : lfv >> rtv;
