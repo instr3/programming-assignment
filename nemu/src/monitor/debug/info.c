@@ -49,8 +49,9 @@ inline void printMemoryInfo(uint32_t address, int len)
 			printMemoryPositionByAddress(address);
 		}
 		putchar('\t');
-		printMemoryByAddress(address + sizeof(uint32_t)*i);
+		printMemoryByAddress(address);
 		++i;
+		address += sizeof(uint32_t);
 	}
 	putchar('\n');
 }
