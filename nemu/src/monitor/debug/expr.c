@@ -13,6 +13,7 @@ int *bracketInfo, *bracketStack, bracketStackCount;
 //Find the corresponding bracket of e which length is in.
 bool BracketCompletion(char *e, int in)
 {
+	bracketStackCount = 0;
 	int i;
 	for (i = 0; i < in; ++i)
 	{
