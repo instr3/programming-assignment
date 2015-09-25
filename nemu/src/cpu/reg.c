@@ -7,7 +7,39 @@ CPU_state cpu;
 const char *regsl[] = {"eax", "ecx", "edx", "ebx", "esp", "ebp", "esi", "edi"};
 const char *regsw[] = {"ax", "cx", "dx", "bx", "sp", "bp", "si", "di"};
 const char *regsb[] = {"al", "cl", "dl", "bl", "ah", "ch", "dh", "bh"};
+int totalRegisterCount = 9;
 
+
+
+uint32_t GetRegByName(char *reg,bool *success)
+{
+	if (strcmp(reg, "eip") == 0)
+	{
+		*success = true;
+		return cpu.eip;
+	}
+	int i;
+	for (i = 0; i < 8; ++i)
+	{
+		if (strcmp(reg, regsl[i]) == 0)
+		{
+			*success = true;
+			return reg_l(i);
+		}
+		else if (strcmp(reg, regsw[i]) == 0)
+		{
+			*success = true;
+			return reg_w(i);
+		}
+		else if (strcmp(reg, regsb[i]) == 0)
+		{
+			*success = true;
+			return reg_b(i);
+		}
+	}
+	*success = false;
+	return 0;
+}
 void reg_test() {
 	srand(time(0));
 	uint32_t sample[8];
