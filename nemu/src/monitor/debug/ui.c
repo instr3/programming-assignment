@@ -60,7 +60,12 @@ static int cmd_p(char *args)
 		printf("[Parameter Error]\nUsage:\np EXPR\tEvaluate 'EXPR'\n");
 		return 0;
 	}
-
+	bool success;
+	uint32_t res = expr(args, &success);
+	if (success)
+	{
+		printf("$ans = %u\n", res);
+	}
 	return 0;
 }
 static int cmd_help(char *args);
