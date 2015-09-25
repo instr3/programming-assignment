@@ -56,7 +56,6 @@ inline bool TestBinaryOp(char *e, int ib)
 	//Test whether the prev "token" is an item or an operator.
 	return (pre == ')' || (pre >= 'a' && pre <= 'z') || (pre >= 'A' && pre <= 'Z') || (pre >= '0' && pre <= '9') || pre == '_' || pre == '.');
 }
-
 //Recursive Evaluation.
 uint32_t SubEvaluate(char *e, int ib, int ie)
 {
@@ -122,9 +121,15 @@ uint32_t SubEvaluate(char *e, int ib, int ie)
 
 	//Assert it's number
 	bool isnumber = true;// , isregister = false;
+	bool ishex = false;//0xBASE16
 	if (e[ib] == '$')//Get Variables
 	{
 
+	}
+	if (ib + 1 < ie&&e[ib] == '0'&&e[ib + 1] == 'x')
+	{
+		ishex = true;
+		ib += 2;
 	}
 	for (i = ib; i <= ie; ++i)
 	{
@@ -137,7 +142,7 @@ uint32_t SubEvaluate(char *e, int ib, int ie)
 	char sc = e[ie + 1];
 	e[ie + 1] = 0;//Create end of string
 	uint32_t res;
-	sscanf(e + ib, "%u", &res);
+	sscanf(e + ib, ishex ? "%x" : "%u", &res);
 	e[ie + 1] = sc;//Recover the expr
 	return res;
 #undef return_error
