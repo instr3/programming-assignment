@@ -133,7 +133,15 @@ uint32_t SubEvaluate(char *e, int ib, int ie)
 	}
 	for (i = ib; i <= ie; ++i)
 	{
-		if (e[i]<'0' || e[i]>'9')isnumber = false;
+		if (ishex)
+		{
+			if ((e[i]<'0' || e[i]>'9') && (e[i]<'A' || e[i]>'F') && (e[i]<'a' || e[i]>'f'))isnumber = false;
+		}
+		else
+		{
+			if (e[i]<'0' || e[i]>'9')isnumber = false;
+		}
+
 	}
 	if (!isnumber)
 	{
