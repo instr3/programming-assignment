@@ -74,6 +74,7 @@ static int cmd_info(char *args)
 	if (args[0] == 'r')
 	{
 		printRegInfo();
+		return 0;
 	}
 	printf("[Parameter Error]\nUsage:\ninfo r|w\tPrint register/watchpoint info.\n");
 

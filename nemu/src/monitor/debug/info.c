@@ -6,7 +6,7 @@ int totalRegisterCount;
 
 inline void printRegLine(const char *regName, uint32_t regValue)
 {
-	printf("%s\t\t\t0x%X\t\t0%u\n", regName, regValue, regValue);
+	printf("%s\t\t0x%X\t\t%u\n", regName, regValue, regValue);
 }
 
 void printRegInfoByID(uint32_t regID)
@@ -16,7 +16,7 @@ void printRegInfoByID(uint32_t regID)
 	{
 		printRegLine(regsl[regID], reg_l(regID));
 	}
-	if (regID == 9)//eip
+	if (regID == 8)//eip
 	{
 		printRegLine("eip", cpu.eip);
 	}
