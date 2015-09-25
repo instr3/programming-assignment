@@ -128,6 +128,7 @@ uint32_t SubEvaluate(char *e, int ib, int ie)
 		}
 		if ((e[i] == '<' && e[i - 1] != '<') || (e[i] == '>'&& e[i - 1] != '>'))
 		{
+			if (i < ie && (e[i + 1] == '<' || e[i + 1] == '>'))continue;
 			int equalMark = i < ie&&e[i + 1] == '=';
 			if (!TestBinaryOp(e, i))continue;
 			lfv = SubEvaluate(e, ib, i - 1);
