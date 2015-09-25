@@ -32,11 +32,11 @@ void printRegInfo()
 
 inline void printMemoryByAddress(uint32_t address)
 {
-	printf("0x%X", swaddr_read(address, sizeof(uint32_t)));
+	printf("0x%10X", swaddr_read(address, sizeof(uint32_t)));
 }
 inline void printMemoryPositionByAddress(uint32_t address)
 {
-	printf("0x%X:", address);
+	printf("0x%10X:", address);
 }
 inline void printMemoryInfo(uint32_t address, int len)
 {
@@ -52,4 +52,5 @@ inline void printMemoryInfo(uint32_t address, int len)
 		printMemoryByAddress(address + sizeof(uint32_t)*i);
 		++i;
 	}
+	putchar('\n');
 }
