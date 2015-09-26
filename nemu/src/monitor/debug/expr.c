@@ -59,6 +59,7 @@ inline bool TestBinaryOp(char *e, int ib)
 //Recursive Evaluation.
 uint32_t SubEvaluate(char *e, int ib, int ie)
 {
+	int i = 0;
 #define return_error(e,f,t) do{\
 	errorCode = e; \
 	errorFrom = f; \
@@ -76,7 +77,6 @@ uint32_t SubEvaluate(char *e, int ib, int ie)
 		return SubEvaluate(e, ib + 1, ie - 1);
 	}
 	uint32_t lfv, rtv;
-	int i;
 	//////////////////////////////////////////////////////////////////////////
 	//Binary Operators
 	//////////////////////////////////////////////////////////////////////////

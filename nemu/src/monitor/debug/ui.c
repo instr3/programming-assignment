@@ -65,7 +65,7 @@ static int cmd_p(char *args)
 	uint32_t res = expr(args, &success);
 	if (success)
 	{
-		printf("$ans = %u\n", res);
+		printf("$ans = %u (0x%X)\n", res, res);
 	}
 	return 0;
 }
