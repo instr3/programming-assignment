@@ -3,7 +3,11 @@
 
 /* Here using a more efficient way to calculate the expression.
  * First init the brackets and then	deal with the expression by partition.
- * Algorithm Complexity: O(n).
+ * Supported Operators:
+ * Binary + - * / % << >>
+ * > >= < <= == !=
+ * & ^ | && || ( )
+ * Unary * - ~ !
  */
 
 //Todo :	delete 'malloc' and 'free'
@@ -154,49 +158,6 @@ uint32_t SubEvaluate(char *e, int ib, int ie)
 		}
 		return e[i] == '*' ? lfv * rtv : e[i] == '/' ? lfv / rtv : lfv%rtv;
 	);
-
-
-	
-	/*
-
-	//1.Binary + -
-	for (i = ie; i >= ib; --i)
-	{
-		if (e[i] == ')')
-		{
-			i = bracketInfo[i] - 1;
-		}
-		if (e[i] == '+' || e[i] == '-')
-		{
-			if (!TestBinaryOp(e, i))continue;
-			lfv = SubEvaluate(e, ib, i - 1);
-			if (errorCode != NO_ERROR)return 0;
-			rtv = SubEvaluate(e, i + 1, ie);
-			if (errorCode != NO_ERROR)return 0;
-			return e[i] == '+' ? lfv + rtv : lfv - rtv;
-		}
-	}
-	//2.Binary * /
-	for (i = ie; i >= ib; --i)
-	{
-		if (e[i] == ')')
-		{
-			i = bracketInfo[i] - 1;
-		}
-		if (e[i] == '*' || e[i] == '/')
-		{
-			if (!TestBinaryOp(e, i))continue;
-			lfv = SubEvaluate(e, ib, i - 1);
-			if (errorCode != NO_ERROR)return 0;
-			rtv = SubEvaluate(e, i + 1, ie);
-			if (errorCode != NO_ERROR)return 0;
-			if (e[i] == '/'&&rtv == 0)
-			{
-				return_error(MATH_ERROR, ib, ie);
-			}
-			return e[i] == '*' ? lfv * rtv : lfv / rtv;
-		}
-	}*/
 	
 	//////////////////////////////////////////////////////////////////////////
 	//Unary operators
@@ -253,7 +214,6 @@ uint32_t SubEvaluate(char *e, int ib, int ie)
 		{
 			if (e[i]<'0' || e[i]>'9')isnumber = false;
 		}
-
 	}
 	if (!isnumber)
 	{
