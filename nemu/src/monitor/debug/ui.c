@@ -120,7 +120,7 @@ static int cmd_w(char *args)
 	int tget=new_wp(args);
 	if (tget)
 	{
-		printf("Watchpoint %d : %s", tget, args);
+		printf("Watchpoint %d : %s\n", tget, args);
 	}
 	return 0;
 }
