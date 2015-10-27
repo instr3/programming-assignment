@@ -9,5 +9,4 @@ typedef struct watchpoint {
 	char *expr;
 	uint32_t last;
 } WP;
-
 #endif

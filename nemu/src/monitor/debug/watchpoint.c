@@ -17,7 +17,26 @@ void init_wp_list() {
 	head = NULL;
 	free_ = wp_list;
 }
-
+bool wp_check_change()
+{
+	bool shouldPause = false;
+	WP *p = head;
+	for (; p; p = p->next)
+	{
+		bool tget;
+		uint32_t current = expr(p->expr, &tget);
+		if (!tget || current != p->last)
+		{
+			shouldPause = true;
+			if (current != p->last)
+			{
+				printf("Watchpoint %d: %s\nOld value = %d\n New value = %d\n", p->NO, p->expr, p->last, current);
+				p->last = current;
+			}
+		}
+	}
+	return shouldPause;
+}
 int new_wp(char *is)
 {
 	bool tget = false;
