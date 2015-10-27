@@ -18,29 +18,29 @@ void init_wp_list() {
 	free_ = wp_list;
 }
 
-bool new_wp(char *is)
+int new_wp(char *is)
 {
 	bool tget = false;
 	uint32_t current = expr(is, &tget);
-	if (!tget)return false;
+	if (!tget)return 0;
 	if (free_ == NULL)//Out of memory
 	{
 		panic("Too many watchpoints!");
-		return false;
+		return 0;
 	}
 	WP *newfree = free_->next;
 	free_->expr = malloc(strlen(is)*sizeof(char));
 	if (free_->expr == NULL)
 	{
 		panic("Memmory limit exceeded when adding watchpoint.");
-		return false;
+		return 0;
 	}
 	free_->NO = ++wpCount;
 	free_->next = head;
 	free_->last = current;
 	head = free_;
 	free_ = newfree;
-	return true;
+	return free_->NO;
 }
 bool add_to_free(WP *wp)
 {

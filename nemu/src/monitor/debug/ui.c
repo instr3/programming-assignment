@@ -117,7 +117,11 @@ static int cmd_w(char *args)
 		return 0;
 	}
 	extern bool new_wp(char *is);
-	new_wp(args);
+	int tget=new_wp(args);
+	if (tget)
+	{
+		printf("Watchpoint %d : %s", tget, args);
+	}
 	return 0;
 }
 static int cmd_help(char *args);
