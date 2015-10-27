@@ -30,7 +30,7 @@ bool wp_check_change()
 			shouldPause = true;
 			if (current != p->last)
 			{
-				printf("Watchpoint %d: %s\nOld value = %d\n New value = %d\n", p->NO, p->expr, p->last, current);
+				printf("Watchpoint %d: %s\n Old value = %d\n New value = %d\n", p->NO, p->expr, p->last, current);
 				p->last = current;
 			}
 		}
@@ -48,7 +48,7 @@ int new_wp(char *is)
 		return 0;
 	}
 	WP *newfree = free_->next;
-	free_->expr = malloc(strlen(is)*sizeof(char));
+	free_->expr = malloc(strlen(is)*sizeof(char)+1);
 	if (free_->expr == NULL)
 	{
 		panic("Memmory limit exceeded when adding watchpoint.");
@@ -57,6 +57,7 @@ int new_wp(char *is)
 	free_->NO = ++wpCount;
 	free_->next = head;
 	free_->last = current;
+	strcpy(is, free_->expr);
 	head = free_;
 	free_ = newfree;
 	return free_->NO;
