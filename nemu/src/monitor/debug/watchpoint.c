@@ -57,7 +57,7 @@ int new_wp(char *is)
 	free_->NO = ++wpCount;
 	free_->next = head;
 	free_->last = current;
-	strcpy(is, free_->expr);
+	strcpy(free_->expr,is);
 	head = free_;
 	free_ = newfree;
 	return free_->NO;
