@@ -5,7 +5,7 @@
 
 static WP wp_list[NR_WP];
 static WP *head, *free_;
-
+int wpCount;
 void init_wp_list() {
 	int i;
 	for(i = 0; i < NR_WP; i ++) {
@@ -18,6 +18,43 @@ void init_wp_list() {
 	free_ = wp_list;
 }
 
+bool add_wp(char *is)
+{
+	if (free_ == NULL)//Out of memory
+	{
+		panic("Too many watchpoints!");
+		return false;
+	}
+	WP *newfree = free_->next;
+	free_->expr = malloc(strlen(is)*sizeof(char));
+	if (free_->expr == NULL)
+	{
+		panic("Memmory limit exceeded when adding watchpoint.");
+		return false;
+	}
+	free_->NO = ++wpCount;
+	free_->next = head;
+	head = free_;
+	free_ = newfree;
+	return true;
+}
+bool add_to_free(WP *wp)
+{
+	return true;
+}
+bool remove_wp(int id)
+{
+	WP *p = head;
+	if (head->NO == id)
+	{
+		head = head->next;
+	}
+	for (p = head; p; p = p->next)
+	{
+
+	}
+	return true;
+}
 /* TODO: Implement the functionality of watchpoint */
 
 
