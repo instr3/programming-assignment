@@ -30,7 +30,7 @@ bool wp_check_change()
 			shouldPause = true;
 			if (current != p->last)
 			{
-				printf("Watchpoint %d: %s\n Old value = %d\n New value = %d\n", p->NO, p->expr, p->last, current);
+				printf("Watchpoint %d: %s\n Old value = %d (0x%X)\n New value = %d (0x%X)\n", p->NO, p->expr, p->last, p->last, current, current);
 				p->last = current;
 			}
 		}
