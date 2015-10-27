@@ -7,6 +7,7 @@ typedef struct watchpoint {
 	int NO;
 	struct watchpoint *next;
 	char *expr;
+	uint32_t last;
 } WP;
 
 #endif

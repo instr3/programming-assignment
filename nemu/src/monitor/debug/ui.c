@@ -109,7 +109,17 @@ static int cmd_x(char *args)
 	printf("[Parameter Error]\nUsage:\nx N expr\tPrint N units of continuous memory indexed from expr.\n");
 	return 0;
 }
-
+static int cmd_w(char *args)
+{
+	if (!args)
+	{
+		printf("[Parameter Error]\nUsage:\nw expr\tPause the program when expr change.\n");
+		return 0;
+	}
+	extern bool new_wp(char *is);
+	new_wp(args);
+	return 0;
+}
 static int cmd_help(char *args);
 
 static struct {
@@ -120,10 +130,11 @@ static struct {
 	{ "help", "Display informations about all supported commands", cmd_help },
 	{ "c", "Continue the execution of the program", cmd_c },
 	{ "q", "Exit NEMU", cmd_q },
-	{ "si", "Execute the next N instructions", cmd_si},
+	{ "si", "si [N=1]: Execute the next N instructions", cmd_si},
 	{ "p", "p expr: Print anything evaluable!", cmd_p },
 	{ "info", "info r|w: Print register/watchpoint info.", cmd_info },
-	{ "x", "x N expr: Print N units of continuous memory indexed from expr.", cmd_x }
+	{ "x", "x N expr: Print N units of continuous memory indexed from expr.", cmd_x },
+	{ "w", "w expr: Pause the program when expr change.", cmd_w }
 
 	/* TODO: Add more commands */
 

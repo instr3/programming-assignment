@@ -18,8 +18,11 @@ void init_wp_list() {
 	free_ = wp_list;
 }
 
-bool add_wp(char *is)
+bool new_wp(char *is)
 {
+	bool tget = false;
+	uint32_t current = expr(is, &tget);
+	if (!tget)return false;
 	if (free_ == NULL)//Out of memory
 	{
 		panic("Too many watchpoints!");
@@ -34,6 +37,7 @@ bool add_wp(char *is)
 	}
 	free_->NO = ++wpCount;
 	free_->next = head;
+	free_->last = current;
 	head = free_;
 	free_ = newfree;
 	return true;
