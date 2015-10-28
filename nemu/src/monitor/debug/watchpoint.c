@@ -40,11 +40,9 @@ bool wp_check_change()
 int new_wp(char *is)
 {
 	printf("Free_:%p", free_);
-	fflush(stdout);
 	if (free_ == NULL)//Out of memory
 	{
 		printf("Too many watchpoints!");
-		fflush(stdout);
 		return 0;
 	}
 	bool tget = false;
@@ -57,7 +55,7 @@ int new_wp(char *is)
 		panic("Memmory limit exceeded when adding watchpoint.");
 		return 0;
 	}
-	free_->NO = ++wpCount;
+	//free_->NO = ++wpCount;
 	free_->next = head;
 	free_->last = current;
 	strcpy(free_->expr,is);
