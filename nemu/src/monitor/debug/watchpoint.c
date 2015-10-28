@@ -62,6 +62,15 @@ int new_wp(char *is)
 	free_ = newfree;
 	return head->NO;
 }
+void print_wp_list()
+{
+	WP *p = head;
+	for (p = head; p->next; p = p->next)
+	{
+
+	}
+
+}
 bool add_to_free(WP *wp)
 {
 	wp->next = free_;
