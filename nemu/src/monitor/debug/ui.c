@@ -130,6 +130,20 @@ static int cmd_w(char *args)
 	}
 	return 0;
 }
+static int cmd_d(char *args)
+{
+	if (!args)
+	{
+		extern void remove_all_wp();
+		remove_all_wp();
+		return 0;
+	}
+	int id = strtol(args, NULL, 10);
+	extern bool remove_wp(int id);
+	if (!remove_wp(id))
+		printf("[Parameter Error]\nUsage:\nd [watchpointID]\tRemove a watchpoint by its ID, or remove all if ID not given.\n");
+	return 0;
+}
 static int cmd_help(char *args);
 
 static struct {
@@ -144,7 +158,8 @@ static struct {
 	{ "p", "p expr: Print anything evaluable!", cmd_p },
 	{ "info", "info r|w: Print register/watchpoint info.", cmd_info },
 	{ "x", "x N expr: Print N units of continuous memory indexed from expr.", cmd_x },
-	{ "w", "w expr: Pause the program when expr change.", cmd_w }
+	{ "w", "w expr: Pause the program when expr change.", cmd_w },
+	{ "d", "d [watchpointID]: Remove a watchpoint by its ID, or remove all if ID not given.", cmd_d },
 
 	/* TODO: Add more commands */
 

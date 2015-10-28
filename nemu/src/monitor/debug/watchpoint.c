@@ -97,3 +97,7 @@ bool remove_wp(int id)
 	}
 	return true;
 }
+void remove_all_wp()
+{
+	while (head)remove_wp(head->NO);
+}
