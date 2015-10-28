@@ -76,6 +76,12 @@ static int cmd_info(char *args)
 		printRegInfo();
 		return 0;
 	}
+	else if (args&&args[0] == 'w')
+	{
+		extern void print_wp_list();
+		print_wp_list();
+		return 0;
+	}
 	printf("[Parameter Error]\nUsage:\ninfo r|w\tPrint register/watchpoint info.\n");
 
 	return 0;

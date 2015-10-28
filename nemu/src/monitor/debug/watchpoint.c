@@ -65,9 +65,10 @@ int new_wp(char *is)
 void print_wp_list()
 {
 	WP *p = head;
+	printf("Num\t\tExpr\n");
 	for (p = head; p->next; p = p->next)
 	{
-
+		printf("%d\t\t%s\n", p->NO, p->expr);
 	}
 
 }
