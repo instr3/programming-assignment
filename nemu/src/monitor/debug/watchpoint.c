@@ -79,12 +79,14 @@ bool add_to_free(WP *wp)
 }
 bool remove_wp(int id)
 {
+	if (head == NULL)return false;
 	WP *p = head;
 	if (head->NO == id)
 	{
 		WP *del = head;
 		head = head->next;
 		add_to_free(del);
+		return true;
 	}
 	for (p = head; p->next; p = p->next)
 	{
@@ -93,9 +95,10 @@ bool remove_wp(int id)
 			WP *del = p->next;
 			p->next = p->next->next;
 			add_to_free(del);
+			return true;
 		}
 	}
-	return true;
+	return false;
 }
 void remove_all_wp()
 {
