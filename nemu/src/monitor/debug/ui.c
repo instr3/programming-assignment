@@ -9,8 +9,8 @@
 
 void cpu_exec(uint32_t);
 void printRegInfo();
-#define ui_warn(str)  ("\33[33m" str "\33[0m\n")
-#define ui_error(str)  ("\33[31m" str "\33[0m\n")
+#define ui_warn(str)  ("\33[1;33m" str "\33[0m\n")
+#define ui_error(str)  ("\33[1;31m" str "\33[0m\n")
 /* We use the ``readline'' library to provide more flexibility to read from stdin. */
 char* rl_gets() {
 	static char *line_read = NULL;
