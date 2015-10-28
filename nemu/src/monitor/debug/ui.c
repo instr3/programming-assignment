@@ -186,7 +186,7 @@ static int cmd_help(char *args) {
 				return 0;
 			}
 		}
-		printf("Unknown command '%s'\n", arg);
+		printf(ui_warn("Unknown command '%s'\n"), arg);
 	}
 	return 0;
 }
@@ -221,6 +221,6 @@ void ui_mainloop() {
 			}
 		}
 
-		if(i == NR_CMD) { printf("Unknown command '%s'\n", cmd); }
+		if (i == NR_CMD) { printf(ui_warn("Unknown command '%s'\n"), cmd); }
 	}
 }

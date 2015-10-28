@@ -107,5 +107,10 @@ bool remove_wp(int id)
 }
 void remove_all_wp()
 {
+	if (head == NULL)
+	{
+		printf("\33[1;33mNo watchpoints.\n\33[0m");
+		return;
+	}
 	while (head)remove_wp(head->NO);
 }
