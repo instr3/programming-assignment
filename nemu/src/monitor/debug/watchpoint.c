@@ -41,7 +41,7 @@ int new_wp(char *is)
 {
 	if (free_ == NULL)//Out of memory
 	{
-		puts("Too many watchpoints!");
+		puts("\33[1;33Too many watchpoints!");
 		return 0;
 	}
 	bool tget = false;
@@ -66,7 +66,7 @@ void print_wp_list()
 {
 	if (head == NULL)
 	{
-		printf("No watchpoints.\n");
+		printf("\33[1;33No watchpoints.\n");
 		return;
 	}
 	WP *p = head;
