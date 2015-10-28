@@ -64,6 +64,11 @@ int new_wp(char *is)
 }
 void print_wp_list()
 {
+	if (head == NULL)
+	{
+		printf("No watchpoints.\n");
+		return;
+	}
 	WP *p = head;
 	printf("Num\t\tExpr\n");
 	for (p = head; p; p = p->next)

@@ -141,7 +141,7 @@ static int cmd_d(char *args)
 	int id = strtol(args, NULL, 10);
 	extern bool remove_wp(int id);
 	if (!remove_wp(id))
-		printf("[Parameter Error]\nUsage:\nd [watchpointID]\tRemove a watchpoint by its ID, or remove all if ID not given.\n");
+		printf("[Parameter Error]\nUsage:\nd [watchpointID]  Remove a watchpoint by its ID, or remove all if ID not given.\n");
 	return 0;
 }
 static int cmd_help(char *args);
