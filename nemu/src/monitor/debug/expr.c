@@ -287,9 +287,9 @@ uint32_t expr(char *e, bool *success)
 	if (errorCode)
 	{
 		success = false;
-		if (errorCode == MATH_ERROR)Log("\33[1;31Math error");
-		if (errorCode == SYNTAX_ERROR)Log("\33[1;31Syntax error");
-		if (errorCode == MEMORY_ACCESS_ERROR)Log("\33[1;31Memory access error");
+		if (errorCode == MATH_ERROR)printf("\33[1;31mMath error");
+		if (errorCode == SYNTAX_ERROR)printf("\33[1;31mSyntax error");
+		if (errorCode == MEMORY_ACCESS_ERROR)printf("\33[1;31mMemory access error");
 		printf(" occured in expr \"%s\" near '", e);
 		int i;
 		for (i = errorFrom; i <= errorTo; ++i)putchar(e[i]);
