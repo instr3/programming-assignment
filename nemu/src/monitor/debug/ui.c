@@ -9,7 +9,8 @@
 
 void cpu_exec(uint32_t);
 void printRegInfo();
-
+#define ui_warn(str)  ("\33[33m" str "\33[0m\n")
+#define ui_error(str)  ("\33[31m" str "\33[0m\n")
 /* We use the ``readline'' library to provide more flexibility to read from stdin. */
 char* rl_gets() {
 	static char *line_read = NULL;
@@ -47,7 +48,7 @@ static int cmd_si(char *args)
 	else step = 1;
 	if (step <= 0)
 	{
-		printf("[Parameter Error]\nUsage:\nsi [N=1]\tExecute the next N instructions\n");
+		printf(ui_warn("[Parameter Error]\nUsage:\nsi [N=1]\tExecute the next N instructions\n"));
 		return 0;
 	}
 	cpu_exec(step);
@@ -58,7 +59,7 @@ static int cmd_p(char *args)
 {
 	if (!args)
 	{
-		printf("[Parameter Error]\nUsage:\np expr\tEvaluate 'expr'\n");
+		printf(ui_warn("[Parameter Error]\nUsage:\np expr\tEvaluate 'expr'\n"));
 		return 0;
 	}
 	bool success;
@@ -82,7 +83,7 @@ static int cmd_info(char *args)
 		print_wp_list();
 		return 0;
 	}
-	printf("[Parameter Error]\nUsage:\ninfo r|w\tPrint register/watchpoint info.\n");
+	printf(ui_warn("[Parameter Error]\nUsage:\ninfo r|w\tPrint register/watchpoint info.\n"));
 
 	return 0;
 }
@@ -112,14 +113,14 @@ static int cmd_x(char *args)
 			}
 		}
 	}
-	printf("[Parameter Error]\nUsage:\nx N expr\tPrint N units of continuous memory indexed from expr.\n");
+	printf(ui_warn("[Parameter Error]\nUsage:\nx N expr\tPrint N units of continuous memory indexed from expr.\n"));
 	return 0;
 }
 static int cmd_w(char *args)
 {
 	if (!args)
 	{
-		printf("[Parameter Error]\nUsage:\nw expr\tPause the program when expr change.\n");
+		printf(ui_warn("[Parameter Error]\nUsage:\nw expr\tPause the program when expr change.\n"));
 		return 0;
 	}
 	extern bool new_wp(char *is);
@@ -141,7 +142,7 @@ static int cmd_d(char *args)
 	int id = strtol(args, NULL, 10);
 	extern bool remove_wp(int id);
 	if (!remove_wp(id))
-		printf("[Parameter Error]\nUsage:\nd [watchpointID]  Remove a watchpoint by its ID, or remove all if ID not given.\n");
+		printf(ui_warn("[Parameter Error]\nUsage:\nd [watchpointID]  Remove a watchpoint by its ID, or remove all if ID not given.\n"));
 	return 0;
 }
 static int cmd_help(char *args);
