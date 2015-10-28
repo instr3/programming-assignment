@@ -287,13 +287,13 @@ uint32_t expr(char *e, bool *success)
 	if (errorCode)
 	{
 		success = false;
-		if (errorCode == MATH_ERROR)printf("\33[1;31mMath error\e[0m");
-		if (errorCode == SYNTAX_ERROR)printf("\33[1;31mSyntax error\e[0m");
-		if (errorCode == MEMORY_ACCESS_ERROR)printf("\33[1;31mMemory access error\e[0m");
+		if (errorCode == MATH_ERROR)printf("\33[1;31mMath error");
+		if (errorCode == SYNTAX_ERROR)printf("\33[1;31mSyntax error");
+		if (errorCode == MEMORY_ACCESS_ERROR)printf("\33[1;31mMemory access error");
 		printf(" occured in expr \"%s\" near '", e);
 		int i;
 		for (i = errorFrom; i <= errorTo; ++i)putchar(e[i]);
-		printf("'.\n");
+		printf("'.\n\e[0m");
 		return 0;
 	}
 	*success = true;
