@@ -61,7 +61,7 @@ int new_wp(char *is)
 	strcpy(free_->expr,is);
 	head = free_;
 	free_ = newfree;
-	return free_->NO;
+	return head->NO;
 }
 bool add_to_free(WP *wp)
 {
