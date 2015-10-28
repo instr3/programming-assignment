@@ -39,14 +39,14 @@ bool wp_check_change()
 }
 int new_wp(char *is)
 {
-	bool tget = false;
-	uint32_t current = expr(is, &tget);
-	if (!tget)return 0;
 	if (free_ == NULL)//Out of memory
 	{
 		panic("Too many watchpoints!");
 		return 0;
 	}
+	bool tget = false;
+	uint32_t current = expr(is, &tget);
+	if (!tget)return 0;
 	WP *newfree = free_->next;
 	free_->expr = malloc(strlen(is)*sizeof(char)+1);
 	if (free_->expr == NULL)
@@ -64,6 +64,8 @@ int new_wp(char *is)
 }
 bool add_to_free(WP *wp)
 {
+	wp->next = free_;
+	free_ = wp;
 	return true;
 }
 bool remove_wp(int id)
@@ -71,11 +73,18 @@ bool remove_wp(int id)
 	WP *p = head;
 	if (head->NO == id)
 	{
+		WP *del = head;
 		head = head->next;
+		add_to_free(del);
 	}
-	for (p = head; p; p = p->next)
+	for (p = head; p->next; p = p->next)
 	{
-
+		if (p->next->NO == id)
+		{
+			WP *del = p->next;
+			p->next = p->next->next;
+			add_to_free(del);
+		}
 	}
 	return true;
 }
