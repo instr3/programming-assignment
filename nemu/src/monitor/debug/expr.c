@@ -293,7 +293,7 @@ uint32_t expr(char *e, bool *success)
 		printf(" occured in expr \"%s\" near '", e);
 		int i;
 		for (i = errorFrom; i <= errorTo; ++i)putchar(e[i]);
-		printf("'.\n\e[0m");
+		printf("'.\n\33[0m");
 		return 0;
 	}
 	*success = true;

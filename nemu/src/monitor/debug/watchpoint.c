@@ -66,7 +66,7 @@ void print_wp_list()
 {
 	if (head == NULL)
 	{
-		printf("\33[1;33No watchpoints.\n");
+		printf("\33[1;33mNo watchpoints.\n\33[0m");
 		return;
 	}
 	WP *p = head;
