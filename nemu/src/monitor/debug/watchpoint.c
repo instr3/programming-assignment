@@ -41,7 +41,7 @@ int new_wp(char *is)
 {
 	if (free_ == NULL)//Out of memory
 	{
-		panic("Too many watchpoints!");
+		printf("Too many watchpoints!");
 		return 0;
 	}
 	bool tget = false;
