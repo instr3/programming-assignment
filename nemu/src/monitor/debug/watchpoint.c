@@ -54,7 +54,7 @@ int new_wp(char *is)
 		panic("Memmory limit exceeded when adding watchpoint.");
 		return 0;
 	}
-	//free_->NO = ++wpCount;
+	free_->NO = ++wpCount;
 	free_->next = head;
 	free_->last = current;
 	strcpy(free_->expr,is);
@@ -70,7 +70,6 @@ void print_wp_list()
 	{
 		printf("%d\t\t%s\n", p->NO, p->expr);
 	}
-
 }
 bool add_to_free(WP *wp)
 {
@@ -98,6 +97,3 @@ bool remove_wp(int id)
 	}
 	return true;
 }
-/* TODO: Implement the functionality of watchpoint */
-
-
