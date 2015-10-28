@@ -159,7 +159,7 @@ static struct {
 	{ "info", "info r|w: Print register/watchpoint info.", cmd_info },
 	{ "x", "x N expr: Print N units of continuous memory indexed from expr.", cmd_x },
 	{ "w", "w expr: Pause the program when expr change.", cmd_w },
-	{ "d", "d [watchpointID]: Remove a watchpoint by its ID, or remove all if ID not given.", cmd_d },
+	{ "d", "d [watchpointID]: Remove a watchpoint by ID, or remove all if ID not given.", cmd_d },
 
 	/* TODO: Add more commands */
 
