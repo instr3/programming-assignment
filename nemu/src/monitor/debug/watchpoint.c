@@ -40,9 +40,11 @@ bool wp_check_change()
 int new_wp(char *is)
 {
 	printf("Free_:%p", free_);
+	fflush(stdout);
 	if (free_ == NULL)//Out of memory
 	{
 		printf("Too many watchpoints!");
+		fflush(stdout);
 		return 0;
 	}
 	bool tget = false;
