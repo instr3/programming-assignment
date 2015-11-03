@@ -85,42 +85,42 @@ uint32_t SubEvaluate(char *e, int ib, int ie)
 	//Binary Operators
 	//////////////////////////////////////////////////////////////////////////
 	//1.&& ||
-#define Construct_binary_ops(length,cond,returnStatement,...) \
+#define ConstructBinaryOps(length,cond,returnStatement,...) \
 	for (i = ie; i > ib; --i)\
 	{\
-	if (e[i] == ')')\
-	{\
-	i = bracketInfo[i] - 1; \
-	}\
-	if (cond)\
-	{\
-	if (!TestBinaryOp(e, i + 1 - length))continue; \
-	lfv = SubEvaluate(e, ib, i - length); \
-	if (errorCode != NO_ERROR)return 0; \
-	rtv = SubEvaluate(e, i + 1, ie); \
-	if (errorCode != NO_ERROR)return 0; \
-	returnStatement\
-	}\
+		if (e[i] == ')')\
+		{\
+			i = bracketInfo[i] - 1; \
+		}\
+		if (cond)\
+		{\
+			if (!TestBinaryOp(e, i + 1 - length))continue; \
+			lfv = SubEvaluate(e, ib, i - length); \
+			if (errorCode != NO_ERROR)return 0; \
+			rtv = SubEvaluate(e, i + 1, ie); \
+			if (errorCode != NO_ERROR)return 0; \
+			returnStatement\
+		}\
 	}
 	//1.&& ||
-	Construct_binary_ops(2, e[i] == '|' && e[i - 1] == '|',
+	ConstructBinaryOps(2, e[i] == '|' && e[i - 1] == '|',
 		return lfv || rtv;
 	);
-	Construct_binary_ops(2, e[i] == '&' && e[i - 1] == '&',
+	ConstructBinaryOps(2, e[i] == '&' && e[i - 1] == '&',
 		return lfv && rtv;
 	);
 	//2.& ^ |
-	Construct_binary_ops(1, e[i] == '|',
+	ConstructBinaryOps(1, e[i] == '|',
 		return lfv | rtv;
 	);
-	Construct_binary_ops(1, e[i] == '^',
+	ConstructBinaryOps(1, e[i] == '^',
 		return lfv ^ rtv;
 	);
-	Construct_binary_ops(1, e[i] == '&',
+	ConstructBinaryOps(1, e[i] == '&',
 		return lfv & rtv;
 	);
 	//3.== !=
-	Construct_binary_ops(2, e[i] == '=' && (e[i - 1] == '=' || e[i - 1] == '!'),
+	ConstructBinaryOps(2, e[i] == '=' && (e[i - 1] == '=' || e[i - 1] == '!'),
 		return e[i - 1] == '=' ? lfv == rtv : lfv != rtv;
 	);
 	//4.< <= > >=
@@ -143,15 +143,15 @@ uint32_t SubEvaluate(char *e, int ib, int ie)
 		}
 	}
 	//5.<< >>
-	Construct_binary_ops(2, (e[i] == '<' && e[i - 1] == '<') || (e[i] == '>' && e[i - 1] == '>'),
+	ConstructBinaryOps(2, (e[i] == '<' && e[i - 1] == '<') || (e[i] == '>' && e[i - 1] == '>'),
 		return e[i] == '<' ? lfv << rtv : lfv >> rtv;
 	);
 	//6.+ -
-	Construct_binary_ops(1, e[i] == '+' || e[i]=='-',
+	ConstructBinaryOps(1, e[i] == '+' || e[i]=='-',
 		return e[i] == '+' ? lfv + rtv : lfv - rtv;
 	);
 	//7.* / %
-	Construct_binary_ops(1, e[i] == '*' || e[i] == '/' || e[i] == '%',
+	ConstructBinaryOps(1, e[i] == '*' || e[i] == '/' || e[i] == '%',
 		if ((e[i] == '/' || e[i] == '%') && rtv == 0)
 		{
 			return_error(MATH_ERROR, ib, ie);
