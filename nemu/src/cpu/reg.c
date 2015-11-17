@@ -21,14 +21,6 @@ const char *regsflag[]={
 	"RF","VM","_0","_0","_0","_0","_0","_0",
 	"_0","_0","_0","_0","_0","_0","_0","_0"};
 int totalRegisterCount = 10;
-void init_eflags()
-{
-	cpu.eflags=0;
-	reg_flag_set(1);//_1
-	reg_flag_set(EFLAGS_CF);
-	reg_flag_set(EFLAGS_OF);
-}
-
 uint32_t GetFlagByName(char *flag,bool *success)
 {
 	int i;

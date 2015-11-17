@@ -47,9 +47,7 @@ static inline int check_reg_index(int index) {
 #define reg_w(index) (cpu.gpr[check_reg_index(index)]._16)
 #define reg_b(index) (cpu.gpr[check_reg_index(index) & 0x3]._8[index >> 2])
 #define reg_flag(index) (cpu.eflags&1<<(index))
-#define reg_flag_set(index) (cpu.eflags|=1<<(index))
-#define reg_flag_reset(index) (cpu.eflags&=~(1<<(index)))
-#define reg_flag_inv(index) (cpu.eflags^=1<<(index))
+#define reg_flag_set(index,res) if(res)cpu.eflags|=1<<(index);else cpu.eflags&=~(1<<(index))
 /*
 31                  23                  15               7             0
 +-------------------+---------------+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -65,12 +63,27 @@ static inline int check_reg_index(int index) {
 #define EFLAGS_IF 9
 #define EFLAGS_DF 10
 #define EFLAGS_OF 11
-
+#define influence_zf(res) reg_flag_set(EFLAGS_ZF,res)
+#define influence_pf(res) reg_flag_set(EFLAGS_PF,~__builtin_popcountll(res)&1)
+#define influence_sf(res) reg_flag_set(EFLAGS_SF,(res)&1ull<<8*DATA_BYTE)
+/*Bit Name Function page 419
+0 CF Carry Flag ── Set on high-order bit carry or borrow; cleared
+otherwise.
+2 PF Parity Flag ── Set if low-order eight bits of result contain
+an even number of 1 bits; cleared otherwise.
+4 AF Adjust flag ── Set on carry from or borrow to the low order
+four bits of AL; cleared otherwise. Used for decimal
+arithmetic.
+6 ZF Zero Flag ── Set if result is zero; cleared otherwise.
+7 SF Sign Flag ── Set equal to high-order bit of result (0 is
+positive, 1 if negative).
+11 OF Overflow Flag ── Set if result is too large a positive number
+or too small a negative number (excluding sign-bit) to fit in
+destination operand; cleared otherwise.*/
 
 extern const char* regsl[];
 extern const char* regsw[];
 extern const char* regsb[];
 extern const char* regsflag[];
-extern void init_eflags();
 
 #endif
