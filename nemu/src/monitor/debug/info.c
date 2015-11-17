@@ -1,8 +1,8 @@
 #include "nemu.h"
 
 
-CPU_state cpu;
-int totalRegisterCount;
+extern CPU_state cpu;
+extern int totalRegisterCount;
 
 inline void printRegLine(const char *regName, uint32_t regValue)
 {
@@ -16,9 +16,13 @@ void printRegInfoByID(uint32_t regID)
 	{
 		printRegLine(regsl[regID], reg_l(regID));
 	}
-	if (regID == 8)//eip
+	else if (regID == 8)//eip
 	{
 		printRegLine("eip", cpu.eip);
+	}
+	else if(regID == 9)//eflags
+	{
+		
 	}
 }
 void printRegInfo()

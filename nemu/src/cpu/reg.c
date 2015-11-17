@@ -7,8 +7,20 @@ CPU_state cpu;
 const char *regsl[] = {"eax", "ecx", "edx", "ebx", "esp", "ebp", "esi", "edi"};
 const char *regsw[] = {"ax", "cx", "dx", "bx", "sp", "bp", "si", "di"};
 const char *regsb[] = {"al", "cl", "dl", "bl", "ah", "ch", "dh", "bh"};
+/*
+31                  23                  15               7             0
++-------------------+---------------+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|                                   |V|R| |N|I O|O|D|I|T|S|Z| |A| |P| |C|
+| 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 | | |0| |   | | | | | | |0| |0| |1| |
+|                                   |M|F| |T|P L|F|F|F|F|F|F| |F| |F| |F|
++-------------------+---------------+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+*/
+const char *regsflag[]={
+	"CF","_1","PF","_0","AF","_0","ZF","SF",
+	"TF","IF","DF","OF","OL","IP","NT","_0",
+	"RF","VM","_0","_0","_0","_0","_0","_0",
+	"_0","_0","_0","_0","_0","_0","_0","_0"};
 int totalRegisterCount = 9;
-
 
 
 uint32_t GetRegByName(char *reg,bool *success)

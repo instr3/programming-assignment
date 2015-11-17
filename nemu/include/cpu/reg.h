@@ -32,6 +32,7 @@ typedef struct
 		};
 	};
 	swaddr_t eip;
+	uint32_t eflags;
 
 } CPU_state;
 
@@ -45,9 +46,11 @@ static inline int check_reg_index(int index) {
 #define reg_l(index) (cpu.gpr[check_reg_index(index)]._32)
 #define reg_w(index) (cpu.gpr[check_reg_index(index)]._16)
 #define reg_b(index) (cpu.gpr[check_reg_index(index) & 0x3]._8[index >> 2])
+#define reg_flag(index) (cpu.eflags&1<<(index))
 
 extern const char* regsl[];
 extern const char* regsw[];
 extern const char* regsb[];
+extern const char* regsflag[];
 
 #endif
