@@ -22,7 +22,17 @@ void printRegInfoByID(uint32_t regID)
 	}
 	else if(regID == 9)//eflags
 	{
-		
+		printf("%s\t\t0x%X\t\t", "eflags", cpu.eflags);
+		printf("[ ");
+		int i;
+		for(i=0;i<31;++i)
+		{
+			if(reg_flag(i)&&regsflag[i][0]!='_')
+			{
+				printf("%s ",regsflag[i]);
+			}
+		}
+		printf("]\n");
 	}
 }
 void printRegInfo()

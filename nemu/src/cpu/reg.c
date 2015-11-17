@@ -21,7 +21,28 @@ const char *regsflag[]={
 	"RF","VM","_0","_0","_0","_0","_0","_0",
 	"_0","_0","_0","_0","_0","_0","_0","_0"};
 int totalRegisterCount = 9;
+void init_eflags()
+{
+	cpu.eflags=0;
+	reg_flag_set(1);//_1
+	reg_flag_set(EFLAGS_CF);
+}
 
+uint32_t GetFlagByName(char *flag,bool *success)
+{
+	int i;
+	for (i = 0; i < 32; ++i)
+	{
+		if (strcmp(flag, regsflag[i]) == 0)
+		{
+			*success=true;
+			return reg_flag(i);
+		}
+	}
+	*success=false;
+	return 0;
+
+}
 
 uint32_t GetRegByName(char *reg,bool *success)
 {
@@ -29,6 +50,11 @@ uint32_t GetRegByName(char *reg,bool *success)
 	{
 		*success = true;
 		return cpu.eip;
+	}
+	if (strcmp(reg, "eflags") == 0)
+	{
+		*success = true;
+		return cpu.eflags;
 	}
 	int i;
 	for (i = 0; i < 8; ++i)
@@ -49,8 +75,7 @@ uint32_t GetRegByName(char *reg,bool *success)
 			return reg_b(i);
 		}
 	}
-	*success = false;
-	return 0;
+	return GetFlagByName(reg,success);
 }
 void reg_test() {
 	srand(time(0));

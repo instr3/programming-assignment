@@ -47,10 +47,30 @@ static inline int check_reg_index(int index) {
 #define reg_w(index) (cpu.gpr[check_reg_index(index)]._16)
 #define reg_b(index) (cpu.gpr[check_reg_index(index) & 0x3]._8[index >> 2])
 #define reg_flag(index) (cpu.eflags&1<<(index))
+#define reg_flag_set(index) (cpu.eflags|=1<<(index))
+#define reg_flag_reset(index) (cpu.eflags&=~(1<<(index)))
+#define reg_flag_inv(index) (cpu.eflags^=1<<(index))
+/*
+31                  23                  15               7             0
++-------------------+---------------+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|                                   |V|R| |N|I O|O|D|I|T|S|Z| |A| |P| |C|
+| 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 | | |0| |   | | | | | | |0| |0| |1| |
+|                                   |M|F| |T|P L|F|F|F|F|F|F| |F| |F| |F|
++-------------------+---------------+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+*/
+#define EFLAGS_CF 0
+#define EFLAGS_PF 2
+#define EFLAGS_ZF 6
+#define EFLAGS_SF 7
+#define EFLAGS_IF 9
+#define EFLAGS_DF 10
+#define EFLAGS_OF 11
+
 
 extern const char* regsl[];
 extern const char* regsw[];
 extern const char* regsb[];
 extern const char* regsflag[];
+extern void init_eflags();
 
 #endif
