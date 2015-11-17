@@ -30,6 +30,8 @@
 #include "arith/add.h"
 #include "arith/sub.h"
 
+#include "logic/test.h"
+
 #include "narrative/call.h"
 #include "narrative/push.h"
 
