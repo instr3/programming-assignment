@@ -4,7 +4,7 @@
 
 #if DATA_BYTE == 2 || DATA_BYTE == 4
 make_helper(concat(push_reg_, SUFFIX)) {
-	uint32_t regid = instr_fetch(eip + 1, 1)-0x50;
+	uint32_t regid = instr_fetch(eip, 1)-0x50;
 	push_data(REG(regid),4);
 	return 1;
 }
