@@ -29,6 +29,7 @@
 //Add by me
 #include "arith/add.h"
 #include "arith/sub.h"
+#include "arith/cmp.h"
 
 #include "logic/test.h"
 

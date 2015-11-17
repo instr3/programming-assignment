@@ -43,7 +43,7 @@ make_helper(concat(jcc_, SUFFIX)) {
 		eip&=0x0000ffff;
 #endif
 	}
-	print_asm("%s 0x%x",jname,addr);
+	print_asm("%s 0x%x",jname,cpu.eip + addr);
 	return 1 + DATA_BYTE;
 }
 
