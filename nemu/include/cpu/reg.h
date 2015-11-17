@@ -65,12 +65,12 @@ static inline int check_reg_index(int index) {
 #define EFLAGS_OF 11
 #define highestbit(res) ((res)&1ull<<8*DATA_BYTE)
 
-#define influence_zf(res) reg_flag_set(EFLAGS_ZF,res)
+#define influence_zf(res) reg_flag_set(EFLAGS_ZF,!res)
 #define influence_pf(res) reg_flag_set(EFLAGS_PF,~__builtin_popcount(res)&1)
 #define influence_sf(res) reg_flag_set(EFLAGS_SF,highestbit(res))
 #define influence_of(res,op1,op2) reg_flag_set(EFLAGS_OF,highestbit(op1)==highestbit(op2)&& \
 	highestbit(op1)!=highestbit(res))
-#define influence_cf(res,resull) reg_flag_set(EFLAGS_CF,res==resull)
+#define influence_cf(res,resull) reg_flag_set(EFLAGS_CF,res!=resull)
 /*Bit Name Function page 419
 0 CF Carry Flag ── Set on high-order bit carry or borrow; cleared
 otherwise.
