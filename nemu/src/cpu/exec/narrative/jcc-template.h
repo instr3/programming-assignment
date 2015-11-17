@@ -36,7 +36,13 @@ make_helper(concat(jcc_, SUFFIX)) {
 	optest(8,"js",f(SF)==1);
 #undef f
 #undef optest
-	if(cond)cpu.eip+=addr;
+	if(cond)
+	{
+		cpu.eip+=addr;
+#if DATA_BYTE==2
+		eip&=0x0000ffff;
+#endif
+	}
 	print_asm("%s 0x%x",jname,addr);
 	return 1 + DATA_BYTE;
 }
