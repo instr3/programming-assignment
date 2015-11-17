@@ -20,7 +20,7 @@ const char *regsflag[]={
 	"TF","IF","DF","OF","OL","IP","NT","_0",
 	"RF","VM","_0","_0","_0","_0","_0","_0",
 	"_0","_0","_0","_0","_0","_0","_0","_0"};
-int totalRegisterCount = 9;
+int totalRegisterCount = 10;
 void init_eflags()
 {
 	cpu.eflags=0;
