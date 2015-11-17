@@ -8,7 +8,7 @@ make_helper(concat(call_i_, SUFFIX)) {
 	push_data(cpu.eip,4);
 	cpu.eip+=5+addr;
 
-	print_asm("call" str(SUFFIX) " 0x%x", cpu.eip);
+	print_asm("call 0x%x", cpu.eip);
 	return 5;
 }
 #endif
