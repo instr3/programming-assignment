@@ -46,7 +46,7 @@ static inline int check_reg_index(int index) {
 #define reg_l(index) (cpu.gpr[check_reg_index(index)]._32)
 #define reg_w(index) (cpu.gpr[check_reg_index(index)]._16)
 #define reg_b(index) (cpu.gpr[check_reg_index(index) & 0x3]._8[index >> 2])
-#define reg_flag(index) (cpu.eflags&1<<(index))
+#define reg_flag(index) (!!(cpu.eflags&1<<(index)))
 #define reg_flag_set(index,res) if(res)cpu.eflags|=1<<(index);else cpu.eflags&=~(1<<(index))
 /*
 31                  23                  15               7             0
