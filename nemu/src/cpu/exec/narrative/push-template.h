@@ -6,6 +6,7 @@
 make_helper(concat(push_reg_, SUFFIX)) {
 	uint32_t regid = instr_fetch(eip, 1)-0x50;
 	push_data(REG(regid),4);
+	print_asm("push %%%s", REG_NAME(regid));
 	return 1;
 }
 #endif
