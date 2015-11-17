@@ -16,7 +16,7 @@ make_helper(concat(jcc_, SUFFIX)) {
 #define optest(opid,name,...)\
 	if(op==concat(0x,opid))\
 	{\
-		if(__VA_ARGS__)cond=true;jname=#name;\
+		if(__VA_ARGS__)cond=true;jname=name;\
 	}
 	optest(7,"ja",f(CF)==0&&f(ZF)==0)
 	optest(3,"jae",f(CF)==0)
