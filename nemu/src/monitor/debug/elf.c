@@ -9,9 +9,6 @@ static Elf32_Sym *symtab = NULL;
 static int nr_symtab_entry;
 static char posbuffer[1010];
 
-#define ui_warn(str)  ("\33[1;33m" str "\33[0m\n")
-#define ui_error(str)  ("\33[1;31m" str "\33[0m\n")
-
 void load_elf_tables(int argc, char *argv[]) {
 	int ret;
 	Assert(argc == 2, "run NEMU with format 'nemu [program]'");
