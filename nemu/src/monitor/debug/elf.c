@@ -93,7 +93,7 @@ swaddr_t GetVariableByName(const char *s,bool *success)
 		//test low 4 bit of st_info
 		if((symtab[i].st_info&0xF)==STT_OBJECT)
 		{
-			printf("%s %d\n",strtab+symtab[i].st_name,symtab[i].st_value);
+			//printf("%s %d\n",strtab+symtab[i].st_name,symtab[i].st_value);
 			if(strcmp(strtab+symtab[i].st_name,s)==0)
 			{
 				*success=true;
