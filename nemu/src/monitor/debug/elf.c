@@ -5,7 +5,7 @@
 char *exec_file = NULL;
 
 static char *strtab = NULL;
-Elf32_Sym *symtab = NULL;
+static Elf32_Sym *symtab = NULL;
 static int nr_symtab_entry;
 
 void load_elf_tables(int argc, char *argv[]) {
@@ -81,3 +81,13 @@ void load_elf_tables(int argc, char *argv[]) {
 	fclose(fp);
 }
 
+swaddr_t GetVariableByName(const char *s,bool *success)
+{
+	int i;
+	for(i=0;i<nr_symtab_entry;++i)
+	{
+		printf("%s\n",strtab+symtab[i].st_name);
+	}
+	*success=false;
+	return 0;
+}

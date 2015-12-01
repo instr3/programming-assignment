@@ -217,6 +217,13 @@ uint32_t SubEvaluate(char *e, int ib, int ie)
 	}
 	if (!isnumber)
 	{
+		extern swaddr_t GetVariableByName(const char *,bool *);
+		bool find=false;
+		swaddr_t pos = GetVariableByName(e+ib,&find);
+		if(find)
+		{
+			return swaddr_read(pos,sizeof(uint32_t));
+		}
 		e[ie + 1] = sc;//Recover the expr
 		return_error(SYNTAX_ERROR, ib, ie);
 	}
