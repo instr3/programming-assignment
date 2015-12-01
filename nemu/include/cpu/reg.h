@@ -63,7 +63,7 @@ static inline int check_reg_index(int index) {
 #define EFLAGS_IF 9
 #define EFLAGS_DF 10
 #define EFLAGS_OF 11
-#define highestbit(res) ((res)&1ull<<8*DATA_BYTE)
+#define highestbit(res) ((res)&1ull<<(8*DATA_BYTE-1))
 
 #define influence_zf(res) reg_flag_set(EFLAGS_ZF,!res)
 #define influence_pf(res) reg_flag_set(EFLAGS_PF,~__builtin_popcount(res)&1)
