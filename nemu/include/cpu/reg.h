@@ -86,7 +86,7 @@ positive, 1 if negative).
 or too small a negative number (excluding sign-bit) to fit in
 destination operand; cleared otherwise.*/
 #define push_data(word,len) do{cpu.esp-=len;swaddr_write(cpu.esp,len,word);}while(0)
-#define pop_data(word,len) do{panic("Please Implement me!");}while(0)
+#define pop_data(word,len) do{word=swaddr_read(cpu.esp,len);cpu.esp+=len;}while(0)
 
 
 extern const char* regsl[];
