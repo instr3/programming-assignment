@@ -37,5 +37,7 @@
 #include "narrative/push.h"
 #include "narrative/jcc.h"
 #include "narrative/jmp.h"
+#include "narrative/leave.h"
+#include "narrative/ret.h"
 
 
