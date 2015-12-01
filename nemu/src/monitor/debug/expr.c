@@ -158,6 +158,10 @@ uint32_t SubEvaluate(char *e, int ib, int ie)
 		}
 		return e[i] == '*' ? lfv * rtv : e[i] == '/' ? lfv / rtv : lfv%rtv;
 	);
+	//new.@ A@2 functioned as A[2],when A is uint32_t*
+	ConstructBinaryOps(1, e[i] == '@',
+		return swaddr_read(lfv + rtv * sizeof(uint32_t),sizeof(uint32_t));
+	);
 	
 	//////////////////////////////////////////////////////////////////////////
 	//Unary operators
