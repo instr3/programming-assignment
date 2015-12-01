@@ -36,5 +36,6 @@
 #include "narrative/call.h"
 #include "narrative/push.h"
 #include "narrative/jcc.h"
+#include "narrative/jmp.h"
 
 
