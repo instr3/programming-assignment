@@ -22,7 +22,7 @@ static inline int idex(swaddr_t eip, int (*decode)(swaddr_t), void (*execute) (v
 static inline int idex_len(swaddr_t eip, int (*decode)(swaddr_t), void (*execute) (uint32_t)) {
 	/* eip is pointing to the opcode */
 	int len = decode(eip + 1);
-	execute(len);
+	execute(len + 1);
 	return len + 1;	// "1" for opcode
 }
 
