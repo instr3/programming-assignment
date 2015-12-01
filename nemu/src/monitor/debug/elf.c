@@ -8,6 +8,9 @@ static char *strtab = NULL;
 static Elf32_Sym *symtab = NULL;
 static int nr_symtab_entry;
 
+#define ui_warn(str)  ("\33[1;33m" str "\33[0m\n")
+#define ui_error(str)  ("\33[1;31m" str "\33[0m\n")
+
 void load_elf_tables(int argc, char *argv[]) {
 	int ret;
 	Assert(argc == 2, "run NEMU with format 'nemu [program]'");
@@ -87,8 +90,20 @@ swaddr_t GetVariableByName(const char *s,bool *success)
 	for(i=0;i<nr_symtab_entry;++i)
 	{
 		//Should be object type!
+		//test low 4 bit of st_info
 		if((symtab[i].st_info&0xF)==STT_OBJECT)
-		printf("%s\n",strtab+symtab[i].st_name);
+		{
+			printf("%s\n",strtab+symtab[i].st_name);
+			if(strcmp(strtab+symtab[i].st_name,s)==0)
+			{
+				if(symtab[i].st_size!=sizeof(uint32_t))
+				{
+					printf(ui_warn("[Warning]Symbol '%s' converted to uint32_t."),s);
+				}
+				*success=true;
+				return symtab[i].st_value;
+			}
+		}
 	}
 	*success=false;
 	return 0;
