@@ -93,13 +93,9 @@ swaddr_t GetVariableByName(const char *s,bool *success)
 		//test low 4 bit of st_info
 		if((symtab[i].st_info&0xF)==STT_OBJECT)
 		{
-			printf("%s\n",strtab+symtab[i].st_name);
+			printf("%s %d\n",strtab+symtab[i].st_name,symtab[i].st_size);
 			if(strcmp(strtab+symtab[i].st_name,s)==0)
 			{
-				if(symtab[i].st_size!=sizeof(uint32_t))
-				{
-					printf(ui_warn("[Warning]Symbol '%s' converted to uint32_t."),s);
-				}
 				*success=true;
 				return symtab[i].st_value;
 			}
