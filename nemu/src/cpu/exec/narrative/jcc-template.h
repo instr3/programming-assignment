@@ -43,7 +43,12 @@ make_helper(concat(jcc_, SUFFIX)) {
 		eip&=0x0000ffff;
 #endif
 	}
-	print_asm("%s 0x%x",jname,cpu.eip + addr);
+	extern char *PrintAddressInFunction(swaddr_t);//elf.c
+	char *infun=PrintAddressInFunction(cpu.eip + addr);
+	if(infun)
+		print_asm("%s 0x%x %s",jname,cpu.eip + addr,infun);
+	else
+		print_asm("%s 0x%x",jname,cpu.eip + addr);
 	return 1 + DATA_BYTE;
 }
 
