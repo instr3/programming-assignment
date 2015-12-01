@@ -86,6 +86,8 @@ swaddr_t GetVariableByName(const char *s,bool *success)
 	int i;
 	for(i=0;i<nr_symtab_entry;++i)
 	{
+		//Should be object type!
+		if((symtab[i].st_info&0xF)==STT_OBJECT)
 		printf("%s\n",strtab+symtab[i].st_name);
 	}
 	*success=false;
