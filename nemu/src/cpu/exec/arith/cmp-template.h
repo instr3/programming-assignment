@@ -5,7 +5,7 @@
 static void do_execute () {
 	DATA_TYPE result = op_dest->val - op_src->val;
 	printf("Look:%u\n",result);
-	printf("Highest Bit:%u\n",(unsigned)highestbit(result));
+	printf("Highest Bit:%llu,%llu\n",1ull<<8*DATA_BYTE,result&1ull<<8*DATA_BYTE);
 	//OPERAND_W(op_dest, result);
 	influence_zf(result);
 	influence_pf(result);
