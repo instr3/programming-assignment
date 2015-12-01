@@ -7,6 +7,7 @@ char *exec_file = NULL;
 static char *strtab = NULL;
 static Elf32_Sym *symtab = NULL;
 static int nr_symtab_entry;
+static char posbuffer[1010];
 
 #define ui_warn(str)  ("\33[1;33m" str "\33[0m\n")
 #define ui_error(str)  ("\33[1;31m" str "\33[0m\n")
@@ -83,7 +84,36 @@ void load_elf_tables(int argc, char *argv[]) {
 
 	fclose(fp);
 }
-
+char *PrintAddressInFunction(swaddr_t ad)
+{
+	int i;
+	swaddr_t minadd=0;
+	uint32_t minat=-1;
+	for(i=0;i<nr_symtab_entry;++i)
+	{
+		if((symtab[i].st_info&0xF)==STT_FUNC)
+		{
+			if(symtab[i].st_value<=ad)//Previous Function
+			{
+				if(symtab[i].st_value>minadd)
+				{
+					minat=i;
+					minadd=symtab[i].st_value;
+				}
+			}
+		}
+	}
+	if(minat==-1)return 0;
+	if(ad==symtab[i].st_value)
+	{
+		sprintf(posbuffer,"<%s>",strtab+symtab[i].st_name);
+	}
+	else
+	{
+		sprintf(posbuffer,"<%s+0x%x>",strtab+symtab[i].st_name,ad-symtab[i].st_value);
+	}
+	return posbuffer;
+}
 swaddr_t GetVariableByName(const char *s,bool *success)
 {
 	int i;
