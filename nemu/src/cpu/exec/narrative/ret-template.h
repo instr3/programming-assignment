@@ -13,6 +13,7 @@ make_helper(concat(ret_, SUFFIX)) {
 	pop_data(cpu.eip,4);
 	--cpu.eip;
 #endif
+	print_asm("ret");
 	return 1;
 }
 #endif

@@ -12,6 +12,7 @@ make_helper(concat(leave_, SUFFIX)) {
 #else //DATA_BYTE == 4
 	pop_data(cpu.ebp,4);
 #endif
+	print_asm("leave");
 	return 1;
 }
 #endif
