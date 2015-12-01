@@ -4,6 +4,7 @@
 
 static void do_execute () {
 	DATA_TYPE result = op_dest->val - op_src->val;
+	printf("Look:%d\n",result);
 	//OPERAND_W(op_dest, result);
 	influence_zf(result);
 	influence_pf(result);
