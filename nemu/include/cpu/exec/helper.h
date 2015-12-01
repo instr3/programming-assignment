@@ -16,6 +16,12 @@
 		return idex(eip, concat4(decode_, type, _, SUFFIX), do_execute); \
 	}
 
+#define make_instr_helper2(type,fun) \
+	make_helper(concat5(instr, _, type, _, SUFFIX)) { \
+		return idex_len(eip, concat4(decode_, type, _, SUFFIX), concat(do_execute,fun)); \
+	}
+
+
 extern char assembly[];
 #ifdef DEBUG
 #define print_asm(...) Assert(snprintf(assembly, 80, __VA_ARGS__) < 80, "buffer overflow!")
@@ -31,5 +37,6 @@ extern char assembly[];
 
 #define print_asm_template3() \
 	print_asm(str(instr) str(SUFFIX) " %s,%s,%s", op_src->str, op_src2->str, op_dest->str)
+
 
 #endif

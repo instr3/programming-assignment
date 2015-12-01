@@ -19,6 +19,13 @@ static inline int idex(swaddr_t eip, int (*decode)(swaddr_t), void (*execute) (v
 	return len + 1;	// "1" for opcode
 }
 
+static inline int idex_len(swaddr_t eip, int (*decode)(swaddr_t), void (*execute) (uint32_t)) {
+	/* eip is pointing to the opcode */
+	int len = decode(eip + 1);
+	execute(len);
+	return len + 1;	// "1" for opcode
+}
+
 /* shared by all helper function */
 extern Operands ops_decoded;
 
