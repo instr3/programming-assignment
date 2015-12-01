@@ -20,6 +20,8 @@ static void concat(do_execute,relative)(uint32_t len)
 }
 
 make_instr_helper2(i,relative)
+#if DATA_BYTE == 2 || DATA_BYTE ==4
 make_instr_helper2(rm,direct)
+#endif
 
 #include "cpu/exec/template-end.h"
