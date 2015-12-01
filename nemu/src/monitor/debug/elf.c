@@ -93,7 +93,7 @@ char *PrintAddressInFunction(swaddr_t ad)
 	{
 		if((symtab[i].st_info&0xF)==STT_FUNC)
 		{
-			printf("%s %d\n",strtab+symtab[i].st_name,symtab[i].st_value);
+			//printf("%s %d\n",strtab+symtab[i].st_name,symtab[i].st_value);
 			if(symtab[i].st_value<=ad)//Previous Function
 			{
 				if(symtab[i].st_value>minadd)
