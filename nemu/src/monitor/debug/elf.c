@@ -105,13 +105,13 @@ char *PrintAddressInFunction(swaddr_t ad)
 		}
 	}
 	if(minat==-1)return 0;
-	if(ad==symtab[i].st_value)
+	if(ad==symtab[minat].st_value)
 	{
-		sprintf(posbuffer,"<%s>",strtab+symtab[i].st_name);
+		sprintf(posbuffer,"<%s>",strtab+symtab[minat].st_name);
 	}
 	else
 	{
-		sprintf(posbuffer,"<%s+0x%x>",strtab+symtab[i].st_name,ad-symtab[i].st_value);
+		sprintf(posbuffer,"<%s+0x%x>",strtab+symtab[minat].st_name,ad-symtab[minat].st_value);
 	}
 	return posbuffer;
 }
