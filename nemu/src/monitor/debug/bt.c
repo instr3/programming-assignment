@@ -5,7 +5,7 @@ void printbtFormat(int id,swaddr_t addr,uint32_t a1,uint32_t a2,uint32_t a3,uint
 {
 	extern char *PrintAddressInFunction(swaddr_t,bool);
 	char *addinfun=PrintAddressInFunction(addr,false);
-	printf("#%d\t0x%8x in %s (%u,%u,%u,%u)\n",id,addr,addinfun,a1,a2,a3,a4);
+	printf("#%d\t0x%.8x in %s (%u,%u,%u,%u)\n",id,addr,addinfun,a1,a2,a3,a4);
 }
 void printbt()
 {
