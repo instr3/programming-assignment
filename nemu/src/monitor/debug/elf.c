@@ -81,7 +81,7 @@ void load_elf_tables(int argc, char *argv[]) {
 
 	fclose(fp);
 }
-char *PrintAddressInFunction(swaddr_t ad)
+char *PrintAddressInFunction(swaddr_t ad,bool asmformat)
 {
 	int i;
 	swaddr_t minadd=0;
@@ -102,14 +102,18 @@ char *PrintAddressInFunction(swaddr_t ad)
 		}
 	}
 	if(minat==-1)return 0;
-	if(ad==symtab[minat].st_value)
+	if(asmformat)
 	{
-		sprintf(posbuffer,"<%s>",strtab+symtab[minat].st_name);
+		if(ad==symtab[minat].st_value)
+		{
+			sprintf(posbuffer,"<%s>",strtab+symtab[minat].st_name);
+		}
+		else
+		{
+			sprintf(posbuffer,"<%s+0x%x>",strtab+symtab[minat].st_name,ad-symtab[minat].st_value);
+		}
 	}
-	else
-	{
-		sprintf(posbuffer,"<%s+0x%x>",strtab+symtab[minat].st_name,ad-symtab[minat].st_value);
-	}
+	else sprintf(posbuffer,"%s",strtab+symtab[minat].st_name);
 	return posbuffer;
 }
 swaddr_t GetVariableByName(const char *s,bool *success)

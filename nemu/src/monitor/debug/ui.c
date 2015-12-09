@@ -145,6 +145,12 @@ static int cmd_d(char *args)
 		printf(ui_warn("[Parameter Error]\nUsage:\nd [watchpointID]  Remove a watchpoint by its ID, or remove all if ID not given.\n"));
 	return 0;
 }
+static int cmd_bt(char *args)
+{
+	extern void printbt();
+	printbt();
+	return 0;
+}
 static int cmd_help(char *args);
 
 static struct {
@@ -161,6 +167,7 @@ static struct {
 	{ "x", "x N expr: Print N units of continuous memory indexed from expr.", cmd_x },
 	{ "w", "w expr: Pause the program when expr change.", cmd_w },
 	{ "d", "d [watchpointID]: Remove a watchpoint by ID, or remove all if ID not given.", cmd_d },
+	{ "bt", "bt: Print back tracing of current function.", cmd_bt },
 
 	/* TODO: Add more commands */
 

@@ -10,8 +10,8 @@ static void concat(do_execute,direct)(uint32_t len)
 	cpu.eip&=0xFFFF;
 	newop&=0xFFFF;
 #endif
-	extern char *PrintAddressInFunction(swaddr_t);//elf.c
-	char *infun=PrintAddressInFunction(newop);
+	extern char *PrintAddressInFunction(swaddr_t,bool);//elf.c
+	char *infun=PrintAddressInFunction(newop,true);
 	if(infun)
 		print_asm("jmp %x %s", newop,infun);
 	else
