@@ -9,6 +9,7 @@ make_helper(concat(ret_, SUFFIX)) {
 	pop_data(res,2);
 	--res;
 	cpu.eip = res;
+	--cpu.eip;
 #else //DATA_BYTE == 4
 	pop_data(cpu.eip,4);
 	--cpu.eip;
