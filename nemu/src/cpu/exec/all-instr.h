@@ -2,6 +2,8 @@
 
 #include "data-mov/mov.h"
 #include "data-mov/xchg.h"
+#include "data-mov/push.h"
+#include "data-mov/leave.h"
 
 #include "arith/dec.h"
 #include "arith/inc.h"
@@ -33,11 +35,9 @@
 
 #include "logic/test.h"
 
-#include "narrative/call.h"
-#include "narrative/push.h"
-#include "narrative/jcc.h"
-#include "narrative/jmp.h"
-#include "narrative/leave.h"
-#include "narrative/ret.h"
+#include "transfer/call.h"
+#include "transfer/jcc.h"
+#include "transfer/jmp.h"
+#include "transfer/ret.h"
 
 
