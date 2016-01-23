@@ -4,7 +4,7 @@
 
 make_helper(concat(jcc_, SUFFIX)) {
 	uint32_t op = ops_decoded.opcode&0xf;
-	DATA_TYPE addr = instr_fetch(eip + 1, DATA_BYTE);
+	DATA_TYPE_S addr = instr_fetch(eip + 1, DATA_BYTE);//signed!!
 	bool cond=false;
 	char *jname;
 #define f(a) reg_flag(concat(EFLAGS_,a))
