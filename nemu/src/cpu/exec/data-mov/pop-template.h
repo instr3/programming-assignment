@@ -12,10 +12,13 @@ make_helper(concat(push_reg_, SUFFIX)) {
 #endif*/
 #if DATA_BYTE == 2 || DATA_BYTE == 4
 static void do_execute() {
-	if(op_src->type==OP_TYPE_MEM)
+	DATA_TYPE res;
+	pop_data(res,DATA_BYTE);
+	OPERAND_W(op_src,res);
+	/*if(op_src->type==OP_TYPE_MEM)
 		pop_data(op_src->addr,DATA_BYTE);
 	else
-		pop_data(REG(op_src->reg),DATA_BYTE);
+		pop_data(REG(op_src->reg),DATA_BYTE);*/
 
 	print_asm_template1();
 }
