@@ -16,6 +16,10 @@
 #include "arith/mul.h"
 #include "arith/idiv.h"
 #include "arith/div.h"
+#include "arith/add.h"
+#include "arith/sub.h"
+#include "arith/sbb.h"
+#include "arith/cmp.h"
 
 #include "logic/and.h"
 #include "logic/or.h"
@@ -25,6 +29,7 @@
 #include "logic/shl.h"
 #include "logic/shr.h"
 #include "logic/shrd.h"
+#include "logic/test.h"
 
 #include "string/rep.h"
 
@@ -32,12 +37,7 @@
 
 #include "special/special.h"
 
-//Add by me
-#include "arith/add.h"
-#include "arith/sub.h"
-#include "arith/cmp.h"
 
-#include "logic/test.h"
 
 #include "transfer/call.h"
 #include "transfer/jcc.h"
