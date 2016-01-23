@@ -11,7 +11,7 @@ start:
   mov $30487, %eax // test for 10000000 instrs
   jmp loop_test
 loop_main:
-  call arith_test
+  jnz arith_test
   call ctrl_trans_test
   call data_trans_test
   call logic_test
