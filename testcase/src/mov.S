@@ -248,7 +248,7 @@ arith_test:
   sub $0xffffffff, %eax
   call test_zf
   mov $0, %edx
-  sub $0xfffffffe, %edx
+  sub $0xffffffee, %edx
   call test_pf
   // adc
   call set_cf
