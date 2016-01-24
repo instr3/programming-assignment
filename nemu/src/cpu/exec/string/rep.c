@@ -1,9 +1,10 @@
 #include "cpu/exec/helper.h"
 
 make_helper(exec);
-
+bool temp_cmps_matches;
 make_helper(rep) {
 	int len;
+	int op=ops_decoded.opcode;
 	int count = 0;
 	if(instr_fetch(eip + 1, 1) == 0xc3) {
 		/* repz ret */
@@ -24,13 +25,14 @@ make_helper(rep) {
 				|| ops_decoded.opcode == 0xae	// scasb
 				|| ops_decoded.opcode == 0xaf	// scasw
 				);
-
-			/* TODO: Jump out of the while loop if necessary. */
-
+			if(ops_decoded.opcode==0xa6||ops_decoded.opcode==0xa7)
+			{
+				if((op==0xf3&&!temp_cmps_matches)||(op==0xf2&&temp_cmps_matches))break;
+			}
 		}
 		len = 1;
 	}
-
+	
 #ifdef DEBUG
 	char temp[80];
 	sprintf(temp, "rep %s", assembly);
