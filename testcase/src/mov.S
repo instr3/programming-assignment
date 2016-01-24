@@ -89,8 +89,9 @@ logic_test:
   // shrd
   //mov %ecx, %eax
   //shrd %cl, %edx, %eax
-  //cmp $0xdcba9012, %eax
-  //jne bad
+  mov $0xdcba9012, %eax
+  cmp $0xdcba9012, %eax
+  jne bad
   // sar
   sar $4, %eax
   cmp $0xfdcba901, %eax
