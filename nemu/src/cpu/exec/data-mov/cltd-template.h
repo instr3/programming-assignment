@@ -5,7 +5,7 @@
 make_helper(concat(cltd_a_, SUFFIX)) {
 
 	REG(R_EDX)=(DATA_TYPE_S)REG(R_EAX)>=0?0:-1;
-	print_asm(DATA_BYTE == 4?"cltd":"cwtl");
+	print_asm("cltd");
 	return 1;
 }
 #endif
