@@ -2,8 +2,8 @@
 
 
 make_helper(concat(stos_, SUFFIX)) {
-	MEM_W(REG(R_EDI),MEM_R(REG(R_EAX)));
-	REG(R_EDI)+=DATA_BYTE;
+	MEM_W(reg_l(R_EDI),MEM_R(reg_l(R_EAX)));
+	reg_l(R_EDI)+=DATA_BYTE;
 	print_asm("stos" str(SUFFIX));
 	return 0;
 }
