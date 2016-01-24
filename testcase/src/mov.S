@@ -103,6 +103,7 @@ logic_test:
   //shld $4, %edx, %eax
   //cmp $0xfdcba90f, %eax
   //jne bad
+  mov $0xfdcba90f, %eax
   // shl
   shl $8, %eax
   cmp $0xcba90f00, %eax
