@@ -5,6 +5,7 @@ make_helper(rep) {
 	int len;
 	int op=ops_decoded.opcode;
 	int count = 0;
+	char *opname="rep";
 	if(instr_fetch(eip + 1, 1) == 0xc3) {
 		/* repz ret */
 		exec(eip + 1);
@@ -26,7 +27,17 @@ make_helper(rep) {
 				);
 			if(ops_decoded.opcode==0xa6||ops_decoded.opcode==0xa7)
 			{
-				if((op==0xf3&&!reg_flag(EFLAGS_ZF))||(op==0xf2&&reg_flag(EFLAGS_ZF)))break;
+				if(op==0xf3)
+				{
+					opname="repe";
+					if(!reg_flag(EFLAGS_ZF))break;
+				}
+				else//op=0xf2
+				{
+					opname="repne";
+					if(reg_flag(EFLAGS_ZF))break;
+				}
+				//if((op==0xf3&&!reg_flag(EFLAGS_ZF))||(op==0xf2&&reg_flag(EFLAGS_ZF)))break;
 			}
 		}
 		len = 1;
@@ -34,7 +45,7 @@ make_helper(rep) {
 	
 #ifdef DEBUG
 	char temp[80];
-	sprintf(temp, "rep %s", assembly);
+	sprintf(temp, "%s %s", opname, assembly);
 	sprintf(assembly, "%s[cnt = %d]", temp, count);
 #endif
 	
