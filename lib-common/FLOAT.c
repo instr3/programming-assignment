@@ -22,7 +22,7 @@ FLOAT F_div_F(FLOAT a, FLOAT b) {
 
 FLOAT f2F(float a) {
 	int ua=*(int *)&a;
-	int va=FABS(ua);
+	int va=ua&2147483647;
 	FLOAT res=0;
 	if(va!=0)
 	{
