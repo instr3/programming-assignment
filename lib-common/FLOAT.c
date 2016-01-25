@@ -2,7 +2,7 @@
 
 FLOAT F_mul_F(FLOAT a, FLOAT b) {
 	FLOAT c=FABS(a),d=FABS(b);
-	FLOAT res=c*(long long)d/65536LL;
+	FLOAT res=c*(long long)d/(1<<16);
 	return (FLESS0(a)^FLESS0(b))?FMINUS(res):res;
 }
 
