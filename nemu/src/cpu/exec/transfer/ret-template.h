@@ -17,6 +17,7 @@ make_helper(concat(ret_, SUFFIX)) {
 	return 1;
 }
 make_helper(concat(ret_i_, SUFFIX)) {
+	uint16_t imm=instr_fetch(cpu.eip+1,2);
 #if DATA_BYTE == 2
 	uint16_t res;
 	pop_data(res,2);
@@ -26,7 +27,6 @@ make_helper(concat(ret_i_, SUFFIX)) {
 	pop_data(cpu.eip,4);
 	--cpu.eip;
 #endif
-	uint16_t imm=instr_fetch(cpu.eip+1,2);
 	cpu.esp+=imm;
 	print_asm("ret $0x%x", imm);
 	return 3;
