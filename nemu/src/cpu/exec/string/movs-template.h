@@ -6,7 +6,7 @@ make_helper(concat(movs_, SUFFIX)) {
 	reg_l(R_EDI)+=DATA_BYTE;
 	reg_l(R_ESI)+=DATA_BYTE;
 	print_asm("movs" str(SUFFIX));
-	return 0;
+	return 1;
 }
 
 #include "cpu/exec/template-end.h"

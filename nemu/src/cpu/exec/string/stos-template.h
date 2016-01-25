@@ -5,7 +5,7 @@ make_helper(concat(stos_, SUFFIX)) {
 	MEM_W(reg_l(R_EDI),REG(R_EAX));
 	reg_l(R_EDI)+=DATA_BYTE;
 	print_asm("stos" str(SUFFIX));
-	return 0;
+	return 1;
 }
 
 #include "cpu/exec/template-end.h"
