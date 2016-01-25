@@ -26,7 +26,7 @@ FLOAT f2F(float a) {
 	FLOAT res=0;
 	if(va!=0)
 	{
-		int ex=(va>>23)-127+16-24;
+		int ex=(va>>23)-127+16-23;
 		va|=0x800000;
 		if(ex>=0)
 			res=(va&0xffffff)<<ex;
