@@ -61,7 +61,7 @@ string_test:
   repne cmpsb
   cmp $2, %ecx
   jne bad
-  repz ret
+  ret
 
 logic_test:
   // and
