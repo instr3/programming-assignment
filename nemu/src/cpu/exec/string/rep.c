@@ -1,7 +1,6 @@
 #include "cpu/exec/helper.h"
 
 make_helper(exec);
-bool temp_cmps_matches;
 make_helper(rep) {
 	int len;
 	int op=ops_decoded.opcode;
@@ -27,7 +26,7 @@ make_helper(rep) {
 				);
 			if(ops_decoded.opcode==0xa6||ops_decoded.opcode==0xa7)
 			{
-				if((op==0xf3&&!temp_cmps_matches)||(op==0xf2&&temp_cmps_matches))break;
+				if((op==0xf3&&!reg_flag(EFLAGS_ZF))||(op==0xf2&&reg_flag(EFLAGS_ZF)))break;
 			}
 		}
 		len = 1;
