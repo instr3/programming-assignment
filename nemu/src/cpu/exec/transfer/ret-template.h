@@ -29,7 +29,7 @@ make_helper(concat(ret_i_, SUFFIX)) {
 	uint16_t imm=instr_fetch(cpu.eip+1,2);
 	cpu.esp+=imm;
 	print_asm("ret $0x%x", imm);
-	return 1;
+	return 3;
 }
 #endif
 
