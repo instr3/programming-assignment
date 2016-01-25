@@ -31,7 +31,6 @@ static inline FLOAT F_div_int(FLOAT a, int b) {
 	FLOAT res=c/b;
 	return FLESS0(a)?FMINUS(res):res;
 }
-
 FLOAT f2F(float);
 FLOAT F_mul_F(FLOAT, FLOAT);
 FLOAT F_div_F(FLOAT, FLOAT);

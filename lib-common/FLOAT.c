@@ -26,11 +26,12 @@ FLOAT f2F(float a) {
 	FLOAT res=0;
 	if(va!=0)
 	{
-		int ex=(va>>23)-127+16;
+		int ex=(va>>23)-127+16-24;
+		va|=0x800000;
 		if(ex>=0)
-			res=(va&0x7fffff)<<ex;
+			res=(va&0xffffff)<<ex;
 		else
-			res=(va&0x7fffff)>>-ex;
+			res=(va&0xffffff)>>-ex;
 	}
 	return FLESS0(ua)?FMINUS(res):res;
 }
