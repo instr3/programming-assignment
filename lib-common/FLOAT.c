@@ -21,7 +21,6 @@ FLOAT F_div_F(FLOAT a, FLOAT b) {
 }
 
 FLOAT f2F(float a) {
-	nemu_assert(0);
 	int ua=*(int *)&a;
 	int va=FABS(ua);
 	FLOAT res=0;
