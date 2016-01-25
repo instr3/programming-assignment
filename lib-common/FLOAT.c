@@ -8,12 +8,12 @@ FLOAT F_mul_F(FLOAT a, FLOAT b) {
 
 FLOAT F_div_F(FLOAT a, FLOAT b) {
 	FLOAT c=FABS(a),d=FABS(b);
-	unsigned rem=c%d,res=c/d;
+	unsigned rem=c%d;int res=c/d;
 	int i;
-	for(i=0;i<8;++i)
+	for(i=0;i<16;++i)
 	{
-		rem*=4;
-		res=res*4+rem/d;
+		rem*=2;
+		res=res*2+rem/d;
 		rem=rem%d;
 	}
 	//FLOAT res=(long long)c*(1<<16)/(long long)d;
