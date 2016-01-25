@@ -4,4 +4,5 @@
 
 make_helper(ret_v);
 
+make_helper(ret_i_v);
 #endif
