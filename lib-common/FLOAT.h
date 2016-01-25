@@ -4,9 +4,12 @@
 #include "trap.h"
 
 typedef int FLOAT;
-#define FLESS0(a) ((a)&(1<<31))
-#define FMINUS(a) ((a)^(1<<31))
-#define FABS(a) ((a)&2147483647)
+//#define FLESS0(a) ((a)&(1<<31))
+//#define FMINUS(a) ((a)^(1<<31))
+//#define FABS(a) ((a)&2147483647)
+#define FLESS0(a) ((a)<0)
+#define FMINUS(a) (-(a))
+#define FABS(a) ((a)<0?-(a):(a))
 #define ABS(a) ((a)<0?-(a):(a))
 static inline int F2int(FLOAT a) {
 	FLOAT b=FABS(a);
