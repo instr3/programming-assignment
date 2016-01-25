@@ -22,10 +22,10 @@ make_helper(concat(ret_i_, SUFFIX)) {
 	uint16_t res;
 	pop_data(res,2);
 	cpu.eip = res;
-	--cpu.eip;
+	cpu.eip-=3;
 #else //DATA_BYTE == 4
 	pop_data(cpu.eip,4);
-	--cpu.eip;
+	cpu.eip-=3;
 #endif
 	cpu.esp+=imm;
 	print_asm("ret $0x%x", imm);
