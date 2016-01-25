@@ -8,8 +8,16 @@ FLOAT F_mul_F(FLOAT a, FLOAT b) {
 
 FLOAT F_div_F(FLOAT a, FLOAT b) {
 	FLOAT c=FABS(a),d=FABS(b);
+	unsigned rem=c%d,res=c/d;
+	int i;
+	for(i=0;i<16;++i)
+	{
+		rem*=10;
+		res=res*10+rem/d;
+		rem=rem%d;
+	}
 	//FLOAT res=(long long)c*(1<<16)/(long long)d;
-	//return (FLESS0(a)^FLESS0(b))?FMINUS(res):res;
+	return (FLESS0(a)^FLESS0(b))?FMINUS(res):res;
 }
 
 FLOAT f2F(float a) {
