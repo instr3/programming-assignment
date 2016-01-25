@@ -2,7 +2,7 @@
 
 FLOAT F_mul_F(FLOAT a, FLOAT b) {
 	FLOAT c=FABS(a),d=FABS(b);
-	FLOAT res=c*(long long)d/(1<<16);
+	FLOAT res=c*(long long)d/65536LL;
 	return (FLESS0(a)^FLESS0(b))?FMINUS(res):res;
 }
 
@@ -10,10 +10,10 @@ FLOAT F_div_F(FLOAT a, FLOAT b) {
 	FLOAT c=FABS(a),d=FABS(b);
 	unsigned rem=c%d,res=c/d;
 	int i;
-	for(i=0;i<16;++i)
+	for(i=0;i<8;++i)
 	{
-		rem*=10;
-		res=res*10+rem/d;
+		rem*=4;
+		res=res*4+rem/d;
 		rem=rem%d;
 	}
 	//FLOAT res=(long long)c*(1<<16)/(long long)d;
