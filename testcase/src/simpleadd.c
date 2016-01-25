@@ -17,6 +17,8 @@ int main() {
 	o++;
 	o--;
 	o=q-0;
+	float a=2,b=3;
+
 while(1);
 	HIT_BAD_TRAP;
 
