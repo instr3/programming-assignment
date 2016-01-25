@@ -1,5 +1,5 @@
-#ifndef __REP_H__
-#define __REP_H__
+#ifndef __CLD_H__
+#define __CLD_H__
 
 make_helper(cld);
 
