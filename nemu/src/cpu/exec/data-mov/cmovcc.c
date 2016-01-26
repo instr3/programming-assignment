@@ -12,4 +12,4 @@
 #include "cmovcc-template.h"
 #undef DATA_BYTE
 
-make_helper_v(cmovcc_r2rm)
+make_helper_v(cmovcc_rm2r)

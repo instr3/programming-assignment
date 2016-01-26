@@ -2,6 +2,6 @@
 #define __CMOVCC_H__
 
 
-make_helper(cmovcc_r2rm_v);
+make_helper(cmovcc_rm2r_v);
 
 #endif
