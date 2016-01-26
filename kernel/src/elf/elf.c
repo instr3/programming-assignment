@@ -4,7 +4,6 @@
 #include <elf.h>
 
 #define ELF_OFFSET_IN_DISK 0
-#define USER_PROGRAM_DELTA 0x700000
 #ifdef HAS_DEVICE
 void ide_read(uint8_t *, uint32_t, uint32_t);
 #else
@@ -43,8 +42,8 @@ uint32_t loader() {
 			/* TODO: read the content of the segment from the ELF file 
 			 * to the memory region [VirtAddr, VirtAddr + FileSiz)
 			 */
-			memcpy((void *)(ph->p_vaddr+USER_PROGRAM_DELTA),(void *)(ph->p_paddr),ph->p_filesz);
-			memset((void *)(ph->p_vaddr+ph->p_filesz+USER_PROGRAM_DELTA),0,ph->p_memsz-ph->p_filesz);
+			memcpy((void *)(ph->p_vaddr),(void *)(ph->p_paddr),ph->p_filesz);
+			memset((void *)(ph->p_vaddr+ph->p_filesz),0,ph->p_memsz-ph->p_filesz);
 			/* TODO: zero the memory region 
 			 * [VirtAddr + FileSiz, VirtAddr + MemSiz)
 			 */
@@ -71,5 +70,5 @@ uint32_t loader() {
 	write_cr3(get_ucr3());
 #endif
 
-	return entry+USER_PROGRAM_DELTA;
+	return entry;
 }
