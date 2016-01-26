@@ -35,7 +35,6 @@ uint32_t loader() {
 
 	/* Load each program segment */
 	int i=0;
-	nemu_assert(elf->e_phnum==3);
 	for(ph=(void *)(buf+elf->e_phoff); i<elf->e_phnum ; ++i,++ph) {
 		/* Scan the program header table, load each segment into memory */
 		if(ph->p_type == PT_LOAD) {
