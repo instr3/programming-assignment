@@ -17,7 +17,5 @@ int main() {
 	o++;
 	o--;
 	o=q-0;
-	HIT_BAD_TRAP;
-
-	return 0;
+	HIT_GOOD_TRAP;
 }
