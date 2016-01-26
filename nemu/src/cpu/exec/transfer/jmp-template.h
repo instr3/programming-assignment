@@ -23,7 +23,7 @@ static void concat(do_execute,direct)(uint32_t len)
 
 static void concat(do_execute,relative)(uint32_t len) 
 {
-	cpu.eip=cpu.eip+op_src->val;
+	cpu.eip=cpu.eip+(DATA_TYPE_S)op_src->val;
 	swaddr_t newop=cpu.eip+len;
 #if DATA_BYTE==2
 	cpu.eip&=0xFFFF;
