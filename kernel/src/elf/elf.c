@@ -10,7 +10,6 @@ void ide_read(uint8_t *, uint32_t, uint32_t);
 #else
 void ramdisk_read(uint8_t *, uint32_t, uint32_t);
 #endif
-void ramdisk_write(uint8_t *, uint32_t, uint32_t);
 
 #define STACK_SIZE (1 << 20)
 
@@ -44,14 +43,8 @@ uint32_t loader() {
 			/* TODO: read the content of the segment from the ELF file 
 			 * to the memory region [VirtAddr, VirtAddr + FileSiz)
 			 */
-			ramdisk_write(buf+ph->p_paddr-ph->p_vaddr,ph->p_vaddr,ph->p_filesz);
-			
-			 uint32_t p;
-		 	for(p=ph->p_vaddr+ph->p_filesz;p<ph->p_vaddr+ph->p_memsz;++p)
-		 	{
-		 		uint8_t zero=0;
-		 		ramdisk_write(&zero,p,1);
-		 	}
+			memcpy((void *)(ph->p_vaddr),(void *)(ph->p_paddr),ph->p_filesz);
+			memset((void *)(ph->p_vaddr+ph->p_filesz),0,ph->p_memsz-ph->p_filesz);
 			/* TODO: zero the memory region 
 			 * [VirtAddr + FileSiz, VirtAddr + MemSiz)
 			 */
