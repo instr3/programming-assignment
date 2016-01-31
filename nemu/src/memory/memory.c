@@ -5,6 +5,19 @@ void dram_write(hwaddr_t, size_t, uint32_t);
 
 /* Memory accessing interfaces */
 
+
+typedef struct cacheblock
+{
+	bool valid;
+	uint32_t data[];//Size decided by malloc
+}cacheblock_t;
+
+typedef struct cache
+{
+
+}cache_t;
+cache_t cacheV1, cacheV2;//V1 and V2 cache
+
 uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
 	return dram_read(addr, len) & (~0u >> ((4 - len) << 3));
 }

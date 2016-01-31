@@ -18,4 +18,6 @@ int main() {
 	o--;
 	o=q-0;
 	HIT_GOOD_TRAP;
+	
+	return 0;
 }
