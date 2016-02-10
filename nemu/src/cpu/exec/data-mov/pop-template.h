@@ -13,7 +13,7 @@ make_helper(concat(push_reg_, SUFFIX)) {
 #if DATA_BYTE == 2 || DATA_BYTE == 4
 static void do_execute() {
 	DATA_TYPE res;
-	pop_data(res,DATA_BYTE);
+	pop_data(res,ops_decoded.is_data_size_16?2:4);
 	OPERAND_W(op_src,res);
 	/*if(op_src->type==OP_TYPE_MEM)
 		pop_data(op_src->addr,DATA_BYTE);
