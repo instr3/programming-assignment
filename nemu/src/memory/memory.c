@@ -11,7 +11,7 @@ void dram_write(hwaddr_t, size_t, uint32_t);
 	uint32_t valid;
 	uint32_t data[];//Size decided by malloc
 }cacheblock_t;*/
-
+/*
 typedef struct cache
 {
 	uint32_t mem_width, mem_size;//Memory size
@@ -23,7 +23,7 @@ typedef struct cache
 
 }cache_t;
 cache_t cacheV1, cacheV2;//V1 and V2 cache
-void init_cache(cache_t cache, int mem_width/*= 27*/, int block_width, int bid_width, int way_num)//Memory address size, Block size, Block ID size
+void init_cache(cache_t cache, int mem_width, int block_width, int bid_width, int way_num)//Memory address size, Block size, Block ID size
 {
 	//init parameters
 	cache.mem_width=mem_width;
@@ -61,7 +61,7 @@ uint32_t cache_read(cache_t cache,hwaddr_t addr, size_t len, bool *success)
 void init_cache_groups()
 {
 	//init_cache(cacheV1, 27, 6, 16 - 6 - 3);//64B per block, cache size 64KB, 8-way.
-}
+}*/
 uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
 	return dram_read(addr, len) & (~0u >> ((4 - len) << 3));
 }
