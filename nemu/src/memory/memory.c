@@ -93,6 +93,12 @@ void init_caches()
 	cache1_init(&cache1);
 	cache2_init(&cache2);
 }
+
+void debug_cache_address(hwaddr_t addr)
+{
+	cache1.debug(&cache1,addr);
+	cache2.debug(&cache2,addr);
+}
 #endif
 uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
 #ifdef USE_CACHE

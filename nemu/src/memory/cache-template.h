@@ -35,9 +35,10 @@ struct CACHE_T
 	}converter;
 	void (*modify_cache_at)(struct CACHE_T *this,hwaddr_t addr);
 	CACHEBLOCK_T * (*hit_or_create_cache_at)(struct CACHE_T *this,hwaddr_t addr);
-	void (*cache_read_raw)(hwaddr_t addr,uint8_t *temp,CACHEBLOCK_T *ch);
+	//void (*cache_read_raw)(hwaddr_t addr,uint8_t *temp,CACHEBLOCK_T *ch);
 	uint32_t (*read)(struct CACHE_T *this,hwaddr_t addr, size_t len);
 	void (*write)(struct CACHE_T *this,hwaddr_t addr, size_t len, uint32_t data);
+	void (*debug)(struct CACHE_T *this,hwaddr_t addr);
 
 };
 struct CACHE_T CACHE_ID;
@@ -83,14 +84,14 @@ CACHEBLOCK_T * concat(CACHE_ID,hit_or_create_cache_at)(struct CACHE_T *this,hwad
 	return &this->cache[this->converter.ch.bid][kick];
 
 }
-void concat(CACHE_ID,cache_read_raw)(hwaddr_t addr,uint8_t *temp,CACHEBLOCK_T *ch)
-{
+//void concat(CACHE_ID,cache_read_raw)(hwaddr_t addr,uint8_t *temp,CACHEBLOCK_T *ch)
+//{
 	//OFFSET_LEN should be greater or equal than BURST_MASK
 	//uint32_t cache_burst_offset = addr & (OFFSET_MASK ^ 3);//0000111100
 	//printf("addr:%x OFFSET_MASK:%x cache_burst_offset:%x OFFSET_LEN:%x\n",addr,OFFSET_MASK,cache_burst_offset,OFFSET_LEN);
 	
 	//memcpy(temp, &ch->block[addr & OFFSET_MASK],4);
-}
+//}
 uint32_t concat(CACHE_ID,read)(struct CACHE_T *this,hwaddr_t addr, size_t len) {
 	//uint32_t offset = addr & 3;
 	//printf("Read At:%x %d\n",addr,(int)len);
@@ -122,12 +123,36 @@ void concat(CACHE_ID,write)(struct CACHE_T *this,hwaddr_t addr, size_t len, uint
 	dram_write(addr, len, data);
 	this->modify_cache_at(this,addr);
 }
+void concat(CACHE_ID,debug)(struct CACHE_T *this,hwaddr_t addr)
+{
+#define SNAME str(CACHE_ID)
+	printf("=======================\nCache:\t%s\nAddr:\t0x%X",SNAME,addr);
+#undef SNAME
+	this->converter.addr=addr;
+	uint32_t i;
+	for(i=0;i<WAY_NUM;++i)
+	{
+		if(this->cache[this->converter.ch.bid][i].tag == this->converter.ch.btag && this->cache[this->converter.ch.bid][i].valid)
+		{
+			printf("Hit!\n");
+			printf("Read:\t%X\nTag:\t%X\nValid:\t%c\nDirty:\t%X\n",
+				this->cache[this->converter.ch.bid][i].block[this->converter.ch.offset],
+				this->cache[this->converter.ch.bid][i].tag,
+				this->cache[this->converter.ch.bid][i].valid?'Y':'N',
+				'N'
+			);
+		}
+	}
+
+}
+
 void concat(CACHE_ID,_init)(struct CACHE_T *this){
 	install_method(modify_cache_at);
 	install_method(hit_or_create_cache_at);
-	install_method(cache_read_raw);
+	//install_method(cache_read_raw);
 	install_method(read);
 	install_method(write);
+	install_method(debug);
 	int i,j;
 	for(j=0;j<BID_LEN;++j)
 	{
