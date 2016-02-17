@@ -88,7 +88,6 @@ void concat(CACHE_ID,cache_read_raw)(hwaddr_t addr,uint8_t *temp,CACHEBLOCK_T *c
 	//OFFSET_LEN should be greater or equal than BURST_MASK
 	//uint32_t cache_burst_offset = addr & (OFFSET_MASK ^ 3);//0000111100
 	//printf("addr:%x OFFSET_MASK:%x cache_burst_offset:%x OFFSET_LEN:%x\n",addr,OFFSET_MASK,cache_burst_offset,OFFSET_LEN);
-	//printf("[%x %x %x %x]\n",temp[offset],temp[offset+1],temp[offset+2],temp[offset+3]);
 	
 	//memcpy(temp, &ch->block[addr & OFFSET_MASK],4);
 }
@@ -110,6 +109,8 @@ uint32_t concat(CACHE_ID,read)(struct CACHE_T *this,hwaddr_t addr, size_t len) {
 		ch=this->hit_or_create_cache_at(this,addr + len - 1);
 		//this->cache_read_raw(addr + 4, temp + 4, ch);
 		memcpy(temp + OFFSET_LEN - cache_offset, &ch->block[addr & OFFSET_MASK],4 - OFFSET_LEN + cache_offset);
+		printf("[%x %x %x %x]\n",temp[0],temp[1],temp[2],temp[3]);
+	
 	}
 	fflush(stdout);
 	len = 0;//Infact, it's align_rw
