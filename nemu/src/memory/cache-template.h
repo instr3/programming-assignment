@@ -20,6 +20,7 @@ typedef struct
 }CACHEBLOCK_T;
 struct CACHE_T
 {
+	int clk;//Simulated Clock
 	CACHEBLOCK_T cache[BID_LEN][WAY_NUM];
 	union{
 		//unalign_rw
@@ -69,12 +70,12 @@ CACHEBLOCK_T * concat(CACHE_ID,hit_or_create_cache_at)(struct CACHE_T *this,hwad
 		if(this->cache[this->converter.ch.bid][i].tag == this->converter.ch.btag && this->cache[this->converter.ch.bid][i].valid)
 		{
 			//cache hit
-			printf("HIT!");fflush(stdout);
+			//printf("HIT!");fflush(stdout);
 			return &this->cache[this->converter.ch.bid][i];
 		}
 	}
 	//cache miss
-	printf("miss!");fflush(stdout);
+	//printf("miss!");fflush(stdout);
 	int kick=rand()%WAY_NUM;
 	//Swap new and old tags
 	uint32_t temp=this->cache[this->converter.ch.bid][kick].tag;
@@ -144,7 +145,7 @@ void concat(CACHE_ID,write)(struct CACHE_T *this,hwaddr_t addr, size_t len, uint
 void concat(CACHE_ID,debug)(struct CACHE_T *this,hwaddr_t addr)
 {
 #define SNAME str(CACHE_ID)
-	printf("=======================\nCache:\t%s\nAddr:\t0x%X\n",SNAME,addr);
+	printf("=======================\nCache:\t%s\nClock:\t%d\nAddr:\t0x%X\n",SNAME,this->clk,addr);
 #undef SNAME
 	this->converter.addr=addr;
 	uint32_t i;

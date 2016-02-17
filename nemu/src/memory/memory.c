@@ -65,7 +65,7 @@ void init_cache_groups()
 #ifdef USE_CACHE
 //Create First Level Cache
 #define OFFSET_BITS 6
-#define BID_BITS 7
+#define BID_BITS 7 //16KB/16B/8Ways
 #define WAY_NUM 8
 #define CACHE_ID cache1
 
@@ -76,9 +76,10 @@ void init_cache_groups()
 #undef WAY_NUM
 #undef CACHE_ID
 //Create Second Level Cache
-#define OFFSET_BITS 16
-#define BID_BITS 7
-#define WAY_NUM 8
+#define OFFSET_BITS 6
+#define BID_BITS 12 //4MB/16B/16Ways
+#define WAY_NUM 16
+#define CACHE_WRITE_BACK
 #define CACHE_ID cache2
 
 #include "cache-template.h"
@@ -86,6 +87,7 @@ void init_cache_groups()
 #undef OFFSET_BITS
 #undef BID_BITS
 #undef WAY_NUM
+#undef CACHE_WRITE_BACK
 #undef CACHE_ID
 
 void init_caches()
