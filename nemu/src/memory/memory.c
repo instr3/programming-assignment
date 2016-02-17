@@ -75,6 +75,18 @@ void init_cache_groups()
 #undef BID_BITS
 #undef WAY_NUM
 #undef CACHE_ID
+//Create Second Level Cache
+#define OFFSET_BITS 16
+#define BID_BITS 7
+#define WAY_NUM 8
+#define CACHE_ID cache2
+
+#include "cache-template.h"
+
+#undef OFFSET_BITS
+#undef BID_BITS
+#undef WAY_NUM
+#undef CACHE_ID
 #endif
 uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
 #ifdef USE_CACHE
