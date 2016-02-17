@@ -62,8 +62,23 @@ void init_cache_groups()
 {
 	//init_cache(cacheV1, 27, 6, 16 - 6 - 3);//64B per block, cache size 64KB, 8-way.
 }*/
+#ifdef USE_CACHE
+//Create First Level Cache
+#define OFFSET_BITS 6
+#define BID_BITS 7
+#include "cache-template.h"
+	cache1;
+#undef OFFSET_BITS
+#undef BID_BITS
+#endif
 uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
+#ifdef USE_CACHE
+	int result=cache1.read(addr,len) & (~0u >> ((4 - len) << 3));
+	assert(result==dram_read(addr, len) & (~0u >> ((4 - len) << 3)));
+	return result;
+#else
 	return dram_read(addr, len) & (~0u >> ((4 - len) << 3));
+#endif
 }
 
 void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {

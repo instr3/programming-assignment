@@ -21,37 +21,72 @@ struct
 		}ch;
 #pragma pack ()
 	}converter;
-	cache *find_cache(hwaddr_t addr)
+	//void *write_back()
+
+	void modify_cache_at(hwaddr_t addr)
 	{
 		converter.addr=addr;
 		uint32_t i;
 		for(i=0;i<WAY_NUM;++i)
 		{
-			if(cache[converter.ch.bid][i].tag == btag && cache[converter.ch.bid][i].valid)
+			if(cache[converter.ch.bid][i].tag == converter.ch.btag && cache[converter.ch.bid][i].valid)
 			{
+				cache[converter.ch.bid][i].valid=false;
+				//TODO: Write back
+				return;
+			}
+		}
+	}
+	cache *hit_or_create_cache_at(hwaddr_t addr)
+	{
+		converter.addr=addr;
+		uint32_t i;
+		for(i=0;i<WAY_NUM;++i)
+		{
+			if(cache[converter.ch.bid][i].tag == converter.ch.btag && cache[converter.ch.bid][i].valid)
+			{
+				//cache hit
 				return &cache[converter.ch.bid][i];
 			}
 		}
-		return 0;
+		//cache miss
+		int kick=rand()%WAY_NUM;
+		//TODO: Write back
+		cache[converter.ch.bid][kick].tag = converter.ch.btag;
+		cache[converter.ch.bid][kick].valid = true;
+		uint32_t base_addr=addr & ~OFFSET_MASK;
+		for(i=0;i<OFFSET_LEN;i++)
+		{
+			cache[converter.ch.bid][kick].block[i]=dram_read(base_addr++,1);
+		}
+		return &cache[converter.ch.bid][kick];
+
 	}
-	uint32_t read(hwaddr_t addr, size_t len) 
+	void cache_read_raw(hwaddr_t addr,uint8_t *temp,cache *ch)
 	{
-		uint32_t offset = addr & OFFSET_MASK;
-		uint8_t temp[2 * (1 << OFFSET_BITS)];
-		int rbits=min((1 << OFFSET_BITS)-offset,4);
-		cache *ch;
-		if(ch=find_cache(addr))//cache hit
-		{
-			memcpy(temp+offset,ch+offset,rbits);
+		assert(OFFSET_LEN>=4);
+		//OFFSET_LEN should be greater or equal than BURST_MASK
+		uint32_t cache_burst_offset = addr & (OFFSET_MASK ^ 3);//0000111100
+		memcpy(temp, ch.block[cache_burst_offset],4);
+	}
+	uint32_t read(hwaddr_t addr, size_t len) {
+		uint32_t offset = addr & 3;
+		uint8_t temp[2 * 4];
+		//Use 3 instead of OFFSET_MASK to save space and time
+		uint32_t cache_offset = addr & OFFSET_MASK;
+		
+		ch=hit_or_create_cache_at(addr)
+		cache_read_raw(addr, temp, ch);
+		if(cache_offset + len > OFFSET_LEN) {
+			/* data cross the cache boundary */
+			ch=hit_or_create_cache_at(addr + len - 1);
+			cache_read_raw(addr + 4, temp + 4, ch);
 		}
-		else
-		{
-			dram_read(addr, temp);
-		}
+		return unalign_rw(temp + offset, 4);
+	}
+	void write(hwaddr_t addr, size_t len) {
+		dram_write(addr, len);
+		modify_cache_at(addr);
+	}
 
-		if(offset + len > BURST_LEN) {
-			/* data cross the burst boundary */
-			ddr3_read(addr + BURST_LEN, temp + BURST_LEN);
-		}
-
-}CACHE_NAME;
+}
