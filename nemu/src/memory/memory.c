@@ -74,6 +74,7 @@ void init_cache_groups()
 uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
 #ifdef USE_CACHE
 	int result=cache1.read(addr,len) & (~0u >> ((4 - len) << 3));
+	printf("RES:%x,%x",cache1.read(addr,len),dram_read(addr, len));
 	assert(result==dram_read(addr, len) & (~0u >> ((4 - len) << 3)));
 	return result;
 #else
