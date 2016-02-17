@@ -50,7 +50,11 @@ void concat(CACHE_ID,modify_cache_at)(struct CACHE_T *this,hwaddr_t addr)
 	{
 		if(this->cache[this->converter.ch.bid][i].tag == this->converter.ch.btag && this->cache[this->converter.ch.bid][i].valid)
 		{
+#ifdef CACHE_WRITE_BACK
+			this->cache[this->converter.ch.bid][i].dirty=true;
+#else
 			this->cache[this->converter.ch.bid][i].valid=false;
+#endif
 			//TODO: Write back
 			return;
 		}
@@ -72,13 +76,27 @@ CACHEBLOCK_T * concat(CACHE_ID,hit_or_create_cache_at)(struct CACHE_T *this,hwad
 	//cache miss
 	printf("miss!");fflush(stdout);
 	int kick=rand()%WAY_NUM;
-	//TODO: Write back
-	this->cache[this->converter.ch.bid][kick].tag = this->converter.ch.btag;
+	//Swap new and old tags
+	uint32_t temp=this->cache[this->converter.ch.bid][kick].tag;
+	this->cache[this->converter.ch.bid][kick].tag=this->converter.ch.btag;
+	this->converter.ch.btag=temp;
+#ifdef CACHE_WRITE_BACK
+	if(this->cache[this->converter.ch.bid][kick].dirty)
+	{
+		uint32_t base_addr=this->converter.addr & ~OFFSET_MASK;
+		for(i=0;i<OFFSET_LEN;i++)
+		{
+			//printf("WriteCache:%x %x\n",base_addr,dram_read(base_addr,1)&0xff);
+			dram_write(base_addr++,1,this->cache[this->converter.ch.bid][kick].block[i]);
+		}
+	}
+#endif
 	this->cache[this->converter.ch.bid][kick].valid = true;
+	this->cache[this->converter.ch.bid][kick].dirty = false;
 	uint32_t base_addr=addr & ~OFFSET_MASK;
 	for(i=0;i<OFFSET_LEN;i++)
 	{
-		printf("WriteCache:%x %x\n",base_addr,dram_read(base_addr,1)&0xff);
+		//printf("WriteCache:%x %x\n",base_addr,dram_read(base_addr,1)&0xff);
 		this->cache[this->converter.ch.bid][kick].block[i]=dram_read(base_addr++,1);
 	}
 	return &this->cache[this->converter.ch.bid][kick];
@@ -140,7 +158,7 @@ void concat(CACHE_ID,debug)(struct CACHE_T *this,hwaddr_t addr)
 				i,
 				this->cache[this->converter.ch.bid][i].tag,
 				this->cache[this->converter.ch.bid][i].valid?'Y':'N',
-				'N'
+				this->cache[this->converter.ch.bid][i].dirty?'Y':'N'
 			);
 			return;
 		}
