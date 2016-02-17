@@ -106,6 +106,8 @@ uint32_t concat(CACHE_ID,read)(struct CACHE_T *this,hwaddr_t addr, size_t len) {
 		ch=this->hit_or_create_cache_at(this,addr + len - 1);
 		this->cache_read_raw(addr + 4, temp + 4, ch);
 	}
+	printf("[%x %x %x %x]",temp[offset],temp[offset+1],temp[offset+2],temp[offset+3]);
+	fflush(stdout);
 	return unalign_rw(temp + offset, 4);
 }
 void concat(CACHE_ID,write)(struct CACHE_T *this,hwaddr_t addr, size_t len, uint32_t data) {
