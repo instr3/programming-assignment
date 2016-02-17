@@ -93,7 +93,7 @@ void concat(CACHE_ID,cache_read_raw)(hwaddr_t addr,uint8_t *temp,CACHEBLOCK_T *c
 }
 uint32_t concat(CACHE_ID,read)(struct CACHE_T *this,hwaddr_t addr, size_t len) {
 	//uint32_t offset = addr & 3;
-	printf("Read At:%x %d\n",addr,(int)len);
+	//printf("Read At:%x %d\n",addr,(int)len);
 	fflush(stdout);
 	uint8_t temp[4];
 	uint32_t cache_offset = addr & OFFSET_MASK;
@@ -103,15 +103,15 @@ uint32_t concat(CACHE_ID,read)(struct CACHE_T *this,hwaddr_t addr, size_t len) {
 	memcpy(temp, &ch->block[addr & OFFSET_MASK],(4<OFFSET_LEN-cache_offset)?4:OFFSET_LEN-cache_offset);
 	if(cache_offset + len > OFFSET_LEN) {
 		//assert(false & 1);
-		printf("Warning:%x+%x>%x",cache_offset,(int)len,OFFSET_LEN);
+		//printf("Warning:%x+%x>%x",cache_offset,(int)len,OFFSET_LEN);
 		fflush(stdout);
 		/* data cross the cache boundary */
 		ch=this->hit_or_create_cache_at(this,addr + len - 1);
 		int more=cache_offset + len - OFFSET_LEN;
 		//this->cache_read_raw(addr + 4, temp + 4, ch);
-		printf("[%x %x %x %x]\n",temp[0],temp[1],temp[2],temp[3]);
+		//printf("[%x %x %x %x]\n",temp[0],temp[1],temp[2],temp[3]);
 		memcpy(temp + 4 - more, &ch->block[0],more);
-		printf("[%x %x %x %x]%d\n",temp[0],temp[1],temp[2],temp[3],OFFSET_LEN - cache_offset);
+		//printf("[%x %x %x %x]%d\n",temp[0],temp[1],temp[2],temp[3],OFFSET_LEN - cache_offset);
 	
 	}
 	fflush(stdout);
