@@ -1,5 +1,6 @@
 #include <stdlib.h>
 
+#define BID_LEN (1 << BID_BITS)
 #define OFFSET_LEN (1 << OFFSET_BITS)
 #define OFFSET_MASK ((1 << OFFSET_BITS) - 1)
 #define BTAG_BITS (27 - OFFSET_BITS - BID_BITS)
@@ -7,19 +8,18 @@
 #define CACHEBLOCK_T concat(CACHE_ID,_block_t)
 
 
-#define install_method(identifier,name,...) \
-	identifier concat(CACHE_ID, name) __VA_ARGS__ \
-	//CACHE_ID.name = &concat(CACHE_ID, name);
+#define install_method(name) \
+	CACHE_ID.name = &concat(CACHE_ID, name);
 
 typedef struct
 {
-	uint8_t block[1 << OFFSET_BITS];
+	uint8_t block[OFFSET_LEN];
 	bool valid,dirty;
 	uint32_t tag;
 }CACHEBLOCK_T;
 struct CACHE_T
 {
-	CACHEBLOCK_T cache[1<<BID_BITS][WAY_NUM];
+	CACHEBLOCK_T cache[BID_LEN][WAY_NUM];
 	union{
 		//unalign_rw
 		hwaddr_t addr;
@@ -36,11 +36,11 @@ struct CACHE_T
 	CACHEBLOCK_T * (*hit_or_create_cache_at)(struct CACHE_T *this,hwaddr_t addr);
 	void (*cache_read_raw)(hwaddr_t addr,uint8_t *temp,CACHEBLOCK_T *ch);
 	uint32_t (*read)(struct CACHE_T *this,hwaddr_t addr, size_t len);
-	void (*write)(struct CACHE_T *this,hwaddr_t addr, size_t len);
+	void (*write)(struct CACHE_T *this,hwaddr_t addr, size_t len, uint32_t data);
 
 };
 struct CACHE_T CACHE_ID;
-install_method(void,modify_cache_at,(struct CACHE_T *this,hwaddr_t addr)
+void concat(CACHE_ID,modify_cache_at)(struct CACHE_T *this,hwaddr_t addr)
 {
 	this->converter.addr=addr;
 	uint32_t i;
@@ -53,8 +53,8 @@ install_method(void,modify_cache_at,(struct CACHE_T *this,hwaddr_t addr)
 			return;
 		}
 	}
-})
-install_method(CACHEBLOCK_T *,hit_or_create_cache_at,(struct CACHE_T *this,hwaddr_t addr)
+}
+CACHEBLOCK_T * concat(CACHE_ID,hit_or_create_cache_at)(struct CACHE_T *this,hwaddr_t addr)
 {
 	this->converter.addr=addr;
 	uint32_t i;
@@ -78,15 +78,15 @@ install_method(CACHEBLOCK_T *,hit_or_create_cache_at,(struct CACHE_T *this,hwadd
 	}
 	return &this->cache[this->converter.ch.bid][kick];
 
-})
-install_method(void,cache_read_raw,(hwaddr_t addr,uint8_t *temp,CACHEBLOCK_T *ch)
+}
+void concat(CACHE_ID,cache_read_raw)(hwaddr_t addr,uint8_t *temp,CACHEBLOCK_T *ch)
 {
 	assert(OFFSET_LEN>=4);
 	//OFFSET_LEN should be greater or equal than BURST_MASK
 	uint32_t cache_burst_offset = addr & (OFFSET_MASK ^ 3);//0000111100
 	memcpy(temp, &ch->block[cache_burst_offset],4);
-})
-install_method(uint32_t,read,(struct CACHE_T *this,hwaddr_t addr, size_t len) {
+}
+uint32_t concat(CACHE_ID,read)(struct CACHE_T *this,hwaddr_t addr, size_t len) {
 	uint32_t offset = addr & 3;
 	uint8_t temp[2 * 4];
 	//Use 3 instead of OFFSET_MASK to save space and time
@@ -100,8 +100,23 @@ install_method(uint32_t,read,(struct CACHE_T *this,hwaddr_t addr, size_t len) {
 		this->cache_read_raw(addr + 4, temp + 4, ch);
 	}
 	return unalign_rw(temp + offset, 4);
-})
-install_method(void,write,(struct CACHE_T *this,hwaddr_t addr, size_t len, uint32_t data) {
+}
+void concat(CACHE_ID,write)(struct CACHE_T *this,hwaddr_t addr, size_t len, uint32_t data) {
 	dram_write(addr, len, data);
 	this->modify_cache_at(this,addr);
-})
+}
+void concat(CACHE_ID,_init)(struct CACHE_T *this){
+	install_method(modify_cache_at);
+	install_method(hit_or_create_cache_at);
+	install_method(cache_read_raw);
+	install_method(read);
+	install_method(write);
+	int i,j;
+	for(j=0;j<BID_LEN;++j)
+	{
+		for(i=0;i<WAY_NUM;++i)
+		{
+			this->cache[j][i].valid=false;
+		}
+	}
+}

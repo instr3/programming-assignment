@@ -17,5 +17,11 @@ int main(int argc, char *argv[]) {
 	/* Receive commands from user. */
 	ui_mainloop();
 
+	extern void cache1_init();
+	cache1_init();
+
+	extern void cache2_init();
+	cache2_init();
+
 	return 0;
 }
