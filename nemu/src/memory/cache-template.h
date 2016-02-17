@@ -92,6 +92,8 @@ void concat(CACHE_ID,cache_read_raw)(hwaddr_t addr,uint8_t *temp,CACHEBLOCK_T *c
 }
 uint32_t concat(CACHE_ID,read)(struct CACHE_T *this,hwaddr_t addr, size_t len) {
 	uint32_t offset = addr & 3;
+	printf("Read At:%x %d\n",addr,(int)len);
+	fflush(stdout);
 	//Use 3 instead of OFFSET_MASK to save space and time
 	uint8_t temp[2 * 4];
 	uint32_t cache_offset = addr & OFFSET_MASK;
