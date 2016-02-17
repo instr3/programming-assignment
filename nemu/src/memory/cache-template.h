@@ -1,5 +1,6 @@
 #include <stdlib.h>
 
+
 #define BID_LEN (1 << BID_BITS)
 #define OFFSET_LEN (1 << OFFSET_BITS)
 #define OFFSET_MASK ((1 << OFFSET_BITS) - 1)
@@ -84,31 +85,33 @@ CACHEBLOCK_T * concat(CACHE_ID,hit_or_create_cache_at)(struct CACHE_T *this,hwad
 }
 void concat(CACHE_ID,cache_read_raw)(hwaddr_t addr,uint8_t *temp,CACHEBLOCK_T *ch)
 {
-	assert(OFFSET_LEN>=4);
 	//OFFSET_LEN should be greater or equal than BURST_MASK
-	uint32_t cache_burst_offset = addr & (OFFSET_MASK ^ 3);//0000111100
-	printf("addr:%x OFFSET_MASK:%x cache_burst_offset:%x OFFSET_LEN:%x",addr,OFFSET_MASK,cache_burst_offset,OFFSET_LEN);
-	memcpy(temp, &ch->block[cache_burst_offset],4);
+	//uint32_t cache_burst_offset = addr & (OFFSET_MASK ^ 3);//0000111100
+	//printf("addr:%x OFFSET_MASK:%x cache_burst_offset:%x OFFSET_LEN:%x\n",addr,OFFSET_MASK,cache_burst_offset,OFFSET_LEN);
+	//printf("[%x %x %x %x]\n",temp[offset],temp[offset+1],temp[offset+2],temp[offset+3]);
+	
+	//memcpy(temp, &ch->block[addr & OFFSET_MASK],4);
 }
 uint32_t concat(CACHE_ID,read)(struct CACHE_T *this,hwaddr_t addr, size_t len) {
-	uint32_t offset = addr & 3;
+	//uint32_t offset = addr & 3;
 	printf("Read At:%x %d\n",addr,(int)len);
 	fflush(stdout);
-	//Use 3 instead of OFFSET_MASK to save space and time
-	uint8_t temp[2 * 4];
+	uint8_t temp[4];
 	uint32_t cache_offset = addr & OFFSET_MASK;
 	
 	CACHEBLOCK_T *ch=this->hit_or_create_cache_at(this, addr);
-	this->cache_read_raw(addr, temp, ch);
+	//this->cache_read_raw(addr, temp, ch);
+	memcpy(temp, &ch->block[addr & OFFSET_MASK],(4<OFFSET_LEN-cache_offset)?4:OFFSET_LEN-cache_offset);
 	if(cache_offset + len > OFFSET_LEN) {
 		assert(false & 1);
 		/* data cross the cache boundary */
 		ch=this->hit_or_create_cache_at(this,addr + len - 1);
-		this->cache_read_raw(addr + 4, temp + 4, ch);
+		//this->cache_read_raw(addr + 4, temp + 4, ch);
+		memcpy(temp + OFFSET_LEN - cache_offset, &ch->block[addr & OFFSET_MASK],4 - OFFSET_LEN + cache_offset);
 	}
-	printf("[%x %x %x %x]",temp[offset],temp[offset+1],temp[offset+2],temp[offset+3]);
 	fflush(stdout);
-	return unalign_rw(temp + offset, 4);
+	//Infact, it's align_rw
+	return unalign_rw(temp + len, 4);
 }
 void concat(CACHE_ID,write)(struct CACHE_T *this,hwaddr_t addr, size_t len, uint32_t data) {
 	dram_write(addr, len, data);
