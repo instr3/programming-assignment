@@ -84,6 +84,7 @@ void concat(CACHE_ID,cache_read_raw)(hwaddr_t addr,uint8_t *temp,CACHEBLOCK_T *c
 	assert(OFFSET_LEN>=4);
 	//OFFSET_LEN should be greater or equal than BURST_MASK
 	uint32_t cache_burst_offset = addr & (OFFSET_MASK ^ 3);//0000111100
+	printf("addr:%x OFFSET_MASK:%x cache_burst_offset:%x OFFSET_LEN:%x",addr,OFFSET_MASK,cache_burst_offset,OFFSET_LEN);
 	memcpy(temp, &ch->block[cache_burst_offset],4);
 }
 uint32_t concat(CACHE_ID,read)(struct CACHE_T *this,hwaddr_t addr, size_t len) {
