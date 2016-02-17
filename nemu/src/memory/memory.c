@@ -87,6 +87,12 @@ void init_cache_groups()
 #undef BID_BITS
 #undef WAY_NUM
 #undef CACHE_ID
+
+void init_caches()
+{
+	cache1_init(&cache1);
+	cache2_init(&cache2);
+}
 #endif
 uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
 #ifdef USE_CACHE
