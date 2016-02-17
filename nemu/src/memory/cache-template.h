@@ -1,14 +1,25 @@
+#include <stdlib.h>
 
+#define OFFSET_LEN (1 << OFFSET_BITS)
 #define OFFSET_MASK ((1 << OFFSET_BITS) - 1)
 #define BTAG_BITS (27 - OFFSET_BITS - BID_BITS)
-struct
+#define CACHE_T concat(CACHE_ID,_t)
+#define CACHEBLOCK_T concat(CACHE_ID,_block_t)
+
+
+#define install_method(identifier,name,...) \
+	identifier concat(CACHE_ID, name) __VA_ARGS__ \
+	//CACHE_ID.name = &concat(CACHE_ID, name);
+
+typedef struct
 {
-	struct
-	{
-		uint8_t block[1 << OFFSET_BITS];
-		bool valid,dirty;
-		uint32_t tag;
-	}cache[1<<BID_BITS][WAY_NUM];
+	uint8_t block[1 << OFFSET_BITS];
+	bool valid,dirty;
+	uint32_t tag;
+}CACHEBLOCK_T;
+struct CACHE_T
+{
+	CACHEBLOCK_T cache[1<<BID_BITS][WAY_NUM];
 	union{
 		//unalign_rw
 		hwaddr_t addr;
@@ -21,72 +32,76 @@ struct
 		}ch;
 #pragma pack ()
 	}converter;
-	//void *write_back()
+	void (*modify_cache_at)(struct CACHE_T *this,hwaddr_t addr);
+	CACHEBLOCK_T * (*hit_or_create_cache_at)(struct CACHE_T *this,hwaddr_t addr);
+	void (*cache_read_raw)(hwaddr_t addr,uint8_t *temp,CACHEBLOCK_T *ch);
+	uint32_t (*read)(struct CACHE_T *this,hwaddr_t addr, size_t len);
+	void (*write)(struct CACHE_T *this,hwaddr_t addr, size_t len);
 
-	void modify_cache_at(hwaddr_t addr)
+};
+struct CACHE_T CACHE_ID;
+install_method(void,modify_cache_at,(struct CACHE_T *this,hwaddr_t addr)
+{
+	this->converter.addr=addr;
+	uint32_t i;
+	for(i=0;i<WAY_NUM;++i)
 	{
-		converter.addr=addr;
-		uint32_t i;
-		for(i=0;i<WAY_NUM;++i)
+		if(this->cache[this->converter.ch.bid][i].tag == this->converter.ch.btag && this->cache[this->converter.ch.bid][i].valid)
 		{
-			if(cache[converter.ch.bid][i].tag == converter.ch.btag && cache[converter.ch.bid][i].valid)
-			{
-				cache[converter.ch.bid][i].valid=false;
-				//TODO: Write back
-				return;
-			}
+			this->cache[this->converter.ch.bid][i].valid=false;
+			//TODO: Write back
+			return;
 		}
 	}
-	cache *hit_or_create_cache_at(hwaddr_t addr)
+})
+install_method(CACHEBLOCK_T *,hit_or_create_cache_at,(struct CACHE_T *this,hwaddr_t addr)
+{
+	this->converter.addr=addr;
+	uint32_t i;
+	for(i=0;i<WAY_NUM;++i)
 	{
-		converter.addr=addr;
-		uint32_t i;
-		for(i=0;i<WAY_NUM;++i)
+		if(this->cache[this->converter.ch.bid][i].tag == this->converter.ch.btag && this->cache[this->converter.ch.bid][i].valid)
 		{
-			if(cache[converter.ch.bid][i].tag == converter.ch.btag && cache[converter.ch.bid][i].valid)
-			{
-				//cache hit
-				return &cache[converter.ch.bid][i];
-			}
+			//cache hit
+			return &this->cache[this->converter.ch.bid][i];
 		}
-		//cache miss
-		int kick=rand()%WAY_NUM;
-		//TODO: Write back
-		cache[converter.ch.bid][kick].tag = converter.ch.btag;
-		cache[converter.ch.bid][kick].valid = true;
-		uint32_t base_addr=addr & ~OFFSET_MASK;
-		for(i=0;i<OFFSET_LEN;i++)
-		{
-			cache[converter.ch.bid][kick].block[i]=dram_read(base_addr++,1);
-		}
-		return &cache[converter.ch.bid][kick];
+	}
+	//cache miss
+	int kick=rand()%WAY_NUM;
+	//TODO: Write back
+	this->cache[this->converter.ch.bid][kick].tag = this->converter.ch.btag;
+	this->cache[this->converter.ch.bid][kick].valid = true;
+	uint32_t base_addr=addr & ~OFFSET_MASK;
+	for(i=0;i<OFFSET_LEN;i++)
+	{
+		this->cache[this->converter.ch.bid][kick].block[i]=dram_read(base_addr++,1);
+	}
+	return &this->cache[this->converter.ch.bid][kick];
 
+})
+install_method(void,cache_read_raw,(hwaddr_t addr,uint8_t *temp,CACHEBLOCK_T *ch)
+{
+	assert(OFFSET_LEN>=4);
+	//OFFSET_LEN should be greater or equal than BURST_MASK
+	uint32_t cache_burst_offset = addr & (OFFSET_MASK ^ 3);//0000111100
+	memcpy(temp, &ch->block[cache_burst_offset],4);
+})
+install_method(uint32_t,read,(struct CACHE_T *this,hwaddr_t addr, size_t len) {
+	uint32_t offset = addr & 3;
+	uint8_t temp[2 * 4];
+	//Use 3 instead of OFFSET_MASK to save space and time
+	uint32_t cache_offset = addr & OFFSET_MASK;
+	
+	CACHEBLOCK_T *ch=this->hit_or_create_cache_at(this, addr);
+	this->cache_read_raw(addr, temp, ch);
+	if(cache_offset + len > OFFSET_LEN) {
+		/* data cross the cache boundary */
+		ch=this->hit_or_create_cache_at(this,addr + len - 1);
+		this->cache_read_raw(addr + 4, temp + 4, ch);
 	}
-	void cache_read_raw(hwaddr_t addr,uint8_t *temp,cache *ch)
-	{
-		assert(OFFSET_LEN>=4);
-		//OFFSET_LEN should be greater or equal than BURST_MASK
-		uint32_t cache_burst_offset = addr & (OFFSET_MASK ^ 3);//0000111100
-		memcpy(temp, ch.block[cache_burst_offset],4);
-	}
-	uint32_t read(hwaddr_t addr, size_t len) {
-		uint32_t offset = addr & 3;
-		uint8_t temp[2 * 4];
-		//Use 3 instead of OFFSET_MASK to save space and time
-		uint32_t cache_offset = addr & OFFSET_MASK;
-		
-		ch=hit_or_create_cache_at(addr)
-		cache_read_raw(addr, temp, ch);
-		if(cache_offset + len > OFFSET_LEN) {
-			/* data cross the cache boundary */
-			ch=hit_or_create_cache_at(addr + len - 1);
-			cache_read_raw(addr + 4, temp + 4, ch);
-		}
-		return unalign_rw(temp + offset, 4);
-	}
-	void write(hwaddr_t addr, size_t len) {
-		dram_write(addr, len);
-		modify_cache_at(addr);
-	}
-
-}
+	return unalign_rw(temp + offset, 4);
+})
+install_method(void,write,(struct CACHE_T *this,hwaddr_t addr, size_t len, uint32_t data) {
+	dram_write(addr, len, data);
+	this->modify_cache_at(this,addr);
+})

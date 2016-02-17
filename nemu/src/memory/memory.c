@@ -66,16 +66,21 @@ void init_cache_groups()
 //Create First Level Cache
 #define OFFSET_BITS 6
 #define BID_BITS 7
+#define WAY_NUM 8
+#define CACHE_ID cache1
+
 #include "cache-template.h"
-	cache1;
+
 #undef OFFSET_BITS
 #undef BID_BITS
+#undef WAY_NUM
+#undef CACHE_ID
 #endif
 uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
 #ifdef USE_CACHE
-	int result=cache1.read(addr,len) & (~0u >> ((4 - len) << 3));
-	printf("RES:%x,%x",cache1.read(addr,len),dram_read(addr, len));
-	assert(result==dram_read(addr, len) & (~0u >> ((4 - len) << 3)));
+	int result=cache1.read(&cache1,addr,len) & (~0u >> ((4 - len) << 3));
+	printf("RES:%x,%x",result,dram_read(addr, len) & (~0u >> ((4 - len) << 3)));
+	assert(result==dram_read(addr, len));
 	return result;
 #else
 	return dram_read(addr, len) & (~0u >> ((4 - len) << 3));

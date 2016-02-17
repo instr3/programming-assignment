@@ -5,7 +5,4 @@
 #include "memory/memory.h"
 #include "cpu/reg.h"
 
-//Want to use a simulated cache? Uncomment below.
-#define USE_CACHE
-
 #endif
