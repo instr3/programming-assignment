@@ -110,7 +110,7 @@ uint32_t concat(CACHE_ID,read)(struct CACHE_T *this,hwaddr_t addr, size_t len) {
 		int more=cache_offset + len - OFFSET_LEN;
 		//this->cache_read_raw(addr + 4, temp + 4, ch);
 		printf("[%x %x %x %x]\n",temp[0],temp[1],temp[2],temp[3]);
-		memcpy(temp + more, &ch->block[addr & OFFSET_MASK],4 - more);
+		memcpy(temp + 4 - more, &ch->block[0],more);
 		printf("[%x %x %x %x]%d\n",temp[0],temp[1],temp[2],temp[3],OFFSET_LEN - cache_offset);
 	
 	}
