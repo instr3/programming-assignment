@@ -110,6 +110,7 @@ uint32_t concat(CACHE_ID,read)(struct CACHE_T *this,hwaddr_t addr, size_t len) {
 		memcpy(temp + OFFSET_LEN - cache_offset, &ch->block[addr & OFFSET_MASK],4 - OFFSET_LEN + cache_offset);
 	}
 	fflush(stdout);
+	len=0;
 	//Infact, it's align_rw
 	return unalign_rw(temp + len, 4);
 }
