@@ -8,6 +8,12 @@ int main(int argc, char *argv[]) {
 	/* Initialize the monitor. */
 	init_monitor(argc, argv);
 
+	extern void cache1_init();
+	cache1_init();
+
+	extern void cache2_init();
+	cache2_init();
+
 	/* Test the implementation of the ``CPU_state'' structure. */
 	reg_test();
 
@@ -16,12 +22,6 @@ int main(int argc, char *argv[]) {
 
 	/* Receive commands from user. */
 	ui_mainloop();
-
-	extern void cache1_init();
-	cache1_init();
-
-	extern void cache2_init();
-	cache2_init();
 
 	return 0;
 }
