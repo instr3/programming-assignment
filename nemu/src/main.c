@@ -1,3 +1,4 @@
+#include "common.h"
 void init_monitor(int, char *[]);
 void init_caches();
 void reg_test();
