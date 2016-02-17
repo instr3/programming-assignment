@@ -98,7 +98,7 @@ uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
 #ifdef USE_CACHE
 	int result=cache1.read(&cache1,addr,len) & (~0u >> ((4 - len) << 3));
 	printf("RES:%x,%x",result,dram_read(addr, len) & (~0u >> ((4 - len) << 3)));
-	exit(0);
+
 	//assert(result==dram_read(addr, len));
 	return result;
 #else
