@@ -112,6 +112,7 @@ void concat(CACHE_ID,_init)(struct CACHE_T *this){
 	install_method(read);
 	install_method(write);
 	printf(" Installed");
+	fflush(stdout);
 	int i,j;
 	for(j=0;j<BID_LEN;++j)
 	{
