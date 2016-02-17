@@ -126,7 +126,7 @@ void concat(CACHE_ID,write)(struct CACHE_T *this,hwaddr_t addr, size_t len, uint
 void concat(CACHE_ID,debug)(struct CACHE_T *this,hwaddr_t addr)
 {
 #define SNAME str(CACHE_ID)
-	printf("=======================\nCache:\t%s\nAddr:\t0x%X",SNAME,addr);
+	printf("=======================\nCache:\t%s\nAddr:\t0x%X\n",SNAME,addr);
 #undef SNAME
 	this->converter.addr=addr;
 	uint32_t i;
@@ -134,8 +134,7 @@ void concat(CACHE_ID,debug)(struct CACHE_T *this,hwaddr_t addr)
 	{
 		if(this->cache[this->converter.ch.bid][i].tag == this->converter.ch.btag && this->cache[this->converter.ch.bid][i].valid)
 		{
-			printf("Hit!\n");
-			printf("Read:\t%X\nTag:\t%X\nValid:\t%c\nDirty:\t%X\n",
+			printf("Hit:\tY\nValue:\t0x%X\nTag:\t%X\nValid:\t%c\nDirty:\t%c\n",
 				this->cache[this->converter.ch.bid][i].block[this->converter.ch.offset],
 				this->cache[this->converter.ch.bid][i].tag,
 				this->cache[this->converter.ch.bid][i].valid?'Y':'N',
@@ -143,7 +142,7 @@ void concat(CACHE_ID,debug)(struct CACHE_T *this,hwaddr_t addr)
 			);
 		}
 	}
-
+	printf("Hit:\tN\n");
 }
 
 void concat(CACHE_ID,_init)(struct CACHE_T *this){
