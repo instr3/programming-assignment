@@ -107,7 +107,11 @@ uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
 }
 
 void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
+#ifdef USE_CACHE
+	cache1.write(&cache1,addr,len,data);
+#else
 	dram_write(addr, len, data);
+#endif
 }
 
 uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
