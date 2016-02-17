@@ -63,10 +63,12 @@ CACHEBLOCK_T * concat(CACHE_ID,hit_or_create_cache_at)(struct CACHE_T *this,hwad
 		if(this->cache[this->converter.ch.bid][i].tag == this->converter.ch.btag && this->cache[this->converter.ch.bid][i].valid)
 		{
 			//cache hit
+			printf("HIT!");fflush(stdout);
 			return &this->cache[this->converter.ch.bid][i];
 		}
 	}
 	//cache miss
+	printf("miss!");fflush(stdout);
 	int kick=rand()%WAY_NUM;
 	//TODO: Write back
 	this->cache[this->converter.ch.bid][kick].tag = this->converter.ch.btag;
