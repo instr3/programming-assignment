@@ -104,14 +104,15 @@ uint32_t concat(CACHE_ID,read)(struct CACHE_T *this,hwaddr_t addr, size_t len) {
 	memcpy(temp, &ch->block[addr & OFFSET_MASK],(4<OFFSET_LEN-cache_offset)?4:OFFSET_LEN-cache_offset);
 	if(cache_offset + len > OFFSET_LEN) {
 		//assert(false & 1);
+		printf("Warning:%x+%x>%x",cache_offset,(int)len,OFFSET_LEN);
+		fflush(stdout);
 		/* data cross the cache boundary */
 		ch=this->hit_or_create_cache_at(this,addr + len - 1);
 		//this->cache_read_raw(addr + 4, temp + 4, ch);
 		memcpy(temp + OFFSET_LEN - cache_offset, &ch->block[addr & OFFSET_MASK],4 - OFFSET_LEN + cache_offset);
 	}
 	fflush(stdout);
-	len=0;
-	//Infact, it's align_rw
+	len = 0;//Infact, it's align_rw
 	return unalign_rw(temp + len, 4);
 }
 void concat(CACHE_ID,write)(struct CACHE_T *this,hwaddr_t addr, size_t len, uint32_t data) {
