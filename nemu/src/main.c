@@ -5,14 +5,14 @@ void ui_mainloop();
 
 int main(int argc, char *argv[]) {
 
-	/* Initialize the monitor. */
-	init_monitor(argc, argv);
 
 	extern void cache1_init();
 	cache1_init();
 
 	extern void cache2_init();
 	cache2_init();
+	/* Initialize the monitor. */
+	init_monitor(argc, argv);
 
 	/* Test the implementation of the ``CPU_state'' structure. */
 	reg_test();
