@@ -23,7 +23,7 @@ void dram_write(hwaddr_t, size_t, uint32_t);
 	#undef OFFSET_BITS
 	#undef BID_BITS
 	#undef WAY_NUM
-	#undef CACHE_WRITE_BACK_AND_WRITE_TRHOUGH
+	//#undef CACHE_WRITE_BACK_AND_WRITE_TRHOUGH
 	#undef CACHE_ID
 	#undef slower_read
 	#undef slower_write
