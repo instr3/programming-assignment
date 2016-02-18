@@ -155,7 +155,7 @@ void concat(CACHE_ID,debug)(struct CACHE_T *this,hwaddr_t addr)
 	{
 		if(this->cache[this->converter.ch.bid][i].tag == this->converter.ch.btag && this->cache[this->converter.ch.bid][i].valid)
 		{
-			printf("Hit:\tY\tValue:\t0x%X\nBlockID\t%X\tWayID:\t%X\tTag:\t%X\nValid:\t%c\nDirty:\t%c\n",
+			printf("Hit:\tY\tValue:\t0x%X\nBlockID\t%X\tWayID:\t%X\tTag:\t%X\nValid:\t%c\tDirty:\t%c\n",
 				this->cache[this->converter.ch.bid][i].block[this->converter.ch.offset],
 				this->converter.ch.bid,
 				i,
