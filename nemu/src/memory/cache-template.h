@@ -121,6 +121,7 @@ void concat(CACHE_ID,write)(struct CACHE_T *this,hwaddr_t addr, size_t len, uint
 #ifdef CACHE_WRITE_BACK_AND_WRITE_TRHOUGH
 	uint8_t temp[4];
 	memcpy(temp,&data,4);//align_rw
+	printf("0x%X:%x %x %x %x",data,temp[0],temp[1],temp[2],temp[3]);
 	uint32_t cache_offset = addr & OFFSET_MASK;
 	CACHEBLOCK_T *ch=this->hit_or_create_cache_at(this,addr);
 	ch->dirty=true;
