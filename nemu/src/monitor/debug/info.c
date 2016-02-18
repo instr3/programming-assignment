@@ -37,7 +37,13 @@ void printRegInfoByID(uint32_t regID)
 }
 void printSegmentRegistersInfo()
 {
-	
+	printRegLine("cr0",cpu.cr0);
+	printRegLine("gdtr.limit",cpu.gdtr_limit);
+	printRegLine("gdtr.base",cpu.gdtr_base);
+	printRegLine("cs",cpu.cs);
+	printRegLine("ds",cpu.ds);
+	printRegLine("es",cpu.es);
+	printRegLine("ss",cpu.ss);
 }
 void printRegInfo()
 {
