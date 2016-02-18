@@ -35,6 +35,10 @@ void printRegInfoByID(uint32_t regID)
 		printf("]\n");
 	}
 }
+void printSegmentRegistersInfo()
+{
+	
+}
 void printRegInfo()
 {
 	int i;
@@ -42,6 +46,7 @@ void printRegInfo()
 	{
 		printRegInfoByID(i);
 	}
+	printSegmentRegistersInfo();
 }
 
 inline void printMemoryByAddress(uint32_t address)
