@@ -28,10 +28,10 @@ void dram_write(hwaddr_t, size_t, uint32_t);
 	#undef slower_read
 	#undef slower_write
 
-	//Create First Level Cache
+	//Create First Level Cache (Modified)
 	#define OFFSET_BITS 6
-	#define BID_BITS 7 //Block ID Bits = 16KB/16B/8Ways
-	#define WAY_NUM 8
+	#define BID_BITS 10
+	#define WAY_NUM 1
 	#define CACHE_ID cache1
 	//Define the next level cache
 	#define slower_read(...) cache2.read(&cache2,__VA_ARGS__)
