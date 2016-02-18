@@ -7,7 +7,7 @@
 //#define HAS_DEVICE
 
 /* Want to use a simulated cache? Uncomment below. */
-//#define USE_CACHE
+#define USE_CACHE
 
 #define DEBUG
 #define LOG_FILE

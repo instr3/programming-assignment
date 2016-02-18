@@ -169,7 +169,7 @@ static int cmd_cache(char *args)
 	}
 	return 0;
 #else
-	printf(ui_error("Cache not enabled.\n"));
+	printf(ui_error("Cache not enabled."));
 	return 0;
 #endif
 }

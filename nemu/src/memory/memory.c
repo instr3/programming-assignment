@@ -34,8 +34,8 @@ void dram_write(hwaddr_t, size_t, uint32_t);
 	#define WAY_NUM 8
 	#define CACHE_ID cache1
 	//Define the next level cache
-	#define slower_read(...) cache2.read(&cache2,__VA_ARGS__)
-	#define slower_write(...) cache2.write(&cache2,__VA_ARGS__)
+	#define slower_read(...) dram_read(__VA_ARGS__)
+	#define slower_write(...) dram_write(__VA_ARGS__)
 
 	#include "cache-template.h"
 
@@ -61,11 +61,7 @@ void dram_write(hwaddr_t, size_t, uint32_t);
 #endif
 uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
 #ifdef USE_CACHE
-	int result=cache1.read(&cache1,addr,len) & (~0u >> ((4 - len) << 3));
-	//printf("RES:%x,%x\n",result,dram_read(addr, len) & (~0u >> ((4 - len) << 3)));
-	//fflush(stdout);
-	//assert(result==(dram_read(addr, len) & (~0u >> ((4 - len) << 3)) ));
-	return result;
+	return cache1.read(&cache1,addr,len) & (~0u >> ((4 - len) << 3));
 #else
 	return dram_read(addr, len) & (~0u >> ((4 - len) << 3));
 #endif
