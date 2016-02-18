@@ -69,7 +69,7 @@ CACHEBLOCK_T* concat(CACHE_ID,hit_or_create_cache_at)(struct CACHE_T *this,hwadd
 	uint32_t temp=this->cache[this->converter.ch.bid][kick].tag;
 	this->cache[this->converter.ch.bid][kick].tag=this->converter.ch.btag;
 	this->converter.ch.btag=temp;
-#ifdef CACHE_WRITE_BACK
+#ifdef CACHE_WRITE_BACK_AND_WRITE_TRHOUGH
 	if(this->cache[this->converter.ch.bid][kick].dirty)
 	{
 		uint32_t base_addr=this->converter.addr & ~OFFSET_MASK;
@@ -113,13 +113,14 @@ uint32_t concat(CACHE_ID,read)(struct CACHE_T *this,hwaddr_t addr, size_t len) {
 		memcpy(temp + 4 - more, &ch->block[0],more);
 	
 	}
-	len = 0;//Infact, it's align_rw
+	len = 0;
+	//Infact, it's align_rw
 	return unalign_rw(temp + len, 4);
 }
 void concat(CACHE_ID,write)(struct CACHE_T *this,hwaddr_t addr, size_t len, uint32_t data) {
-#ifdef CACHE_WRITE_BACK
+#ifdef CACHE_WRITE_BACK_AND_WRITE_TRHOUGH
 	uint8_t temp[4];
-	memcpy(temp,&data,4);
+	memcpy(temp,&data,4);//align_rw
 	uint32_t cache_offset = addr & OFFSET_MASK;
 	CACHEBLOCK_T *ch=this->hit_or_create_cache_at(this,addr);
 	ch->dirty=true;
