@@ -141,7 +141,7 @@ uint32_t concat(CACHE_ID,read)(struct CACHE_T *this,hwaddr_t addr, size_t len) {
 	return unalign_rw(temp + len, 4);
 }
 void concat(CACHE_ID,write)(struct CACHE_T *this,hwaddr_t addr, size_t len, uint32_t data) {
-	dram_write(addr, len, data);
+	slower_write(addr, len, data);
 	this->modify_cache_at(this,addr);
 }
 void concat(CACHE_ID,debug)(struct CACHE_T *this,hwaddr_t addr)
