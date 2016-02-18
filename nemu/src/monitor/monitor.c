@@ -91,6 +91,9 @@ void restart() {
 	/* Init EFLAGS according to page 174 of the i386 book. */
 	cpu.eflags=0x00000002;
 
+	/* Init CR0 to run in real mode. */
+	cpu.cr0=0;
+
 	/* Initialize DRAM. */
 	init_ddr3();
 }

@@ -45,11 +45,10 @@
 
 #include "special/special.h"
 
-
-
 #include "transfer/call.h"
 #include "transfer/jcc.h"
 #include "transfer/jmp.h"
 #include "transfer/ret.h"
 
+#include "segment/lgtd.h"
 

@@ -31,6 +31,30 @@ typedef struct
 			uint32_t eax, ecx, edx, ebx, esp, ebp, esi, edi;
 		};
 	};
+	union
+	{
+		uint32_t cr0;
+		struct
+		{
+			uint8_t cr0_pe : 1;
+			uint8_t cr0_mp : 1;
+			uint8_t cr0_em : 1;
+			uint8_t cr0_ts : 1;
+			uint8_t cr0_et : 1;
+			uint32_t cr0_reserved : 24;
+			uint8_t cr0_pg : 1;
+		};
+	};
+	union
+	{
+		uint64_t gdtr : 48;
+		struct
+		{
+			uint16_t gdtr_limit;
+			uint32_t gdtr_base;
+		};
+	};
+	uint16_t cs,ds,es,ss;
 	swaddr_t eip;
 	uint32_t eflags;
 

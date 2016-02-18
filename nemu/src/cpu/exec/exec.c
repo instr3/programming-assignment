@@ -82,12 +82,14 @@ make_group(group5,
 	inc_rm_v, dec_rm_v, call_rm_v, inv, 
 	jmp_rm_v, inv, push_rm_v, inv)
 
+/* 0F 00 */
 make_group(group6,
 	inv, inv, inv, inv, 
 	inv, inv, inv, inv)
 
+/* 0F 01 */
 make_group(group7,
-	inv, inv, inv, inv, 
+	inv, inv, lgtd, inv, 
 	inv, inv, inv, inv)
 
 
