@@ -93,6 +93,9 @@ void restart() {
 
 	/* Init CR0 to run in real mode. */
 	cpu.cr0=0;
+	/* According to i386 book. */
+	cpu.gdtr_limit=0xFFFF;
+	cpu.gdtr_base=0x0;
 
 	/* Initialize DRAM. */
 	init_ddr3();

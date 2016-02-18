@@ -28,4 +28,7 @@ make_helper(concat(mov_moffs2a_, SUFFIX)) {
 	return 5;
 }
 
+
 #include "cpu/exec/template-end.h"
+
+
