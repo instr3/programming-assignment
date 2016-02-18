@@ -30,7 +30,7 @@ void dram_write(hwaddr_t, size_t, uint32_t);
 
 	//Create First Level Cache(Modified)
 	#define OFFSET_BITS 6
-	#define BID_BITS 2
+	#define BID_BITS 7 
 	#define WAY_NUM 8
 	#define CACHE_ID cache1
 	//Define the next level cache
