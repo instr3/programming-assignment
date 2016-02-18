@@ -104,7 +104,7 @@ uint32_t concat(CACHE_ID,read)(struct CACHE_T *this,hwaddr_t addr, size_t len) {
 	
 	CACHEBLOCK_T *ch=this->hit_or_create_cache_at(this, addr);
 	//this->cache_read_raw(addr, temp, ch);
-	memcpy(temp, &ch->block[addr & OFFSET_MASK],(4<OFFSET_LEN-cache_offset)?4:OFFSET_LEN-cache_offset);
+	memcpy(temp, &ch->block[addr & OFFSET_MASK],(len<OFFSET_LEN-cache_offset)?len:OFFSET_LEN-cache_offset);
 	if(cache_offset + len > OFFSET_LEN) {
 		/* data cross the cache boundary */
 		ch=this->hit_or_create_cache_at(this,addr + len - 1);
@@ -124,7 +124,7 @@ void concat(CACHE_ID,write)(struct CACHE_T *this,hwaddr_t addr, size_t len, uint
 	uint32_t cache_offset = addr & OFFSET_MASK;
 	CACHEBLOCK_T *ch=this->hit_or_create_cache_at(this,addr);
 	ch->dirty=true;
-	memcpy(&ch->block[addr & OFFSET_MASK], temp, (4<OFFSET_LEN-cache_offset)?4:OFFSET_LEN-cache_offset);
+	memcpy(&ch->block[addr & OFFSET_MASK], temp, (len<OFFSET_LEN-cache_offset)?len:OFFSET_LEN-cache_offset);
 	if(cache_offset + len > OFFSET_LEN) {
 		/* data cross the cache boundary */
 		ch=this->hit_or_create_cache_at(this,addr + len - 1);
