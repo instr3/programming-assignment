@@ -6,7 +6,7 @@ static void do_execute() {
 	if(ops_decoded.opcode==0x120)
 	{
 		OPERAND_W(op_src, cpu.cr0);
-		print_asm("mov cr0 %%%s",op_src->str);
+		print_asm("mov %%cr0 %s",op_src->str);
 	}
 	else
 	{
@@ -14,12 +14,12 @@ static void do_execute() {
 		fflush(stdout);
 		assert(ops_decoded.opcode==0x122);
 		cpu.cr0=op_src->val;
-		print_asm("mov %%%s cr0",op_src->str);
+		print_asm("mov %s %%cr0",op_src->str);
 	}
 
 }
 
-make_instr_helper(r)
+make_instr_helper(rm)
 
 #include "cpu/exec/template-end.h"
 
