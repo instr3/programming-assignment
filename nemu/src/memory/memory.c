@@ -6,112 +6,60 @@ void dram_write(hwaddr_t, size_t, uint32_t);
 /* Memory accessing interfaces */
 
 
-/*typedef struct cacheblock
-{
-	uint32_t valid;
-	uint32_t data[];//Size decided by malloc
-}cacheblock_t;*/
-/*
-typedef struct cache
-{
-	uint32_t mem_width, mem_size;//Memory size
-	uint32_t block_width, block_size;//Cache block size
-	uint32_t bid_width, bid_num;//Block ID count
-	uint32_t way_num;//associative ways count
-	uint8_t ***blocks;//blocks[block_id][way]
-	bool **valid;
-
-}cache_t;
-cache_t cacheV1, cacheV2;//V1 and V2 cache
-void init_cache(cache_t cache, int mem_width, int block_width, int bid_width, int way_num)//Memory address size, Block size, Block ID size
-{
-	//init parameters
-	cache.mem_width=mem_width;
-	cache.block_width=block_width;
-	cache.bid_width=bid_width;
-
-	cache.mem_size=1<<mem_width;
-	cache.block_size=1<<block_width;
-	cache.bid_num=1<<bid_width;
-	cache.way_num=way_num;
-
-	//Allocate cache blocks
-	int i,j;
-	cache.blocks=malloc(cache.bid_num * sizeof(uint8_t **));
-	for(i=0;i<cache.bid_num;++i)
-	{
-		cache.blocks[i]=malloc(cache.way_num * sizeof(uint8_t *));
-		for(j=0;j<way_num;++j)
-		{
-			cache.blocks[i][j]=malloc(cache.block_size * sizeof(uint8_t));
-			cache.valid[i][j]=false;
-		}
-	}
-}
-uint32_t cache_read(cache_t cache,hwaddr_t addr, size_t len, bool *success)
-{
-	return 0;
-	//uint32_t addr_offset=addr & (cache.block_size - 1);
-	//uint32_t addr_bid=(addr>>(cache.mem_width - cache.bid_width));
-
-	//int j;
-	//for(j=0)
-}
-
-void init_cache_groups()
-{
-	//init_cache(cacheV1, 27, 6, 16 - 6 - 3);//64B per block, cache size 64KB, 8-way.
-}*/
 #ifdef USE_CACHE
-//Create Second Level Cache
-#define OFFSET_BITS 6
-#define BID_BITS 12 //Block ID Bits = 4MB/16B/16Ways
-#define WAY_NUM 16
-#define CACHE_WRITE_BACK //Define the Write_back feature
-#define CACHE_ID cache2
-//Define the next level cache
-#define slower_read(...) dram_read(__VA_ARGS__)
-#define slower_write(...) dram_write(__VA_ARGS__)
+//{
+	//Create Second Level Cache
+	#define OFFSET_BITS 6
+	#define BID_BITS 12 //Block ID Bits = 4MB/16B/16Ways
+	#define WAY_NUM 16
+	#define CACHE_WRITE_BACK //Define the Write_back feature
+	#define CACHE_ID cache2
+	//Define the next level cache
+	#define slower_read(...) dram_read(__VA_ARGS__)
+	#define slower_write(...) dram_write(__VA_ARGS__)
 
-#include "cache-template.h"
+	#include "cache-template.h"
 
-#undef OFFSET_BITS
-#undef BID_BITS
-#undef WAY_NUM
-#undef CACHE_WRITE_BACK
-#undef CACHE_ID
-#undef slower_read
-#undef slower_write
+	#undef OFFSET_BITS
+	#undef BID_BITS
+	#undef WAY_NUM
+	#undef CACHE_WRITE_BACK
+	#undef CACHE_ID
+	#undef slower_read
+	#undef slower_write
 
-//Create First Level Cache
-#define OFFSET_BITS 6
-#define BID_BITS 7 //Block ID Bits = 16KB/16B/8Ways
-#define WAY_NUM 8
-#define CACHE_ID cache1
-//Define the next level cache
-#define slower_read(...) cache2.read(&cache2,__VA_ARGS__)
-#define slower_write(...) cache2.write(&cache2,__VA_ARGS__)
+	//Create First Level Cache
+	#define OFFSET_BITS 6
+	#define BID_BITS 7 //Block ID Bits = 16KB/16B/8Ways
+	#define WAY_NUM 8
+	#define CACHE_ID cache1
+	//Define the next level cache
+	//#define slower_read(...) cache2.read(&cache2,__VA_ARGS__)
+	//#define slower_write(...) cache2.write(&cache2,__VA_ARGS__)
+	#define slower_read(...) dram_read(__VA_ARGS__)
+	#define slower_write(...) dram_write(__VA_ARGS__)
 
-#include "cache-template.h"
+	#include "cache-template.h"
 
-#undef OFFSET_BITS
-#undef BID_BITS
-#undef WAY_NUM
-#undef CACHE_ID
-#undef slower_read
-#undef slower_write
+	#undef OFFSET_BITS
+	#undef BID_BITS
+	#undef WAY_NUM
+	#undef CACHE_ID
+	#undef slower_read
+	#undef slower_write
 
-void init_caches()
-{
-	cache1_init(&cache1);
-	cache2_init(&cache2);
-}
+	void init_caches()
+	{
+		cache1_init(&cache1);
+		cache2_init(&cache2);
+	}
 
-void debug_cache_address(hwaddr_t addr)
-{
-	cache1.debug(&cache1,addr);
-	cache2.debug(&cache2,addr);
-}
+	void debug_cache_address(hwaddr_t addr)
+	{
+		cache1.debug(&cache1,addr);
+		cache2.debug(&cache2,addr);
+	}
+//}
 #endif
 uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
 #ifdef USE_CACHE
