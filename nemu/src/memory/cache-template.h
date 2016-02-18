@@ -34,7 +34,7 @@ struct CACHE_T
 		}ch;
 #pragma pack ()
 	}converter;
-	void (*modify_cache_at)(struct CACHE_T *this,hwaddr_t addr);
+	//void (*modify_cache_at)(struct CACHE_T *this,hwaddr_t addr);
 	CACHEBLOCK_T* (*hit_or_create_cache_at)(struct CACHE_T *this,hwaddr_t addr);
 	//void (*cache_read_raw)(hwaddr_t addr,uint8_t *temp,CACHEBLOCK_T *ch);
 	uint32_t (*read)(struct CACHE_T *this,hwaddr_t addr, size_t len);
@@ -43,10 +43,10 @@ struct CACHE_T
 
 };
 struct CACHE_T CACHE_ID;
-void concat(CACHE_ID,modify_cache_at)(struct CACHE_T *this,hwaddr_t addr)
-{
+//void concat(CACHE_ID,modify_cache_at)(struct CACHE_T *this,hwaddr_t addr)
+//{
 
-}
+//}
 CACHEBLOCK_T* concat(CACHE_ID,hit_or_create_cache_at)(struct CACHE_T *this,hwaddr_t addr)
 {
 	this->converter.addr=addr;
@@ -56,13 +56,11 @@ CACHEBLOCK_T* concat(CACHE_ID,hit_or_create_cache_at)(struct CACHE_T *this,hwadd
 		if(this->cache[this->converter.ch.bid][i].tag == this->converter.ch.btag && this->cache[this->converter.ch.bid][i].valid)
 		{
 			//cache hit
-			//printf("HIT!");fflush(stdout);
 			this->hit_count++;
 			return &this->cache[this->converter.ch.bid][i];
 		}
 	}
 	//cache miss
-	//printf("miss!");fflush(stdout);
 	this->miss_count++;
 	int kick=rand()%WAY_NUM;
 	//Swap new and old tags
@@ -78,6 +76,7 @@ CACHEBLOCK_T* concat(CACHE_ID,hit_or_create_cache_at)(struct CACHE_T *this,hwadd
 			//printf("WriteCache:%x %x\n",base_addr,dram_read(base_addr,1)&0xff);
 			slower_write(base_addr++,1,this->cache[this->converter.ch.bid][kick].block[i]);
 		}
+	
 	}
 #endif
 	this->cache[this->converter.ch.bid][kick].valid = true;
@@ -120,8 +119,8 @@ uint32_t concat(CACHE_ID,read)(struct CACHE_T *this,hwaddr_t addr, size_t len) {
 void concat(CACHE_ID,write)(struct CACHE_T *this,hwaddr_t addr, size_t len, uint32_t data) {
 #ifdef CACHE_WRITE_BACK_AND_WRITE_TRHOUGH
 	uint8_t temp[4];
-	memcpy(temp,&data,4);//align_rw
-	printf("0x%X:%x %x %x %x",data,temp[0],temp[1],temp[2],temp[3]);
+	memcpy(temp,&data,4);
+	//printf("0x%X:%x %x %x %x",data,temp[0],temp[1],temp[2],temp[3]);
 	uint32_t cache_offset = addr & OFFSET_MASK;
 	CACHEBLOCK_T *ch=this->hit_or_create_cache_at(this,addr);
 	ch->dirty=true;
@@ -185,7 +184,7 @@ void concat(CACHE_ID,debug)(struct CACHE_T *this,hwaddr_t addr)
 }
 
 void concat(CACHE_ID,_init)(struct CACHE_T *this){
-	install_method(modify_cache_at);
+	//install_method(modify_cache_at);
 	install_method(hit_or_create_cache_at);
 	//install_method(cache_read_raw);
 	install_method(read);
