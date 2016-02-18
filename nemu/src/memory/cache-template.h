@@ -85,7 +85,7 @@ CACHEBLOCK_T* concat(CACHE_ID,hit_or_create_cache_at)(struct CACHE_T *this,hwadd
 	this->cache[this->converter.ch.bid][kick].valid = true;
 	this->cache[this->converter.ch.bid][kick].dirty = false;
 	uint32_t base_addr=addr & ~OFFSET_MASK;
-	for(i=0;i<OFFSET_LEN;i++)
+	for(i=0;i<OFFSET_LEN;i+=4)
 	{
 		//printf("WriteCache:%x %x\n",base_addr,dram_read(base_addr,1)&0xff);
 		uint32_t data=slower_read(base_addr,4);
