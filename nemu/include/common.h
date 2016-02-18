@@ -6,8 +6,8 @@
 /* You will define this macro in PA4 */
 //#define HAS_DEVICE
 
-//Want to use a simulated cache? Uncomment below.
-#define USE_CACHE
+/* Want to use a simulated cache? Uncomment below. */
+//#define USE_CACHE
 
 #define DEBUG
 #define LOG_FILE

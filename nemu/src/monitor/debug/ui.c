@@ -153,6 +153,7 @@ static int cmd_bt(char *args)
 }
 static int cmd_cache(char *args)
 {
+#ifdef USE_CACHE
 	if (!args)
 	{
 		printf(ui_warn("[Parameter Error]\nUsage:\ncache ADDR\tShow cache info about address ADDR\n"));
@@ -167,7 +168,10 @@ static int cmd_cache(char *args)
 		debug_cache_address(res);
 	}
 	return 0;
-
+#else
+	printf(ui_error("Cache not enabled.\n"));
+	return 0;
+#endif
 }
 
 static int cmd_help(char *args);
