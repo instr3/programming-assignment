@@ -71,10 +71,13 @@ CACHEBLOCK_T* concat(CACHE_ID,hit_or_create_cache_at)(struct CACHE_T *this,hwadd
 	if(this->cache[this->converter.ch.bid][kick].dirty)
 	{
 		uint32_t base_addr=this->converter.addr & ~OFFSET_MASK;
-		for(i=0;i<OFFSET_LEN;i++)
+		for(i=0;i<OFFSET_LEN;i+=4)
 		{
 			//printf("WriteCache:%x %x\n",base_addr,dram_read(base_addr,1)&0xff);
-			slower_write(base_addr++,1,this->cache[this->converter.ch.bid][kick].block[i]);
+			uint32_t data;
+			memcpy(&data,&this->cache[this->converter.ch.bid][kick].block[i],4);
+			slower_write(base_addr,4,data);
+			base_addr+=4;
 		}
 	
 	}
@@ -85,7 +88,9 @@ CACHEBLOCK_T* concat(CACHE_ID,hit_or_create_cache_at)(struct CACHE_T *this,hwadd
 	for(i=0;i<OFFSET_LEN;i++)
 	{
 		//printf("WriteCache:%x %x\n",base_addr,dram_read(base_addr,1)&0xff);
-		this->cache[this->converter.ch.bid][kick].block[i]=slower_read(base_addr++,1);
+		uint32_t data=slower_read(base_addr,4);
+		base_addr+=4;
+		memcpy(&this->cache[this->converter.ch.bid][kick].block[i],&data,4);
 	}
 	return &this->cache[this->converter.ch.bid][kick];
 
