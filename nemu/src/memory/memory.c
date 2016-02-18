@@ -23,7 +23,7 @@ void dram_write(hwaddr_t, size_t, uint32_t);
 	#undef OFFSET_BITS
 	#undef BID_BITS
 	#undef WAY_NUM
-	//#undef CACHE_WRITE_BACK_AND_WRITE_TRHOUGH
+	#undef CACHE_WRITE_BACK_AND_WRITE_TRHOUGH
 	#undef CACHE_ID
 	#undef slower_read
 	#undef slower_write
@@ -34,8 +34,8 @@ void dram_write(hwaddr_t, size_t, uint32_t);
 	#define WAY_NUM 8
 	#define CACHE_ID cache1
 	//Define the next level cache
-	#define slower_read(...) dram_read(__VA_ARGS__)
-	#define slower_write(...) dram_write(__VA_ARGS__)
+	#define slower_read(...) cache2.read(&cache2,__VA_ARGS__)
+	#define slower_write(...) cache2.write(&cache2,__VA_ARGS__)
 
 	#include "cache-template.h"
 
