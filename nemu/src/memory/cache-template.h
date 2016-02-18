@@ -147,7 +147,7 @@ void concat(CACHE_ID,write)(struct CACHE_T *this,hwaddr_t addr, size_t len, uint
 void concat(CACHE_ID,debug)(struct CACHE_T *this,hwaddr_t addr)
 {
 #define SNAME str(CACHE_ID)
-	printf("=======================\nCache:\t%s\nHit:\t%d\nMiss:\t%d\nAddr:\t0x%X\n",SNAME,this->hit_count,this->miss_count,addr);
+	printf("=======================\nCache:\t%s\tHitCnt:\t%d\tMisCnt:\t%d\nAddr:\t0x%X\n",SNAME,this->hit_count,this->miss_count,addr);
 #undef SNAME
 	this->converter.addr=addr;
 	uint32_t i;
@@ -155,7 +155,7 @@ void concat(CACHE_ID,debug)(struct CACHE_T *this,hwaddr_t addr)
 	{
 		if(this->cache[this->converter.ch.bid][i].tag == this->converter.ch.btag && this->cache[this->converter.ch.bid][i].valid)
 		{
-			printf("Hit:\tY\nValue:\t0x%X\nBlockID:\t%X\nWayID:\t%X\nTag:\t%X\nValid:\t%c\nDirty:\t%c\n",
+			printf("Hit:\tY\tValue:\t0x%X\nBlockID:\t%X\tWayID:\t%X\tTag:\t%X\nValid:\t%c\nDirty:\t%c\n",
 				this->cache[this->converter.ch.bid][i].block[this->converter.ch.offset],
 				this->converter.ch.bid,
 				i,
