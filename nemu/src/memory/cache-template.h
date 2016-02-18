@@ -20,7 +20,7 @@ typedef struct
 }CACHEBLOCK_T;
 struct CACHE_T
 {
-	int clk;//Simulated Clock
+	int hit_count,miss_count;//Simulated clock
 	CACHEBLOCK_T cache[BID_LEN][WAY_NUM];
 	union{
 		//unalign_rw
@@ -71,11 +71,13 @@ CACHEBLOCK_T * concat(CACHE_ID,hit_or_create_cache_at)(struct CACHE_T *this,hwad
 		{
 			//cache hit
 			//printf("HIT!");fflush(stdout);
+			this->hit_count++;
 			return &this->cache[this->converter.ch.bid][i];
 		}
 	}
 	//cache miss
 	//printf("miss!");fflush(stdout);
+	this->miss_count++;
 	int kick=rand()%WAY_NUM;
 	//Swap new and old tags
 	uint32_t temp=this->cache[this->converter.ch.bid][kick].tag;
@@ -88,7 +90,7 @@ CACHEBLOCK_T * concat(CACHE_ID,hit_or_create_cache_at)(struct CACHE_T *this,hwad
 		for(i=0;i<OFFSET_LEN;i++)
 		{
 			//printf("WriteCache:%x %x\n",base_addr,dram_read(base_addr,1)&0xff);
-			dram_write(base_addr++,1,this->cache[this->converter.ch.bid][kick].block[i]);
+			slower_write(base_addr++,1,this->cache[this->converter.ch.bid][kick].block[i]);
 		}
 	}
 #endif
@@ -98,7 +100,7 @@ CACHEBLOCK_T * concat(CACHE_ID,hit_or_create_cache_at)(struct CACHE_T *this,hwad
 	for(i=0;i<OFFSET_LEN;i++)
 	{
 		//printf("WriteCache:%x %x\n",base_addr,dram_read(base_addr,1)&0xff);
-		this->cache[this->converter.ch.bid][kick].block[i]=dram_read(base_addr++,1);
+		this->cache[this->converter.ch.bid][kick].block[i]=slower_read(base_addr++,1);
 	}
 	return &this->cache[this->converter.ch.bid][kick];
 
@@ -145,7 +147,7 @@ void concat(CACHE_ID,write)(struct CACHE_T *this,hwaddr_t addr, size_t len, uint
 void concat(CACHE_ID,debug)(struct CACHE_T *this,hwaddr_t addr)
 {
 #define SNAME str(CACHE_ID)
-	printf("=======================\nCache:\t%s\nClock:\t%d\nAddr:\t0x%X\n",SNAME,this->clk,addr);
+	printf("=======================\nCache:\t%s\nHit:\t%d\nMiss:\t%d\nAddr:\t0x%X\n",SNAME,this->hit_count,this->miss_count,addr);
 #undef SNAME
 	this->converter.addr=addr;
 	uint32_t i;

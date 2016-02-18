@@ -63,24 +63,15 @@ void init_cache_groups()
 	//init_cache(cacheV1, 27, 6, 16 - 6 - 3);//64B per block, cache size 64KB, 8-way.
 }*/
 #ifdef USE_CACHE
-//Create First Level Cache
-#define OFFSET_BITS 6
-#define BID_BITS 7 //16KB/16B/8Ways
-#define WAY_NUM 8
-#define CACHE_ID cache1
-
-#include "cache-template.h"
-
-#undef OFFSET_BITS
-#undef BID_BITS
-#undef WAY_NUM
-#undef CACHE_ID
 //Create Second Level Cache
 #define OFFSET_BITS 6
-#define BID_BITS 12 //4MB/16B/16Ways
+#define BID_BITS 12 //Block ID Bits = 4MB/16B/16Ways
 #define WAY_NUM 16
-#define CACHE_WRITE_BACK
+#define CACHE_WRITE_BACK //Define the Write_back feature
 #define CACHE_ID cache2
+//Define the next level cache
+#define slower_read(...) dram_read(__VA_ARGS__)
+#define slower_write(...) dram_write(__VA_ARGS__)
 
 #include "cache-template.h"
 
@@ -89,6 +80,26 @@ void init_cache_groups()
 #undef WAY_NUM
 #undef CACHE_WRITE_BACK
 #undef CACHE_ID
+#undef slower_read
+#undef slower_write
+
+//Create First Level Cache
+#define OFFSET_BITS 6
+#define BID_BITS 7 //Block ID Bits = 16KB/16B/8Ways
+#define WAY_NUM 8
+#define CACHE_ID cache1
+//Define the next level cache
+#define slower_read(...) cache2.read(&cache2,__VA_ARGS__)
+#define slower_write(...) cache2.write(&cache2,__VA_ARGS__)
+
+#include "cache-template.h"
+
+#undef OFFSET_BITS
+#undef BID_BITS
+#undef WAY_NUM
+#undef CACHE_ID
+#undef slower_read
+#undef slower_write
 
 void init_caches()
 {
