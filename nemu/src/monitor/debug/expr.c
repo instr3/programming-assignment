@@ -160,7 +160,7 @@ uint32_t SubEvaluate(char *e, int ib, int ie)
 	);
 	//new.@ A@2 functioned as A[2],when A is uint32_t*
 	ConstructBinaryOps(1, e[i] == '@',
-		return swaddr_read(lfv + rtv * sizeof(uint32_t),sizeof(uint32_t));
+		return swaddr_read(lfv + rtv * sizeof(uint32_t),sizeof(uint32_t),SREG_DS);
 	);
 	
 	//////////////////////////////////////////////////////////////////////////
@@ -176,7 +176,7 @@ uint32_t SubEvaluate(char *e, int ib, int ie)
 		return !SubEvaluate(e, ib + 1, ie);
 	case '*':
 		//Assume it's always right.
-		return swaddr_read(SubEvaluate(e, ib + 1, ie),sizeof(uint32_t));
+		return swaddr_read(SubEvaluate(e, ib + 1, ie),sizeof(uint32_t),SREG_DS);
 	}
 
 

@@ -12,9 +12,9 @@ void printbt()
 	swaddr_t last=cpu.eip;
 	swaddr_t ebp;
 	int pid=0;
-	for(ebp=cpu.ebp;ebp;ebp=swaddr_read(ebp,4))
+	for(ebp=cpu.ebp;ebp;ebp=swaddr_read(ebp,4,SREG_SS))
 	{
-		printbtFormat(pid++,last,swaddr_read(ebp+8,4),swaddr_read(ebp+12,4),swaddr_read(ebp+16,4),swaddr_read(ebp+20,4));
-		last=swaddr_read(ebp+4,4);
+		printbtFormat(pid++,last,swaddr_read(ebp+8,4,SREG_SS),swaddr_read(ebp+12,4,SREG_SS),swaddr_read(ebp+16,4,SREG_SS),swaddr_read(ebp+20,4,SREG_SS));
+		last=swaddr_read(ebp+4,4,SREG_SS);
 	}
 }

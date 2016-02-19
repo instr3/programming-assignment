@@ -37,7 +37,7 @@ void printRegInfoByID(uint32_t regID)
 }
 void printSegmentRegistersInfo()
 {
-	printRegLine("cr0",cpu.cr0);
+	printRegLine("cr0",cpu.cr0.val);
 	printRegLine("gdtr.limit",cpu.gdtr_limit);
 	printRegLine("gdtr.base",cpu.gdtr_base);
 	printRegLine("cs",cpu.cs);
@@ -55,9 +55,9 @@ void printRegInfo()
 	printSegmentRegistersInfo();
 }
 
-inline void printMemoryByAddress(uint32_t address)
+inline void printMemoryByAddress(uint32_t address,uint8_t srg)
 {
-	printf("0x%.8X", swaddr_read(address, sizeof(uint32_t)));
+	printf("0x%.8X", swaddr_read(address, sizeof(uint32_t), srg));
 }
 inline void printMemoryPositionByAddress(uint32_t address)
 {
@@ -74,7 +74,7 @@ inline void printMemoryInfo(uint32_t address, int len)
 			printMemoryPositionByAddress(address);
 		}
 		putchar(' ');
-		printMemoryByAddress(address);
+		printMemoryByAddress(address,SREG_DS);
 		++i;
 		address += sizeof(uint32_t);
 	}

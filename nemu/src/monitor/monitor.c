@@ -92,7 +92,7 @@ void restart() {
 	cpu.eflags=0x00000002;
 
 	/* Init CR0 to run in real mode. */
-	cpu.cr0=0;
+	cpu.cr0.val=0;
 	/* According to i386 book. */
 	cpu.gdtr_limit=0xFFFF;
 	cpu.gdtr_base=0x0;

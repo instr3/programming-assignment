@@ -7,12 +7,25 @@ enum { R_EAX, R_ECX, R_EDX, R_EBX, R_ESP, R_EBP, R_ESI, R_EDI };
 enum { R_AX, R_CX, R_DX, R_BX, R_SP, R_BP, R_SI, R_DI };
 enum { R_AL, R_CL, R_DL, R_BL, R_AH, R_CH, R_DH, R_BH };
 
-/* TODO: Re-organize the `CPU_state' structure to match the register
- * encoding scheme in i386 instruction format. For example, if we
- * access cpu.gpr[3]._16, we will get the `bx' register; if we access
- * cpu.gpr[1]._8[1], we will get the 'ch' register. Hint: Use `union'.
- * For more details about the register encoding scheme, see i386 manual.
- */
+typedef union CR0 {
+	struct {
+		uint32_t protect_enable      : 1;
+		uint32_t monitor_coprocessor : 1;
+		uint32_t emulation           : 1;
+		uint32_t task_switched       : 1;
+		uint32_t extension_type      : 1;
+		uint32_t numeric_error       : 1;
+		uint32_t pad0                : 10;
+		uint32_t write_protect       : 1; 
+		uint32_t pad1                : 1; 
+		uint32_t alignment_mask      : 1;
+		uint32_t pad2                : 10;
+		uint32_t no_write_through    : 1;
+		uint32_t cache_disable       : 1;
+		uint32_t paging              : 1;
+	};
+	uint32_t val;
+} CR0;
 
 typedef struct 
 {
@@ -31,7 +44,7 @@ typedef struct
 			uint32_t eax, ecx, edx, ebx, esp, ebp, esi, edi;
 		};
 	};
-	union
+	/*union
 	{
 		uint32_t cr0;
 		struct
@@ -41,24 +54,61 @@ typedef struct
 			uint8_t cr0_em : 1;
 			uint8_t cr0_ts : 1;
 			uint8_t cr0_et : 1;
-			uint32_t cr0_reserved : 24;
-			uint8_t cr0_pg : 1;
+			uint8_t : 3;
+			uint8_t : 8;
+			uint8_t : 8;
+			uint8_t : 7;
+			uint8_t cr0_pg : 1;;
 		};
-	};
+	}*/
+	CR0 cr0;
 	union
 	{
 		uint64_t gdtr : 48;
+		#pragma pack(2)
 		struct
 		{
 			uint16_t gdtr_limit;
 			uint32_t gdtr_base;
 		};
+		#pragma pack()
 	};
 	uint16_t cs,ds,es,ss;
 	swaddr_t eip;
 	uint32_t eflags;
 
 } CPU_state;
+
+typedef union
+{
+	uint16_t selector;
+	struct
+	{
+		uint16_t rpl : 2;
+		uint16_t ti : 1;
+		uint16_t index : 13;
+	};
+} segmentselector_t;
+
+typedef union
+{
+	uint64_t item;
+	struct
+	{
+		uint16_t seg_limit_0_15;
+		uint16_t seg_base_0_15;
+		uint8_t seg_base_16_23;
+		uint8_t type : 5;
+		uint8_t dpl : 2;
+		uint8_t p : 1;
+		uint8_t seg_limit_16_19 : 4;
+		uint8_t avl : 1;
+		uint8_t o : 1;
+		uint8_t x : 1;
+		uint8_t g : 1;
+		uint8_t seg_base_24_31;
+	};
+} gdtitem_t;
 
 extern CPU_state cpu;
 
@@ -109,9 +159,22 @@ positive, 1 if negative).
 11 OF Overflow Flag ── Set if result is too large a positive number
 or too small a negative number (excluding sign-bit) to fit in
 destination operand; cleared otherwise.*/
-#define push_data(word,len) do{cpu.esp-=(len);swaddr_write(cpu.esp,len,word);}while(0)
-#define pop_data(word,len) do{word=swaddr_read(cpu.esp,len);cpu.esp+=(len);}while(0)
+#define push_data(word,len) do{cpu.esp-=(len);swaddr_write(cpu.esp,len,word,SREG_SS);}while(0)
+#define pop_data(word,len) do{word=swaddr_read(cpu.esp,len,SREG_SS);cpu.esp+=(len);}while(0)
 #define string_advance(word,step) (reg_flag(EFLAGS_DF)?((word)-=(step)):((word)+=(step)))
+
+
+/*
+Sreg: a segment register. The segment register bit assignments are ES=0,
+CS=1, SS=2, DS=3, FS=4, and GS=5.
+*/
+#define NO_SREG -1
+#define SREG_ES 0
+#define SREG_CS 1
+#define SREG_SS 2
+#define SREG_DS 3
+#define SREG_FS 4
+#define SREG_GS 5
 
 extern const char* regsl[];
 extern const char* regsw[];
