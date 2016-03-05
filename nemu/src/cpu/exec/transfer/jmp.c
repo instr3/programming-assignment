@@ -19,8 +19,8 @@ make_helper_v(jmp_i)
 
 make_helper(ljmp)
 {
-	cpu.cs = instr_fetch(eip + 1, 2);
-	cpu.eip = instr_fetch(eip + 3, 4);
+	cpu.eip = instr_fetch(eip + 1, 4);
+	cpu.cs = instr_fetch(eip + 5, 2);
 	cpu.eip -= 7;
 	print_asm("ljmp $0x%x,$0x%x",(uint32_t)cpu.cs,cpu.eip);
 	return 7;
