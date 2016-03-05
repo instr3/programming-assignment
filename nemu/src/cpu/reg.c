@@ -70,6 +70,45 @@ uint32_t GetRegByName(char *reg,bool *success)
 	}
 	return GetFlagByName(reg,success);
 }
+
+
+//Cache for the invisible part of the segment registers.
+void seg_cache(uint8_t sreg){
+	segmentselector_t seg;
+	struct invisible_part *inv;
+	switch(sreg)
+	{
+		case SREG_CS:seg.selector=cpu.cs;inv=&cpu.cs_inv;break;
+		case SREG_DS:seg.selector=cpu.ds;inv=&cpu.ds_inv;break;
+		case SREG_ES:seg.selector=cpu.es;inv=&cpu.es_inv;break;
+		case SREG_SS:seg.selector=cpu.ss;inv=&cpu.ss_inv;break;
+		default: assert(0);
+	}
+	gdtitem_t gdt;
+	lnaddr_t address=(uint32_t)seg.index*8+cpu.gdtr_base;
+	assert(address<cpu.gdtr_limit+cpu.gdtr_base);
+	gdt.item=lnaddr_read(address,4)+((uint64_t)lnaddr_read(address+4,4)<<32);
+	inv->base=gdt.seg_base_0_15+((uint32_t)gdt.seg_base_16_23<<16)+((uint32_t)gdt.seg_base_24_31<<24);
+	inv->limit=gdt.seg_limit_0_15+((uint32_t)gdt.seg_limit_16_19<<16);
+	//Todo : Test
+	//return base+addr;
+}
+
+//Cache-enabled write segment register
+void write_seg(uint8_t sreg,uint16_t data)
+{
+
+	switch(sreg)
+	{
+		case SREG_CS:cpu.cs=data;break;
+		case SREG_DS:cpu.ds=data;break;
+		case SREG_ES:cpu.es=data;break;
+		case SREG_SS:cpu.ss=data;break;
+		default: assert(0);
+	}
+	seg_cache(sreg);
+}
+
 void reg_test() {
 	srand(time(0));
 	uint32_t sample[8];

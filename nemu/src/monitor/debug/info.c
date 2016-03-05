@@ -8,7 +8,6 @@ inline void printRegLine(const char *regName, uint32_t regValue)
 {
 	printf("%s\t\t0x%X\t\t%u\n", regName, regValue, regValue);
 }
-
 void printRegInfoByID(uint32_t regID)
 {
 	assert(regID < totalRegisterCount);
@@ -40,10 +39,16 @@ void printSegmentRegistersInfo()
 	printRegLine("cr0",cpu.cr0.val);
 	printRegLine("gdtr.limit",cpu.gdtr_limit);
 	printRegLine("gdtr.base",cpu.gdtr_base);
-	printRegLine("cs",cpu.cs);
-	printRegLine("ds",cpu.ds);
-	printRegLine("es",cpu.es);
-	printRegLine("ss",cpu.ss);
+	printf("%s\t\t0x%X\t\t%u\t[base:0x%X,limit:0x%X]\n", "cs", cpu.cs, cpu.cs, cpu.cs_inv.base, cpu.cs_inv.limit);
+	printf("%s\t\t0x%X\t\t%u\t[base:0x%X,limit:0x%X]\n", "ds", cpu.ds, cpu.ds, cpu.ds_inv.base, cpu.ds_inv.limit);
+	printf("%s\t\t0x%X\t\t%u\t[base:0x%X,limit:0x%X]\n", "es", cpu.es, cpu.es, cpu.es_inv.base, cpu.es_inv.limit);
+	printf("%s\t\t0x%X\t\t%u\t[base:0x%X,limit:0x%X]\n", "ss", cpu.ss, cpu.ss, cpu.ss_inv.base, cpu.ss_inv.limit);
+
+
+	//printRegLine("cs",cpu.cs);
+	//printRegLine("ds",cpu.ds);
+	//printRegLine("es",cpu.es);
+	//printRegLine("ss",cpu.ss);
 }
 void printRegInfo()
 {

@@ -44,24 +44,11 @@ typedef struct
 			uint32_t eax, ecx, edx, ebx, esp, ebp, esi, edi;
 		};
 	};
-	/*union
-	{
-		uint32_t cr0;
-		struct
-		{
-			uint8_t cr0_pe : 1;
-			uint8_t cr0_mp : 1;
-			uint8_t cr0_em : 1;
-			uint8_t cr0_ts : 1;
-			uint8_t cr0_et : 1;
-			uint8_t : 3;
-			uint8_t : 8;
-			uint8_t : 8;
-			uint8_t : 7;
-			uint8_t cr0_pg : 1;;
-		};
-	}*/
+	swaddr_t eip;
+	uint32_t eflags;
+	//CR0
 	CR0 cr0;
+	//GDTR
 	union
 	{
 		uint64_t gdtr : 48;
@@ -73,9 +60,14 @@ typedef struct
 		};
 		#pragma pack()
 	};
+	//Segment registers
 	uint16_t cs,ds,es,ss;
-	swaddr_t eip;
-	uint32_t eflags;
+	//Invisible part for segment register used as cache
+	struct invisible_part
+	{
+		uint32_t limit;
+		uint32_t base;
+	} cs_inv,ds_inv,es_inv,ss_inv;
 
 } CPU_state;
 

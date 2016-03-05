@@ -85,24 +85,27 @@ void lnaddr_write(lnaddr_t addr, size_t len, uint32_t data) {
 
 extern CPU_state cpu;
 lnaddr_t seg_translate(swaddr_t addr, size_t len, uint8_t sreg){
+	//When Protect disabled, segment traslation disabled.
 	if(cpu.cr0.protect_enable==0)return addr;
-	segmentselector_t seg;
+	struct invisible_part inv;
 	switch(sreg)
 	{
-		case SREG_CS:seg.selector=cpu.cs;break;
-		case SREG_DS:seg.selector=cpu.ds;break;
-		case SREG_ES:seg.selector=cpu.es;break;
-		case SREG_SS:seg.selector=cpu.ss;break;
+		case SREG_CS:inv=cpu.cs_inv;break;
+		case SREG_DS:inv=cpu.ds_inv;break;
+		case SREG_ES:inv=cpu.es_inv;break;
+		case SREG_SS:inv=cpu.ss_inv;break;
 		default: assert(0);
 	}
-	gdtitem_t gdt;
+	return inv.base+addr;
+	/*gdtitem_t gdt;
 	lnaddr_t address=(uint32_t)seg.index*8+cpu.gdtr_base;
 	assert(address<cpu.gdtr_limit+cpu.gdtr_base);
 	gdt.item=lnaddr_read(address,4)+((uint64_t)lnaddr_read(address+4,4)<<32);
 	lnaddr_t base=gdt.seg_base_0_15+((uint32_t)gdt.seg_base_16_23<<16)+((uint32_t)gdt.seg_base_24_31<<24);
 	//Todo : Test
-	return base+addr;
+	return base+addr;*/
 }
+
 
 uint32_t swaddr_read(swaddr_t addr, size_t len, uint8_t sreg) {
 #ifdef DEBUG
