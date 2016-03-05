@@ -80,15 +80,6 @@ int load_addr(swaddr_t eip, ModR_M *m, Operand *rm) {
 	rm->type = OP_TYPE_MEM;
 	rm->addr = addr;
 
-	//TODO:Is this?
-	if(base_reg == -1)
-	{
-		rm->sreg = SREG_SS;
-	}
-	else
-	{
-		rm->sreg = SREG_DS;
-	}
 	return instr_len;
 }
 
@@ -97,7 +88,6 @@ int read_ModR_M(swaddr_t eip, Operand *rm, Operand *reg) {
 	m.val = instr_fetch(eip, 1);
 	reg->type = OP_TYPE_REG;
 	reg->reg = m.reg;
-
 	if(m.mod == 3) {
 		rm->type = OP_TYPE_REG;
 		rm->reg = m.R_M;
@@ -118,8 +108,18 @@ int read_ModR_M(swaddr_t eip, Operand *rm, Operand *reg) {
 	}
 	else {
 		int instr_len = load_addr(eip, &m, rm);
+		//TODO:it's wrong!
+		if(m.R_M==R_EBP||m.R_M==R_ESP)
+		{
+			rm->sreg = SREG_SS;
+		}
+		else
+		{
+			rm->sreg = SREG_DS;
+		}
 		rm->val = swaddr_read(rm->addr, rm->size, rm->sreg);
 		return instr_len;
+
 	}
 }
 
