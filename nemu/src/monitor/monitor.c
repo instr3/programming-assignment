@@ -97,6 +97,10 @@ void restart() {
 	cpu.gdtr_limit=0xFFFF;
 	cpu.gdtr_base=0x0;
 
+	/* Init CS */
+	cpu.cs_inv.base=0x0;
+	cpu.cs_inv.limit=0xffffffff;
+
 	/* Initialize DRAM. */
 	init_ddr3();
 }
