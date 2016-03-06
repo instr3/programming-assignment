@@ -22,7 +22,7 @@ make_helper(ljmp)
 	cpu.eip = instr_fetch(eip + 1, 4);
 	extern void write_seg(uint8_t, uint16_t);
 	write_seg(SREG_CS, instr_fetch(eip + 5, 2));
-	print_asm("ljmp $0x%x,$0x%x",(uint32_t)cpu.cs,cpu.eip);
+	print_asm("ljmp $0x%X,$0x%X",(uint32_t)cpu.cs,cpu.eip);
 	cpu.eip -= 7;
 	return 7;
 }

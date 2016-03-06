@@ -8,6 +8,6 @@ make_helper(lgtd) {
 	{
 		cpu.gdtr_base&=0xFFFFFF;
 	}
-	print_asm("lgtd");
+	print_asm("lgtd 0x%X",cpu.gdtr_base);
 	return 6;
 }
