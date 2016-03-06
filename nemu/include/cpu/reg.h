@@ -29,6 +29,8 @@ typedef struct
 	uint32_t eflags;
 	//CR0
 	CR0 cr0;
+	//CR3
+	CR3 cr3;
 	//GDTR
 	union
 	{
