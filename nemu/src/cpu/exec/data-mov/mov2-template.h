@@ -6,10 +6,11 @@
 static void do_execute() {
 	uint8_t destcode=instr_fetch(cpu.eip+2,1);
 	assert(destcode==0xc0||destcode==0xd8);//CR0 or CR3 concerned.
+	char* destname=destcode==0xc0?"%%cr0":"%%cr3";
 	if(ops_decoded.opcode==0x120)
 	{
 		OPERAND_W(op_src, destcode==0xc0?cpu.cr0.val:cpu.cr3.val);
-		print_asm("mov %%cr0 %s",op_src->str);
+		print_asm("mov %s %s",destname,op_src->str);
 	}
 	else
 	{
@@ -21,7 +22,7 @@ static void do_execute() {
 		else
 			cpu.cr3.val=op_src->val;
 		//TODO: into vitrual mode
-		print_asm("mov %s %%cr0",op_src->str);
+		print_asm("mov %s %s",op_src->str,destname);
 	}
 
 }
