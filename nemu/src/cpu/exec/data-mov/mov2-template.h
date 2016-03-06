@@ -10,8 +10,8 @@ static void do_execute() {
 	}
 	else
 	{
-		printf("%x",ops_decoded.opcode);
-		fflush(stdout);
+		//printf("%x",ops_decoded.opcode);
+		//fflush(stdout);
 		assert(ops_decoded.opcode==0x122);
 		cpu.cr0.val=op_src->val;
 		//TODO: into vitrual mode

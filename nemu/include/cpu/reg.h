@@ -2,30 +2,11 @@
 #define __REG_H__
 
 #include "common.h"
+#include "../../../lib-common/x86-inc/cpu.h"
 
 enum { R_EAX, R_ECX, R_EDX, R_EBX, R_ESP, R_EBP, R_ESI, R_EDI };
 enum { R_AX, R_CX, R_DX, R_BX, R_SP, R_BP, R_SI, R_DI };
 enum { R_AL, R_CL, R_DL, R_BL, R_AH, R_CH, R_DH, R_BH };
-
-typedef union CR0 {
-	struct {
-		uint32_t protect_enable      : 1;
-		uint32_t monitor_coprocessor : 1;
-		uint32_t emulation           : 1;
-		uint32_t task_switched       : 1;
-		uint32_t extension_type      : 1;
-		uint32_t numeric_error       : 1;
-		uint32_t pad0                : 10;
-		uint32_t write_protect       : 1; 
-		uint32_t pad1                : 1; 
-		uint32_t alignment_mask      : 1;
-		uint32_t pad2                : 10;
-		uint32_t no_write_through    : 1;
-		uint32_t cache_disable       : 1;
-		uint32_t paging              : 1;
-	};
-	uint32_t val;
-} CR0;
 
 typedef struct 
 {
