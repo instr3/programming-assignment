@@ -4,7 +4,7 @@
 #define instr mov2
 
 static void do_execute() {
-	uint8_t destcode=instr_fetch(cpu.eip+1,1);
+	uint8_t destcode=instr_fetch(cpu.eip+2,1);
 	assert(destcode==0xc0||destcode==0xd8);//CR0 or CR3 concerned.
 	if(ops_decoded.opcode==0x120)
 	{
