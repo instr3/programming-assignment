@@ -12,9 +12,10 @@ hwaddr_t page_translate(lnaddr_t addr)
 	tmp.val=addr;
 	hwaddr_t base;
 	base=cpu.cr3.page_directory_base;
-	printf("%x\n",cpu.cr3.page_directory_base);
 	fflush(stdout);
 	pte.val=hwaddr_read(base+tmp.dir*4,4);
+	printf("0x%x*4+0x%x\n",tmp.dir,base);
+	printf("*=0x%x\n",pte.val);
 	assert(pte.present);
 	base=pte.page_frame;
 	pte.val=hwaddr_read(base+tmp.page*4,4);
