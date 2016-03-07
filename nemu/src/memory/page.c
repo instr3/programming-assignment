@@ -12,10 +12,10 @@ hwaddr_t page_translate(lnaddr_t addr)
 	tmp.val=addr;
 	hwaddr_t base;
 	base=cpu.cr3.val & 0xfffff000;//Get PAGE DIRECTORY start position
-	fflush(stdout);
 	pte.val=hwaddr_read(base+tmp.dir*4,4);
-	printf("0x%x*4+0x%x\n",tmp.dir,base);
-	printf("*=0x%x\n",pte.val);
+	//printf("0x%x*4+0x%x\n",tmp.dir,base);
+	//printf("*=0x%x\n",pte.val);
+	//fflush(stdout);
 	assert(pte.present);
 	base=pte.page_frame << PAGE_OFFSET_LEN;
 	pte.val=hwaddr_read(base+tmp.page*4,4);
