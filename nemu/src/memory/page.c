@@ -28,7 +28,7 @@ void page_info(lnaddr_t addr)
 	if(cpu.cr0.paging==0)
 	{
 		printf("Note: Paging not enabled!\n");
-		printf("hwaddr:\t0x%X",addr);
+		printf("hwaddr:\t0x%X\n",addr);
 		return;
 	}
 	linear_paged_addr_t tmp;
@@ -41,13 +41,13 @@ void page_info(lnaddr_t addr)
 	printf("First Level Paging:\n");
 	printf("Present:\t%c\n",pte.present?'Y':'N');
 	if(!pte.present)return;
-	printf("Frame:\t0x%X",pte.page_frame);
+	printf("Frame:\t0x%X\n",pte.page_frame);
 	base=pte.page_frame << PAGE_OFFSET_LEN;
 	pte.val=hwaddr_read(base+tmp.page*4,4);
 	printf("Second Level Paging:\n");
 	printf("Present:\t%c\n",pte.present?'Y':'N');
 	if(!pte.present)return;
-	printf("Frame:\t0x%X",pte.page_frame);
-	printf("hwaddr:\t0x%X",(pte.page_frame<<PAGE_OFFSET_LEN)+tmp.offset);
+	printf("Frame:\t0x%X\n",pte.page_frame);
+	printf("hwaddr:\t0x%X\n",(pte.page_frame<<PAGE_OFFSET_LEN)+tmp.offset);
 
 }
