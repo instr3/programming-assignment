@@ -94,6 +94,7 @@ void lnaddr_write(lnaddr_t addr, size_t len, uint32_t data) {
 
 		/* this is a special case, you can handle it later. */
 		//assert(0);
+		hwaddr_write(addr, len, data);
 	}
 	else {
 		hwaddr_t hwaddr = page_translate(addr);
