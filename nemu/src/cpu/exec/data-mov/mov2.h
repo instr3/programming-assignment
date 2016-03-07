@@ -1,5 +1,4 @@
-
-//mov2.c: mov from/to CR0 or CR3
+//mov2: mov from/to CR0 or CR3
 #ifndef __MOV2_H__
 #define __MOV2_H__
 
