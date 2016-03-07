@@ -17,7 +17,7 @@ hwaddr_t page_translate(lnaddr_t addr)
 	printf("0x%x*4+0x%x\n",tmp.dir,base);
 	printf("*=0x%x\n",pte.val);
 	assert(pte.present);
-	base=pte.page_frame;
+	base=pte.page_frame << PAGE_OFFSET_LEN;
 	pte.val=hwaddr_read(base+tmp.page*4,4);
 	assert(pte.present);
 	return (pte.page_frame<<PAGE_OFFSET_LEN)+tmp.offset;
