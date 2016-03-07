@@ -78,14 +78,13 @@ void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
 
 uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
 	if (((addr+len-1)>>PAGE_OFFSET_LEN)!=(addr>>PAGE_OFFSET_LEN)) {
-		uint32_t more=(addr+len)&PAGING_MASK;
+		//uint32_t more=(addr+len)&PAGING_MASK;
 		//split into 2 parts
-		printf("more:%x\n",more);
-		fflush(stdout);
-		return lnaddr_read(addr,len-more) | 
-			(lnaddr_read((addr+len)&PAGING_MASK,more)<<(len-more));
-		//hwaddr_t hwaddr = page_translate(addr);
-		//return hwaddr_read(hwaddr, len);
+		//printf("more:%x\n",more);
+		//fflush(stdout);
+		//return lnaddr_read(addr,len-more) | 
+		//	(lnaddr_read((addr+len)&PAGING_MASK,more)<<(len-more));
+		assert(0);
 
 	}
 	else {
@@ -96,14 +95,13 @@ uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
 
 void lnaddr_write(lnaddr_t addr, size_t len, uint32_t data) {
 	if (((addr+len-1)>>PAGE_OFFSET_LEN)!=(addr>>PAGE_OFFSET_LEN)) {
-		uint32_t more=((addr+len)&PAGING_MASK);
-		printf("more:%x\n",more);
-		fflush(stdout);
+		//uint32_t more=((addr+len)&PAGING_MASK);
+		//printf("more:%x\n",more);
+		//fflush(stdout);
 		//split into 2 parts
-		lnaddr_write(addr, len-more, data&((1<<(len-more))-1));
-		lnaddr_write((addr+len)&PAGING_MASK, more, data>>(len-more));
-		//hwaddr_t hwaddr = page_translate(addr);
-		//hwaddr_write(hwaddr, len, data);
+		//lnaddr_write(addr, len-more, data&((1<<(len-more))-1));
+		//lnaddr_write((addr+len)&PAGING_MASK, more, data>>(len-more));
+		assert(0);
 
 	}
 	else {
