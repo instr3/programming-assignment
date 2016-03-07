@@ -78,9 +78,13 @@ void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
 
 uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
 	assert(len == 1 || len == 2 || len == 4);
-	if (((addr+len)>>PAGE_OFFSET_LEN)!=(addr>>PAGE_OFFSET_LEN)) {
-		/* this is a special case, you can handle it later. */
-		assert(0);
+	if (((addr+len)&PAGING_MASK)!=(addr&PAGING_MASK)) {
+		uint32_t page_offset = addr & PAGING_MASK;
+		uint32_t more=page_offset + len - (1<<PAGE_OFFSET_LEN);
+		//split into 2 parts
+		return (lnaddr_read(addr,len-more)<<more) | 
+			lnaddr_read((addr+len)&PAGING_MASK,more);
+
 	}
 	else {
 		hwaddr_t hwaddr = page_translate(addr);
@@ -90,11 +94,13 @@ uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
 
 void lnaddr_write(lnaddr_t addr, size_t len, uint32_t data) {
 	assert(len == 1 || len == 2 || len == 4);
-	if (((addr+len)>>PAGE_OFFSET_LEN)!=(addr>>PAGE_OFFSET_LEN)) {
+	if (((addr+len)&PAGING_MASK)!=(addr&PAGING_MASK)) {
+		uint32_t page_offset = addr & PAGING_MASK;
+		uint32_t more=page_offset + len - (1<<PAGE_OFFSET_LEN);
+		//split into 2 parts
+		lnaddr_write(addr, len-more, data>>more);
+		lnaddr_write((addr+len)&PAGING_MASK, more, data&((1<<more)-1));
 
-		/* this is a special case, you can handle it later. */
-		//assert(0);
-		hwaddr_write(addr, len, data);
 	}
 	else {
 		hwaddr_t hwaddr = page_translate(addr);
@@ -115,14 +121,8 @@ lnaddr_t seg_translate(swaddr_t addr, size_t len, uint8_t sreg){
 		case SREG_SS:inv=cpu.ss_inv;break;
 		default: assert(0);
 	}
+	//directly return from invisible part of segment registers.
 	return inv.base+addr;
-	/*gdtitem_t gdt;
-	lnaddr_t address=(uint32_t)seg.index*8+cpu.gdtr_base;
-	assert(address<cpu.gdtr_limit+cpu.gdtr_base);
-	gdt.item=lnaddr_read(address,4)+((uint64_t)lnaddr_read(address+4,4)<<32);
-	lnaddr_t base=gdt.seg_base_0_15+((uint32_t)gdt.seg_base_16_23<<16)+((uint32_t)gdt.seg_base_24_31<<24);
-	//Todo : Test
-	return base+addr;*/
 }
 
 
