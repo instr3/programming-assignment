@@ -11,7 +11,7 @@ hwaddr_t page_translate(lnaddr_t addr)
 	PTE pte;
 	tmp.val=addr;
 	hwaddr_t base;
-	base=cpu.cr3.page_directory_base;
+	base=cpu.cr3.val & 0xfffff000;//Get PAGE DIRECTORY start position
 	fflush(stdout);
 	pte.val=hwaddr_read(base+tmp.dir*4,4);
 	printf("0x%x*4+0x%x\n",tmp.dir,base);
