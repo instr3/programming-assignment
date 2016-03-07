@@ -43,8 +43,8 @@ uint32_t loader() {
 			 */
 			//nemu_assert(ph->p_vaddr>=0x800000);
 			uint32_t hwaddr=mm_malloc(ph->p_vaddr, ph->p_memsz);
-			memcpy((void *)(pa_to_va(hwaddr)),(void *)(ph->p_offset),ph->p_filesz);
-			memset((void *)(pa_to_va(hwaddr)+ph->p_filesz),0,ph->p_memsz-ph->p_filesz);
+			memcpy((void *)((hwaddr)),(void *)(ph->p_offset),ph->p_filesz);
+			memset((void *)((hwaddr)+ph->p_filesz),0,ph->p_memsz-ph->p_filesz);
 			/* TODO: zero the memory region 
 			 * [VirtAddr + FileSiz, VirtAddr + MemSiz)
 			 */
