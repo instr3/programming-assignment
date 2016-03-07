@@ -26,8 +26,6 @@ uint32_t loader() {
 #else
 	ramdisk_read(buf, ELF_OFFSET_IN_DISK, 4096);
 #endif
-	//User page
-	mm_malloc(0x1000000,112*1024*1024);
 	elf = (void*)buf;
 
 	const uint32_t elf_magic = 0x464c457f;
@@ -44,8 +42,9 @@ uint32_t loader() {
 			 * to the memory region [VirtAddr, VirtAddr + FileSiz)
 			 */
 			//nemu_assert(ph->p_vaddr>=0x800000);
-			memcpy((void *)(ph->p_vaddr),(void *)(ph->p_offset),ph->p_filesz);
-			memset((void *)(ph->p_vaddr+ph->p_filesz),0,ph->p_memsz-ph->p_filesz);
+			uint32_t hwaddr=mm_malloc(ph->p_vaddr, ph->p_memsz);
+			memcpy((void *)(pa_to_va(hwaddr)),(void *)(ph->p_offset),ph->p_filesz);
+			memset((void *)(pa_to_va(hwaddr)+ph->p_filesz),0,ph->p_memsz-ph->p_filesz);
 			/* TODO: zero the memory region 
 			 * [VirtAddr + FileSiz, VirtAddr + MemSiz)
 			 */
