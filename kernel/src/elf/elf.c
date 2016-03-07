@@ -26,7 +26,8 @@ uint32_t loader() {
 #else
 	ramdisk_read(buf, ELF_OFFSET_IN_DISK, 4096);
 #endif
-
+	//User page
+	mm_malloc(0x1000000,112*1024*1024);
 	elf = (void*)buf;
 
 	const uint32_t elf_magic = 0x464c457f;
