@@ -77,7 +77,6 @@ void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
 }
 
 uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
-	assert(len == 1 || len == 2 || len == 4);
 	if (((addr+len)&PAGING_MASK)!=(addr&PAGING_MASK)) {
 		uint32_t page_offset = addr & PAGING_MASK;
 		uint32_t more=page_offset + len - (1<<PAGE_OFFSET_LEN);
@@ -93,7 +92,6 @@ uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
 }
 
 void lnaddr_write(lnaddr_t addr, size_t len, uint32_t data) {
-	assert(len == 1 || len == 2 || len == 4);
 	if (((addr+len)&PAGING_MASK)!=(addr&PAGING_MASK)) {
 		uint32_t page_offset = addr & PAGING_MASK;
 		uint32_t more=page_offset + len - (1<<PAGE_OFFSET_LEN);
