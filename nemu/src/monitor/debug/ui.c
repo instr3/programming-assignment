@@ -173,7 +173,23 @@ static int cmd_cache(char *args)
 	return 0;
 #endif
 }
-
+static int cmd_page(char *args)
+{
+	if (!args)
+	{
+		printf(ui_warn("[Parameter Error]\nUsage:\npage ADDR\tShow paging info about address ADDR\n"));
+		return 0;
+	}
+	bool success;
+	uint32_t res = expr(args, &success);
+	if (success)
+	{
+		//printf("$ans = %u (0x%X)\n", res, res);
+		extern void page_info(lnaddr_t);
+		page_info(res);
+	}
+	return 0;
+}
 static int cmd_help(char *args);
 
 static struct {
@@ -192,8 +208,7 @@ static struct {
 	{ "d", "d [watchpointID]: Remove a watchpoint by ID, or remove all if ID not given.", cmd_d },
 	{ "bt", "bt: Print back tracing of current function.", cmd_bt },
 	{ "cache", "cache ADDR: Show cache info about address ADDR", cmd_cache },
-
-	/* TODO: Add more commands */
+	{ "page", "page ADDR: Show paging info about address ADDR", cmd_page }
 
 };
 

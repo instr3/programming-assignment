@@ -17,4 +17,5 @@ typedef union linearaddress
 	uint32_t val;
 } linear_paged_addr_t;
 hwaddr_t page_translate(lnaddr_t);
+void page_info(lnaddr_t);
 #endif
