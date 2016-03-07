@@ -38,17 +38,12 @@ uint32_t loader() {
 		/* Scan the program header table, load each segment into memory */
 		if(ph->p_type == PT_LOAD) {
 
-			/* TODO: read the content of the segment from the ELF file 
-			 * to the memory region [VirtAddr, VirtAddr + FileSiz)
-			 */
-			//nemu_assert(ph->p_vaddr>=0x800000);
+			//Allocate user page for segment
 			uint32_t hwaddr=mm_malloc(ph->p_vaddr, ph->p_memsz);
+			//Physical memory and Virtual memory pointed to the same page
+			//So (void *)((hwaddr)) or (void *)(pa_to_va(hwaddr)) all works in memcpy and memset.
 			memcpy((void *)((hwaddr)),(void *)(ph->p_offset),ph->p_filesz);
 			memset((void *)((hwaddr)+ph->p_filesz),0,ph->p_memsz-ph->p_filesz);
-			/* TODO: zero the memory region 
-			 * [VirtAddr + FileSiz, VirtAddr + MemSiz)
-			 */
-
 
 #ifdef IA32_PAGE
 			/* Record the program break for future use. */
