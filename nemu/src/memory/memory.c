@@ -91,6 +91,7 @@ uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
 void lnaddr_write(lnaddr_t addr, size_t len, uint32_t data) {
 	assert(len == 1 || len == 2 || len == 4);
 	if (((addr+len)>>PAGE_OFFSET_LEN)!=(addr>>PAGE_OFFSET_LEN)) {
+		
 		/* this is a special case, you can handle it later. */
 		assert(0);
 	}

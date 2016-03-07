@@ -29,6 +29,7 @@ void page_info(lnaddr_t addr)
 	{
 		printf("Note: Paging not enabled!\n");
 		printf("hwaddr:\t0x%X",addr);
+		return;
 	}
 	linear_paged_addr_t tmp;
 	PTE pte;
