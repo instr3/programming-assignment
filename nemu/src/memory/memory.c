@@ -78,13 +78,13 @@ void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
 
 uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
 	if (((addr+len)&PAGING_MASK)!=(addr&PAGING_MASK)) {
-		//uint32_t page_offset = addr & PAGING_MASK;
-		//uint32_t more=page_offset + len - (1<<PAGE_OFFSET_LEN);
+		uint32_t page_offset = addr & PAGING_MASK;
+		uint32_t more=page_offset + len - (1<<PAGE_OFFSET_LEN);
 		//split into 2 parts
-		//return (lnaddr_read(addr,len-more)<<more) | 
-		//	lnaddr_read((addr+len)&PAGING_MASK,more);
-		hwaddr_t hwaddr = page_translate(addr);
-		return hwaddr_read(hwaddr, len);
+		return lnaddr_read(addr,len-more) | 
+			(lnaddr_read((addr+len)&PAGING_MASK,more)<<(len-more));
+		//hwaddr_t hwaddr = page_translate(addr);
+		//return hwaddr_read(hwaddr, len);
 
 	}
 	else {
@@ -95,13 +95,13 @@ uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
 
 void lnaddr_write(lnaddr_t addr, size_t len, uint32_t data) {
 	if (((addr+len)&PAGING_MASK)!=(addr&PAGING_MASK)) {
-		//uint32_t page_offset = addr & PAGING_MASK;
-		//uint32_t more=page_offset + len - (1<<PAGE_OFFSET_LEN);
+		uint32_t page_offset = addr & PAGING_MASK;
+		uint32_t more=page_offset + len - (1<<PAGE_OFFSET_LEN);
 		//split into 2 parts
-		//lnaddr_write(addr, len-more, data>>more);
-		//lnaddr_write((addr+len)&PAGING_MASK, more, data&((1<<more)-1));
-		hwaddr_t hwaddr = page_translate(addr);
-		hwaddr_write(hwaddr, len, data);
+		lnaddr_write(addr, len-more, data&((1<<(len-more))-1));
+		lnaddr_write((addr+len)&PAGING_MASK, more, data>>(len-more));
+		//hwaddr_t hwaddr = page_translate(addr);
+		//hwaddr_write(hwaddr, len, data);
 
 	}
 	else {
