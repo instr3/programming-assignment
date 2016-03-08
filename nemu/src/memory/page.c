@@ -2,14 +2,24 @@
 #include "nemu.h"
 #include "memory/page.h"
 #include "memory/memory.h"
+#include "memory/tlb.h"
 
 extern CPU_state cpu;
+extern tlb_t tlb;
 hwaddr_t page_translate(lnaddr_t addr)
 {
 	if(cpu.cr0.paging==0)return addr;//Page not enabled
+#ifdef USE_TLB
+	bool success;
+	uint32_t data=find_tlb(tlb,addr>>PAGE_OFFSET_LEN,&success);
 	linear_paged_addr_t tmp;
-	PTE pte;
 	tmp.val=addr;
+	if(success)//Hit TLB
+	{
+		return (data<<PAGE_OFFSET_LEN)+tmp.offset;
+	}
+#endif
+	PTE pte;
 	hwaddr_t base;
 	base=cpu.cr3.val & 0xfffff000;//Get PAGE DIRECTORY start position
 	pte.val=hwaddr_read(base+tmp.dir*4,4);
@@ -33,6 +43,7 @@ hwaddr_t page_translate(lnaddr_t addr)
 		
 	}
 	assert(pte.present);
+	write_tlb(tlb, addr>>PAGE_OFFSET_LEN, pte.page_frame);
 	return (pte.page_frame<<PAGE_OFFSET_LEN)+tmp.offset;
 }
 void page_info(lnaddr_t addr)
@@ -45,9 +56,21 @@ void page_info(lnaddr_t addr)
 		return;
 	}
 	linear_paged_addr_t tmp;
-	PTE pte;
 	tmp.val=addr;
+	PTE pte;
 	printf("dir:\t0x%X\tpage:\t0x%X\toffset:\t0x%X\n",tmp.dir,tmp.page,tmp.offset);
+#ifdef USE_TLB
+	bool success;
+	uint32_t data=find_tlb(tlb,addr>>PAGE_OFFSET_LEN,&success);
+	if(success)//Hit TLB
+	{
+		printf("TLB Hit!Data:\t0x%X\n",data);
+	}
+	else
+	{
+		printf("TLB Miss!\n");
+	}
+#endif
 	hwaddr_t base;
 	base=cpu.cr3.val & 0xfffff000;//Get PAGE DIRECTORY start position
 	pte.val=hwaddr_read(base+tmp.dir*4,4);

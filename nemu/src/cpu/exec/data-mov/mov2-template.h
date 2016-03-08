@@ -1,8 +1,8 @@
 //mov2: mov from/to CR0 or CR3
 #include "cpu/exec/template-start.h"
+#include "memory/tlb.h"
 
 #define instr mov2
-
 static void do_execute() {
 	uint8_t destcode=instr_fetch(cpu.eip+2,1);
 	assert(destcode==0xc0||destcode==0xd8);//CR0 or CR3 concerned.
@@ -20,7 +20,14 @@ static void do_execute() {
 		if(destcode==0xc0)
 			cpu.cr0.val=op_src->val;
 		else
+		{
 			cpu.cr3.val=op_src->val;
+#ifdef USE_TLB
+			extern tlb_t tlb;
+			flush_tlb(tlb);
+			//cr3 modification caused tlb refresh
+#endif
+		}
 		//TODO: into vitrual mode
 		print_asm("mov %s %s",op_src->str,destname);
 	}
