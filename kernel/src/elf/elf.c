@@ -37,7 +37,7 @@ uint32_t loader() {
 	for(ph=(void *)(buf+elf->e_phoff); i<elf->e_phnum ; ++i,++ph) {
 		/* Scan the program header table, load each segment into memory */
 		if(ph->p_type == PT_LOAD) {
-
+				set_bp();
 			//Allocate user page for segment
 			uint32_t hwaddr=mm_malloc(ph->p_vaddr, ph->p_memsz);
 			//Physical memory and Virtual memory pointed to the same page
