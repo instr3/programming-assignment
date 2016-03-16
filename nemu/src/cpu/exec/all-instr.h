@@ -43,9 +43,11 @@
 #include "string/cldstd.h"
 
 #include "misc/misc.h"
+#include "misc/clisti.h"
 #include "misc/lgdt.h"
 #include "misc/lidt.h"
 #include "misc/int.h"
+#include "misc/iret.h"
 #include "misc/pusha.h"
 #include "misc/popa.h"
 
