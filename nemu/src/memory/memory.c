@@ -82,7 +82,7 @@ uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
 		//printf("more:%x\n",more);
 		//fflush(stdout);
 		return lnaddr_read(addr,len-more) | 
-			(lnaddr_read((addr+len)&PAGING_MASK,more)<<(len-more));
+			(lnaddr_read((addr+len)&~PAGING_MASK,more)<<(len-more));
 		//assert(0);
 
 	}
@@ -99,7 +99,7 @@ void lnaddr_write(lnaddr_t addr, size_t len, uint32_t data) {
 		//fflush(stdout);
 		//split into 2 parts
 		lnaddr_write(addr, len-more, data&((1<<(len-more))-1));
-		lnaddr_write((addr+len)&PAGING_MASK, more, data>>(len-more));
+		lnaddr_write((addr+len)&~PAGING_MASK, more, data>>(len-more));
 		//assert(0);
 
 	}
