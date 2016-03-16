@@ -43,10 +43,11 @@
 #include "string/cldstd.h"
 
 #include "misc/misc.h"
+#include "misc/lgdt.h"
+#include "misc/lidt.h"
+#include "misc/int.h"
 
 #include "special/special.h"
-#include "special/lgdt.h"
-#include "special/lidt.h"
 
 #include "transfer/call.h"
 #include "transfer/jcc.h"
