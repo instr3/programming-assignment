@@ -29,7 +29,7 @@ void raise_intr(uint8_t NO) {
 make_helper(int_i) {
 	int i;
 	for(i=0;i<10;++i)
-	printf("[%c]\n",(char)swaddr_read(cpu.ecx+i,1,SREG_DS));
+	printf("[%x]\n",(char)swaddr_read(cpu.ecx+i,1,SREG_DS));
 	uint8_t id = instr_fetch(eip + 1, 1);
 	push_data(cpu.eflags,4);
 	push_data(cpu.cs,4);
