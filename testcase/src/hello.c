@@ -58,12 +58,12 @@ int isatty(int fd) {
 	nemu_assert(0);
 	return 0;
 }
-char buf[128];
+//char buf[128];
 int main() {
 	set_bp();
 	printf("%s", "Hello world!\n");
-	sprintf(buf,"%d + %d = %d\n", 1, 1, 2);
-	printf("%s", buf);
+	printf("%d + %d = %d\n", 1, 1, 2);
+	//printf("%s", buf);
 	HIT_GOOD_TRAP;
 	return 0;
 }
