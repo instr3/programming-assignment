@@ -96,7 +96,20 @@ typedef union
 		uint8_t seg_base_24_31;
 	};
 } gdtitem_t;
-
+typedef union
+{
+	uint64_t item;
+	struct {
+		uint32_t offset_15_0      : 16;
+		uint32_t segment          : 16;
+		uint32_t pad0             : 8;
+		uint32_t type             : 4;
+		uint32_t system           : 1;
+		uint32_t privilege_level  : 2;
+		uint32_t present          : 1;
+		uint32_t offset_31_16     : 16;
+	};
+} idtitem_t;
 extern CPU_state cpu;
 
 static inline int check_reg_index(int index) {
