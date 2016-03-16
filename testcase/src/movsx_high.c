@@ -27,6 +27,7 @@ SOFTWARE.
 
 int main()
 {
+	set_bp();
     volatile int a, c;
     
     __asm__ __volatile__ (
