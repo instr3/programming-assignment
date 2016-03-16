@@ -46,6 +46,8 @@
 #include "misc/lgdt.h"
 #include "misc/lidt.h"
 #include "misc/int.h"
+#include "misc/pusha.h"
+#include "misc/popa.h"
 
 #include "special/special.h"
 
