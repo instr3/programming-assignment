@@ -9,11 +9,11 @@ extern tlb_t tlb;
 hwaddr_t page_translate(lnaddr_t addr)
 {
 	if(cpu.cr0.paging==0)return addr;//Page not enabled
+	linear_paged_addr_t tmp;
+	tmp.val=addr;
 #ifdef USE_TLB
 	bool success;
 	uint32_t data=find_tlb(tlb,addr>>PAGE_OFFSET_LEN,&success);
-	linear_paged_addr_t tmp;
-	tmp.val=addr;
 	if(success)//Hit TLB
 	{
 		return (data<<PAGE_OFFSET_LEN)+tmp.offset;
@@ -43,7 +43,9 @@ hwaddr_t page_translate(lnaddr_t addr)
 		
 	}
 	assert(pte.present);
+#ifdef USE_TLB
 	write_tlb(tlb, addr>>PAGE_OFFSET_LEN, pte.page_frame);
+#endif
 	return (pte.page_frame<<PAGE_OFFSET_LEN)+tmp.offset;
 }
 void page_info(lnaddr_t addr)
