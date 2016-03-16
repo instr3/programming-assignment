@@ -24,16 +24,29 @@ SOFTWARE.
 */
 
 char input_buffer[] = 
-"\x35\x20\x36\x20\x33\x0A\x31\x20\x32\x20"
-"\x31\x32\x0A\x33\x20\x32\x20\x38\x0A\x31"
-"\x20\x33\x20\x35\x0A\x32\x20\x35\x20\x33"
-"\x0A\x33\x20\x34\x20\x34\x0A\x32\x20\x34"
-"\x20\x38\x0A\x33\x20\x34\x0A\x31\x20\x32"
-"\x0A\x35\x20\x31\x0A"
+"\x41\x41\x41\x41\x41\x42\x43\x44\x0A\x54"
+"\x48\x45\x5F\x43\x41\x54\x5F\x49\x4E\x5F"
+"\x54\x48\x45\x5F\x48\x41\x54\x0A\x41\x53"
+"\x44\x4B\x4A\x48\x46\x4B\x41\x53\x4A\x44"
+"\x48\x46\x0A\x53\x49\x45\x52\x48\x54\x49"
+"\x55\x4E\x5A\x49\x47\x0A\x4B\x4A\x46\x44"
+"\x4B\x47\x48\x4B\x48\x47\x0A\x4A\x41\x41"
+"\x41\x41\x41\x4A\x4B\x48\x4B\x4A\x44\x46"
+"\x47\x0A\x56\x48\x4B\x4A\x44\x48\x53\x4A"
+"\x4B\x48\x53\x44\x48\x0A\x4B\x4A\x44\x4A"
+"\x44\x4A\x44\x4A\x44\x4A\x44\x4A\x44\x4A"
+"\x0A\x4A\x4A\x4A\x4A\x4A\x4A\x4A\x4A\x0A"
+"\x4E\x4A\x56\x4A\x0A\x45\x4E\x44\x0A"
 ;
 
 char answer_buffer[] = 
-"\x34\x0A\x38\x0A\x2D\x31\x0A"
+"\x36\x34\x20\x31\x33\x0A\x31\x34\x34\x20"
+"\x35\x31\x0A\x31\x31\x32\x20\x34\x30\x0A"
+"\x39\x36\x20\x33\x39\x0A\x38\x30\x20\x32"
+"\x35\x0A\x31\x31\x32\x20\x33\x36\x0A\x31"
+"\x30\x34\x20\x33\x33\x0A\x31\x31\x32\x20"
+"\x32\x31\x0A\x36\x34\x20\x38\x0A\x33\x32"
+"\x20\x36\x0A"
 ;
 
 #include "trap.h"
@@ -368,32 +381,50 @@ int main()
 
 
 #include <string.h>
-#define max(a, b) ((a) > (b) ? (a) : (b))
-#define MAXN 300
-int f[MAXN + 1][MAXN + 1];
+#include <limits.h>
+
 int main()
 {
-    int i, j, r;
-    int N, M, T;
-    memset(f, -1, sizeof(f));
-    scanf("%d%d%d", &N, &M, &T);
-    for (i = 1; i <= M; i++) {
-        int u, v, w;
-        scanf("%d%d%d", &u, &v, &w);
-        f[u][v] = w;
-    }
-    for (r = 1; r <= N; r++)
-        for (i = 1; i <= N; i++)
-            for (j = 1; j <= N; j++) {
-                if (f[i][r] < 0 || f[r][j] < 0) continue;
-                int t = max(f[i][r], f[r][j]);
-                if (f[i][j] < 0 || t < f[i][j])
-                    f[i][j] = t;
+    char s[300];
+    int len;
+    int cnt[128] = {};
+    int list[30];
+    int sz;
+    int i;
+    int r;
+    int ch;
+    int cur;
+    int ans;
+    while (scanf("%s", s) == 1) {
+        if (strcmp(s, "END") == 0) break;
+        sz = 0;
+        ans = 0;
+        len = strlen(s);
+        for (i = 0; i < len; i++)
+            cnt[ch = s[i]]++;
+        for (i = 0; i < len; i++)
+            if (cnt[ch = s[i]]) {
+                list[sz++] = cnt[ch];
+                cnt[ch] = 0;
             }
-    for (i = 1; i <= T; i++) {
-        int u, v;
-        scanf("%d%d", &u, &v);
-        printf("%d\n", f[u][v]);
+        for (r = 1; r < sz; r++) {
+            int m1, m2;
+            if (list[0] < list[1]) m1 = 0, m2 = 1;
+            else m1 = 1, m2 = 0;
+            for (i = 2; i < sz; i++)
+                if (list[i] < list[m1])
+                    m2 = m1, m1 = i;
+                else if (list[i] < list[m2])
+                    m2 = i;
+            cur = list[m1] + list[m2];
+            ans += cur;
+            list[m1] = cur;
+            list[m2] = INT_MAX;
+        }
+        if (sz == 1)
+            printf("%d %d\n", len * 8, len);
+        else
+            printf("%d %d\n", len * 8, ans);
     }
     return 0;
 }

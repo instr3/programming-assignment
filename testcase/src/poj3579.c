@@ -24,16 +24,31 @@ SOFTWARE.
 */
 
 char input_buffer[] = 
-"\x35\x20\x36\x20\x33\x0A\x31\x20\x32\x20"
-"\x31\x32\x0A\x33\x20\x32\x20\x38\x0A\x31"
-"\x20\x33\x20\x35\x0A\x32\x20\x35\x20\x33"
-"\x0A\x33\x20\x34\x20\x34\x0A\x32\x20\x34"
-"\x20\x38\x0A\x33\x20\x34\x0A\x31\x20\x32"
-"\x0A\x35\x20\x31\x0A"
+"\x34\x0A\x31\x20\x33\x20\x32\x20\x34\x0A"
+"\x33\x0A\x31\x20\x31\x30\x20\x32\x0A\x35"
+"\x20\x0A\x31\x20\x32\x20\x33\x20\x34\x20"
+"\x35\x0A\x34\x20\x0A\x35\x20\x31\x30\x20"
+"\x31\x30\x30\x20\x32\x30\x0A\x34\x0A\x31"
+"\x20\x33\x20\x32\x20\x34\x0A\x33\x0A\x31"
+"\x20\x31\x30\x20\x32\x0A\x34\x0A\x38\x20"
+"\x31\x35\x20\x31\x20\x31\x30\x0A\x33\x31"
+"\x0A\x31\x39\x37\x20\x31\x37\x35\x20\x31"
+"\x32\x39\x20\x31\x37\x39\x20\x37\x32\x20"
+"\x31\x36\x32\x20\x31\x33\x32\x20\x31\x30"
+"\x36\x20\x35\x39\x20\x31\x37\x31\x20\x31"
+"\x36\x39\x20\x31\x38\x34\x20\x35\x30\x20"
+"\x31\x33\x37\x20\x31\x35\x30\x20\x31\x31"
+"\x37\x20\x31\x35\x37\x20\x36\x36\x20\x31"
+"\x34\x36\x20\x34\x30\x20\x38\x37\x20\x36"
+"\x38\x20\x35\x20\x31\x35\x34\x20\x33\x37"
+"\x20\x31\x32\x39\x20\x31\x31\x20\x31\x36"
+"\x33\x20\x31\x33\x36\x20\x31\x37\x20\x31"
+"\x33\x32\x0A\x0A"
 ;
 
 char answer_buffer[] = 
-"\x34\x0A\x38\x0A\x2D\x31\x0A"
+"\x31\x0A\x38\x0A\x32\x0A\x31\x35\x0A\x31"
+"\x0A\x38\x0A\x37\x0A\x35\x35\x0A"
 ;
 
 #include "trap.h"
@@ -367,33 +382,65 @@ int main()
 /* REAL USER PROGRAM */
 
 
-#include <string.h>
-#define max(a, b) ((a) > (b) ? (a) : (b))
-#define MAXN 300
-int f[MAXN + 1][MAXN + 1];
+#include <stdlib.h>
+
+#define MAXN 100000
+#define MAXR 1000000000
+
+int N;
+long long K;
+int a[MAXN];
+
+int cmp(const void *a, const void *b)
+{
+    return *(int *)a - *(int *)b;
+}
+
+int test(int limit)
+{
+    long long cnt = 0;
+    int i;
+    int L, R, M;
+    for (i = 0; i < N; i++) {
+        L = i + 1;
+        R = N;
+        while (R - L > 1) {
+            M = (L + R) / 2;
+            if (a[M] - a[i] <= limit)
+                L = M;
+            else
+                R = M;
+        }
+        if (L < R && a[L] - a[i] <= limit)
+            cnt += L - i;
+    }
+    return cnt < K;
+}
+
 int main()
 {
-    int i, j, r;
-    int N, M, T;
-    memset(f, -1, sizeof(f));
-    scanf("%d%d%d", &N, &M, &T);
-    for (i = 1; i <= M; i++) {
-        int u, v, w;
-        scanf("%d%d%d", &u, &v, &w);
-        f[u][v] = w;
-    }
-    for (r = 1; r <= N; r++)
-        for (i = 1; i <= N; i++)
-            for (j = 1; j <= N; j++) {
-                if (f[i][r] < 0 || f[r][j] < 0) continue;
-                int t = max(f[i][r], f[r][j]);
-                if (f[i][j] < 0 || t < f[i][j])
-                    f[i][j] = t;
-            }
-    for (i = 1; i <= T; i++) {
-        int u, v;
-        scanf("%d%d", &u, &v);
-        printf("%d\n", f[u][v]);
+    int i;
+    int maxa;
+    int L, R, M;
+    while (scanf("%d", &N) == 1 && N) {
+        K = (long long) N * (N - 1) / 2;
+        K = (K + K % 2) / 2;
+        maxa = 0;
+        for (i = 0; i < N; i++) {
+            scanf("%d", &a[i]);
+            if (a[i] > maxa) maxa = a[i];
+        }
+        qsort(a, N, sizeof(int), cmp);
+        L = 0;
+        R = maxa + 1;
+        while (R - L > 1) {
+            M = (L + R) / 2;
+            if (test(M))
+                L = M;
+            else
+                R = M;
+        }
+        printf("%d\n", R);
     }
     return 0;
 }

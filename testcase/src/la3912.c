@@ -24,16 +24,21 @@ SOFTWARE.
 */
 
 char input_buffer[] = 
-"\x35\x20\x36\x20\x33\x0A\x31\x20\x32\x20"
-"\x31\x32\x0A\x33\x20\x32\x20\x38\x0A\x31"
-"\x20\x33\x20\x35\x0A\x32\x20\x35\x20\x33"
-"\x0A\x33\x20\x34\x20\x34\x0A\x32\x20\x34"
-"\x20\x38\x0A\x33\x20\x34\x0A\x31\x20\x32"
-"\x0A\x35\x20\x31\x0A"
+"\x34\x0A\x34\x20\x34\x20\x41\x43\x4D\x0A"
+"\x35\x20\x32\x20\x48\x49\x0A\x32\x20\x36"
+"\x20\x48\x49\x0A\x35\x20\x35\x20\x48\x49"
+"\x20\x48\x4F\x0A"
 ;
 
 char answer_buffer[] = 
-"\x34\x0A\x38\x0A\x2D\x31\x0A"
+"\x31\x20\x30\x30\x30\x30\x31\x31\x30\x31"
+"\x30\x30\x31\x30\x31\x31\x30\x30\x0A\x32"
+"\x20\x30\x31\x31\x30\x30\x30\x30\x30\x31"
+"\x30\x0A\x33\x20\x30\x31\x30\x30\x30\x30"
+"\x30\x30\x31\x30\x30\x31\x0A\x34\x20\x30"
+"\x31\x30\x30\x30\x30\x31\x30\x30\x30\x30"
+"\x31\x31\x30\x31\x30\x31\x31\x30\x30\x30"
+"\x30\x30\x31\x30\x0A"
 ;
 
 #include "trap.h"
@@ -368,32 +373,56 @@ int main()
 
 
 #include <string.h>
-#define max(a, b) ((a) > (b) ? (a) : (b))
-#define MAXN 300
-int f[MAXN + 1][MAXN + 1];
+#define MAXN 200
+int a[MAXN][MAXN];
+int b[MAXN * MAXN];
+int r, c;
+
+int inrange(int x, int y)
+{
+    return 0 <= x && x < r && 0 <= y && y < c;
+}
+
+void draw(int s[])
+{
+    int x = 0, y = 0;
+    static int u[] = {0, 1, 0, -1};
+    static int v[] = {1, 0, -1, 0};
+    int f = 0;
+    int cnt = 0;
+    memset(a, -1, sizeof(a));
+    while (cnt < r * c) {
+        a[x][y] = s[cnt++];
+        if (!inrange(x + u[f], y + v[f]) || a[x + u[f]][y + v[f]] >= 0)
+            f = (f + 1) % 4;
+        x += u[f];
+        y += v[f];
+    }
+    int i, j;
+    for (i = 0; i < r; i++)
+        for (j = 0; j < c; j++)
+            printf("%d", a[i][j]);
+    printf("\n");
+}
+
 int main()
 {
-    int i, j, r;
-    int N, M, T;
-    memset(f, -1, sizeof(f));
-    scanf("%d%d%d", &N, &M, &T);
-    for (i = 1; i <= M; i++) {
-        int u, v, w;
-        scanf("%d%d%d", &u, &v, &w);
-        f[u][v] = w;
-    }
-    for (r = 1; r <= N; r++)
-        for (i = 1; i <= N; i++)
-            for (j = 1; j <= N; j++) {
-                if (f[i][r] < 0 || f[r][j] < 0) continue;
-                int t = max(f[i][r], f[r][j]);
-                if (f[i][j] < 0 || t < f[i][j])
-                    f[i][j] = t;
-            }
-    for (i = 1; i <= T; i++) {
-        int u, v;
-        scanf("%d%d", &u, &v);
-        printf("%d\n", f[u][v]);
+    int i, j, cnt;
+    int n;
+    char ch;
+    scanf("%d", &n);
+    for (i = 1; i <= n; i++) {
+        scanf("%d%d%*c", &r, &c);
+        memset(b, 0, sizeof(b));
+        cnt = 0;
+        while (scanf("%c", &ch) == 1) {
+            if (ch != ' ' && (ch < 'A' || ch > 'Z')) break;
+            ch = ch == ' ' ? 0 : ch - 'A' + 1;
+            for (j = 4; j >= 0; j--)
+                b[cnt++] = !!(ch & (1 << j));
+        }
+        printf("%d ", i);
+        draw(b);
     }
     return 0;
 }

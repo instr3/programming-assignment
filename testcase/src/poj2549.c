@@ -24,16 +24,23 @@ SOFTWARE.
 */
 
 char input_buffer[] = 
-"\x35\x20\x36\x20\x33\x0A\x31\x20\x32\x20"
-"\x31\x32\x0A\x33\x20\x32\x20\x38\x0A\x31"
-"\x20\x33\x20\x35\x0A\x32\x20\x35\x20\x33"
-"\x0A\x33\x20\x34\x20\x34\x0A\x32\x20\x34"
-"\x20\x38\x0A\x33\x20\x34\x0A\x31\x20\x32"
-"\x0A\x35\x20\x31\x0A"
+"\x38\x0A\x2D\x34\x20\x2D\x33\x20\x32\x20"
+"\x31\x20\x37\x20\x34\x20\x39\x20\x38\x0A"
+"\x34\x0A\x31\x20\x32\x20\x33\x20\x34\x0A"
+"\x36\x0A\x2D\x31\x20\x2D\x32\x20\x2D\x33"
+"\x20\x2D\x35\x20\x2D\x34\x20\x2D\x36\x0A"
+"\x35\x0A\x32\x20\x0A\x33\x20\x0A\x35\x20"
+"\x0A\x37\x20\x0A\x31\x32\x0A\x35\x0A\x32"
+"\x20\x0A\x31\x36\x20\x0A\x36\x34\x20\x0A"
+"\x32\x35\x36\x20\x0A\x31\x30\x32\x34\x0A"
+"\x30\x0A\x0A"
 ;
 
 char answer_buffer[] = 
-"\x34\x0A\x38\x0A\x2D\x31\x0A"
+"\x39\x0A\x6E\x6F\x20\x73\x6F\x6C\x75\x74"
+"\x69\x6F\x6E\x0A\x2D\x36\x0A\x31\x32\x0A"
+"\x6E\x6F\x20\x73\x6F\x6C\x75\x74\x69\x6F"
+"\x6E\x0A"
 ;
 
 #include "trap.h"
@@ -367,33 +374,46 @@ int main()
 /* REAL USER PROGRAM */
 
 
-#include <string.h>
-#define max(a, b) ((a) > (b) ? (a) : (b))
-#define MAXN 300
-int f[MAXN + 1][MAXN + 1];
+#include <stdlib.h>
+
+int cmp(const void *a, const void *b)
+{
+    return *(int *)a - *(int *)b;
+}
+
+#define MAXN 1000
+int s[MAXN];
+int n;
+
+void solve()
+{
+    int i;
+    int pa, pb, pc, pd;
+    int x, y;
+
+    for (i = 0; i < n; i++)
+        scanf("%d", &s[i]);
+    qsort(s, n, sizeof(int), cmp);
+    for (pd = n - 1; pd >= 0; pd--)
+        for (pc = 0; pc < n; pc++) {
+            if (pc == pd) continue;
+            x = s[pd] - s[pc];
+            pa = 0;
+            pb = pc - 1;
+            while (pa < pb) {
+                y = s[pa] + s[pb];
+                if (y > x) pb--;
+                else if (y < x) pa++;
+                else {
+                    printf("%d\n", s[pd]);
+                    return;
+                }
+            }
+        }
+    printf("no solution\n");
+}
 int main()
 {
-    int i, j, r;
-    int N, M, T;
-    memset(f, -1, sizeof(f));
-    scanf("%d%d%d", &N, &M, &T);
-    for (i = 1; i <= M; i++) {
-        int u, v, w;
-        scanf("%d%d%d", &u, &v, &w);
-        f[u][v] = w;
-    }
-    for (r = 1; r <= N; r++)
-        for (i = 1; i <= N; i++)
-            for (j = 1; j <= N; j++) {
-                if (f[i][r] < 0 || f[r][j] < 0) continue;
-                int t = max(f[i][r], f[r][j]);
-                if (f[i][j] < 0 || t < f[i][j])
-                    f[i][j] = t;
-            }
-    for (i = 1; i <= T; i++) {
-        int u, v;
-        scanf("%d%d", &u, &v);
-        printf("%d\n", f[u][v]);
-    }
+    while (scanf("%d", &n) == 1 && n) solve();
     return 0;
 }

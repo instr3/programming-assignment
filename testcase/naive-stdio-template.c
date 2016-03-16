@@ -1,41 +1,3 @@
-/*
-The MIT License (MIT)
-
-Copyright (c) 2015 Zhang Boyang
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-*/
-
-char input_buffer[] = 
-"\x35\x20\x36\x20\x33\x0A\x31\x20\x32\x20"
-"\x31\x32\x0A\x33\x20\x32\x20\x38\x0A\x31"
-"\x20\x33\x20\x35\x0A\x32\x20\x35\x20\x33"
-"\x0A\x33\x20\x34\x20\x34\x0A\x32\x20\x34"
-"\x20\x38\x0A\x33\x20\x34\x0A\x31\x20\x32"
-"\x0A\x35\x20\x31\x0A"
-;
-
-char answer_buffer[] = 
-"\x34\x0A\x38\x0A\x2D\x31\x0A"
-;
-
 #include "trap.h"
 #include <stdarg.h>
 #include <string.h>
@@ -366,34 +328,3 @@ int main()
 
 /* REAL USER PROGRAM */
 
-
-#include <string.h>
-#define max(a, b) ((a) > (b) ? (a) : (b))
-#define MAXN 300
-int f[MAXN + 1][MAXN + 1];
-int main()
-{
-    int i, j, r;
-    int N, M, T;
-    memset(f, -1, sizeof(f));
-    scanf("%d%d%d", &N, &M, &T);
-    for (i = 1; i <= M; i++) {
-        int u, v, w;
-        scanf("%d%d%d", &u, &v, &w);
-        f[u][v] = w;
-    }
-    for (r = 1; r <= N; r++)
-        for (i = 1; i <= N; i++)
-            for (j = 1; j <= N; j++) {
-                if (f[i][r] < 0 || f[r][j] < 0) continue;
-                int t = max(f[i][r], f[r][j]);
-                if (f[i][j] < 0 || t < f[i][j])
-                    f[i][j] = t;
-            }
-    for (i = 1; i <= T; i++) {
-        int u, v;
-        scanf("%d%d", &u, &v);
-        printf("%d\n", f[u][v]);
-    }
-    return 0;
-}

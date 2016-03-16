@@ -24,16 +24,13 @@ SOFTWARE.
 */
 
 char input_buffer[] = 
-"\x35\x20\x36\x20\x33\x0A\x31\x20\x32\x20"
-"\x31\x32\x0A\x33\x20\x32\x20\x38\x0A\x31"
-"\x20\x33\x20\x35\x0A\x32\x20\x35\x20\x33"
-"\x0A\x33\x20\x34\x20\x34\x0A\x32\x20\x34"
-"\x20\x38\x0A\x33\x20\x34\x0A\x31\x20\x32"
-"\x0A\x35\x20\x31\x0A"
+"\x32\x0A\x34\x20\x31\x20\x31\x0A\x31\x0A"
+"\x32\x0A\x33\x20\x32\x20\x33\x0A\x31\x20"
+"\x31\x0A\x31\x20\x31\x0A"
 ;
 
 char answer_buffer[] = 
-"\x34\x0A\x38\x0A\x2D\x31\x0A"
+"\x31\x35\x0A\x34\x34\x0A"
 ;
 
 #include "trap.h"
@@ -368,32 +365,155 @@ int main()
 
 
 #include <string.h>
-#define max(a, b) ((a) > (b) ? (a) : (b))
-#define MAXN 300
-int f[MAXN + 1][MAXN + 1];
+//#include <assert.h>
+
+typedef unsigned long long ULL;
+typedef long long LL;
+
+void ULLdivULL(ULL a, ULL b, ULL *qp, ULL *rp)
+{
+    ULL r = 0, q = 0;
+    int i;
+    for (i = 0; i < 64; i++) {
+        r = (r << 1) + (a >> 63);
+        a <<= 1;
+        q <<= 1;
+        if (r >= b) {
+            r -= b;
+            q += 1;
+        }
+    }
+    if (qp) *qp = q;
+    if (rp) *rp = r;
+}
+
+void LLdivLL(LL a, LL b, LL *qp, LL *rp)
+{
+    int qf = 0, rf = 0;
+    if (a < 0) { qf = rf = 1; a = -a; }
+    if (b < 0) { qf ^= 1; b = -b; }
+
+    ULLdivULL(a, b, (ULL *) qp, (ULL *) rp);
+
+    if (qp && qf) *qp = -*qp;
+    if (rp && rf) *rp = -*rp;
+}
+
+#define MAXR 8
+#define MOD 1000000007
+#define MAXMAT (MAXR + 1)
+struct mat {
+    int n, m;
+    long long a[MAXMAT][MAXMAT];
+};
+
+void print_mat(struct mat *a)
+{
+    int i, j;
+    printf("matrix: %d * %d\n", a->n, a->m);
+    for (i = 0; i < a->n; i++) {
+        for (j = 0; j < a->m; j++)
+            printf("%d ", (int) a->a[i][j]);
+        printf("\n");
+    }
+}
+
+void mat_mul(struct mat *c, struct mat *a, struct mat *b)
+{
+    static struct mat tmp;
+    nemu_assert(a->m == b->n);
+    tmp.n = a->n;
+    tmp.m = b->m;
+    int i, j, k;
+    for (i = 0; i < tmp.n; i++)
+        for (j = 0; j < tmp.m; j++) {
+            tmp.a[i][j] = 0;
+            for (k = 0; k < a->m; k++) {
+                tmp.a[i][j] += a->a[i][k] * b->a[k][j];
+                LLdivLL(tmp.a[i][j], MOD, NULL, &tmp.a[i][j]);
+            }
+        }
+    *c = tmp;
+}
+
+void mat_pow(struct mat *b, struct mat *a, int n)
+{
+    nemu_assert(a != b);
+    if (n == 1) {
+        *b = *a;
+        return;
+    }
+    mat_pow(b, a, n / 2);
+    mat_mul(b, b, b);
+    if (n % 2)
+        mat_mul(b, b, a);
+}
+
+int S[MAXR + 1];
+int A[MAXR + 1];
+
+void solve()
+{
+    int i;
+    int N, R, K;
+    scanf("%d%d%d", &N, &R, &K);
+    for (i = 1; i <= R; i++)
+        scanf("%d", &S[i]);
+    for (i = 1; i <= R; i++)
+        scanf("%d", &A[i]);
+
+    static struct mat a, b, c, s, r;
+    memset(&a, 0, sizeof(a));
+    memset(&s, 0, sizeof(s));
+    a.n = a.m = R + 1;
+    for (i = 1; i <= R; i++)
+        a.a[i][1] = A[i];
+    for (i = 1; i < R; i++)
+        a.a[i][i + 1] = 1;
+
+    if (N * K <= R) {
+        
+    }
+    /*print_mat(&a);*/
+
+    mat_pow(&b, &a, K);
+    b.a[0][0] = b.a[1][0] = 1;
+    /*print_mat(&b);*/
+
+    
+    s.n = 1, s.m = R + 1;
+    for (i = 1; i <= R; i++)
+        s.a[0][i] = S[R - i + 1];    
+    int scnt = 0;
+    int sadd = 0;
+    for (i = K; i < R; i += K) {
+        sadd += S[i];
+        sadd %= MOD;
+        scnt++;
+        if (scnt == N) {
+            printf("%d\n", (int) sadd);
+            return;
+        }
+    }
+    for (i = R; i < (scnt + 1) * K; i++)
+        mat_mul(&s, &s, &a);
+    s.a[0][0] = sadd;
+    
+    /*print_mat(&s);*/
+
+    mat_pow(&c, &b, N - scnt);
+    /*print_mat(&c);*/
+
+    mat_mul(&r, &s, &c);
+    /*print_mat(&r);*/
+
+    printf("%d\n", (int) r.a[0][0]);
+}
+
 int main()
 {
-    int i, j, r;
-    int N, M, T;
-    memset(f, -1, sizeof(f));
-    scanf("%d%d%d", &N, &M, &T);
-    for (i = 1; i <= M; i++) {
-        int u, v, w;
-        scanf("%d%d%d", &u, &v, &w);
-        f[u][v] = w;
-    }
-    for (r = 1; r <= N; r++)
-        for (i = 1; i <= N; i++)
-            for (j = 1; j <= N; j++) {
-                if (f[i][r] < 0 || f[r][j] < 0) continue;
-                int t = max(f[i][r], f[r][j]);
-                if (f[i][j] < 0 || t < f[i][j])
-                    f[i][j] = t;
-            }
-    for (i = 1; i <= T; i++) {
-        int u, v;
-        scanf("%d%d", &u, &v);
-        printf("%d\n", f[u][v]);
-    }
+    int T;
+    scanf("%d", &T);
+    while (T--) solve();
     return 0;
 }

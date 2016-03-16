@@ -24,16 +24,21 @@ SOFTWARE.
 */
 
 char input_buffer[] = 
-"\x35\x20\x36\x20\x33\x0A\x31\x20\x32\x20"
-"\x31\x32\x0A\x33\x20\x32\x20\x38\x0A\x31"
-"\x20\x33\x20\x35\x0A\x32\x20\x35\x20\x33"
-"\x0A\x33\x20\x34\x20\x34\x0A\x32\x20\x34"
-"\x20\x38\x0A\x33\x20\x34\x0A\x31\x20\x32"
-"\x0A\x35\x20\x31\x0A"
+"\x34\x0A\x34\x20\x34\x20\x30\x30\x30\x30"
+"\x31\x31\x30\x31\x30\x30\x31\x30\x31\x31"
+"\x30\x30\x0A\x35\x20\x32\x20\x30\x31\x31"
+"\x30\x30\x30\x30\x30\x31\x30\x0A\x32\x20"
+"\x36\x20\x30\x31\x30\x30\x30\x30\x30\x30"
+"\x31\x30\x30\x31\x0A\x35\x20\x35\x20\x30"
+"\x31\x30\x30\x30\x30\x31\x30\x30\x30\x30"
+"\x31\x31\x30\x31\x30\x31\x31\x30\x30\x30"
+"\x30\x30\x31\x30\x0A"
 ;
 
 char answer_buffer[] = 
-"\x34\x0A\x38\x0A\x2D\x31\x0A"
+"\x31\x20\x41\x43\x4D\x0A\x32\x20\x48\x49"
+"\x0A\x33\x20\x48\x49\x0A\x34\x20\x48\x49"
+"\x20\x48\x4F\x0A"
 ;
 
 #include "trap.h"
@@ -368,32 +373,61 @@ int main()
 
 
 #include <string.h>
-#define max(a, b) ((a) > (b) ? (a) : (b))
-#define MAXN 300
-int f[MAXN + 1][MAXN + 1];
+#define MAXN 200
+int a[MAXN][MAXN];
+int b[MAXN * MAXN];
+int r, c;
+
+int inrange(int x, int y)
+{
+    return 0 <= x && x < r && 0 <= y && y < c;
+}
+
+void draw(int s[])
+{
+    int x = 0, y = 0;
+    static int u[] = {0, 1, 0, -1};
+    static int v[] = {1, 0, -1, 0};
+    int f = 0;
+    int cnt = 0;
+    while (cnt < r * c) {
+        s[cnt++] = a[x][y];
+        a[x][y] = -1;
+        if (!inrange(x + u[f], y + v[f]) || a[x + u[f]][y + v[f]] < 0)
+            f = (f + 1) % 4;
+        x += u[f];
+        y += v[f];
+    }
+}
+
 int main()
 {
-    int i, j, r;
-    int N, M, T;
-    memset(f, -1, sizeof(f));
-    scanf("%d%d%d", &N, &M, &T);
-    for (i = 1; i <= M; i++) {
-        int u, v, w;
-        scanf("%d%d%d", &u, &v, &w);
-        f[u][v] = w;
-    }
-    for (r = 1; r <= N; r++)
-        for (i = 1; i <= N; i++)
-            for (j = 1; j <= N; j++) {
-                if (f[i][r] < 0 || f[r][j] < 0) continue;
-                int t = max(f[i][r], f[r][j]);
-                if (f[i][j] < 0 || t < f[i][j])
-                    f[i][j] = t;
+    int t;
+    int i, j;
+    int n;
+    int ch;
+    char buf[MAXN * MAXN + 1];
+    int len;
+
+    scanf("%d", &n);
+    for (t = 1; t <= n; t++) {
+        scanf("%d%d", &r, &c);
+        scanf("%s", buf);
+        for (i = 0; i < r; i++)
+            for (j = 0; j < c; j++)
+                a[i][j] = buf[i * c + j] - '0';
+        draw(b);
+        len = 0;
+        for (i = 0; i + 5 <= r * c; i += 5) {
+            ch = 0;
+            for (j = 0; j < 5; j++) {
+                ch = (ch << 1) + b[i + j];
             }
-    for (i = 1; i <= T; i++) {
-        int u, v;
-        scanf("%d%d", &u, &v);
-        printf("%d\n", f[u][v]);
+            buf[len++] = ch ? ch + 'A' - 1 : ' ';
+        }
+        buf[len] = '\0';
+        while (len > 0 && buf[len - 1] == ' ') buf[--len] = '\0';
+        printf("%d %s\n", t, buf);
     }
     return 0;
 }

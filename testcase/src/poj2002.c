@@ -24,16 +24,18 @@ SOFTWARE.
 */
 
 char input_buffer[] = 
-"\x35\x20\x36\x20\x33\x0A\x31\x20\x32\x20"
-"\x31\x32\x0A\x33\x20\x32\x20\x38\x0A\x31"
-"\x20\x33\x20\x35\x0A\x32\x20\x35\x20\x33"
-"\x0A\x33\x20\x34\x20\x34\x0A\x32\x20\x34"
-"\x20\x38\x0A\x33\x20\x34\x0A\x31\x20\x32"
-"\x0A\x35\x20\x31\x0A"
+"\x34\x0A\x31\x20\x30\x0A\x30\x20\x31\x0A"
+"\x31\x20\x31\x0A\x30\x20\x30\x0A\x39\x0A"
+"\x30\x20\x30\x0A\x31\x20\x30\x0A\x32\x20"
+"\x30\x0A\x30\x20\x32\x0A\x31\x20\x32\x0A"
+"\x32\x20\x32\x0A\x30\x20\x31\x0A\x31\x20"
+"\x31\x0A\x32\x20\x31\x0A\x34\x0A\x2D\x32"
+"\x20\x35\x0A\x33\x20\x37\x0A\x30\x20\x30"
+"\x0A\x35\x20\x32\x0A\x30\x0A"
 ;
 
 char answer_buffer[] = 
-"\x34\x0A\x38\x0A\x2D\x31\x0A"
+"\x31\x0A\x36\x0A\x31\x0A"
 ;
 
 #include "trap.h"
@@ -367,33 +369,49 @@ int main()
 /* REAL USER PROGRAM */
 
 
-#include <string.h>
-#define max(a, b) ((a) > (b) ? (a) : (b))
-#define MAXN 300
-int f[MAXN + 1][MAXN + 1];
+#include <stdlib.h>
+
+#define MAXN 1000
+
+struct point {
+    int x, y;
+} p[MAXN];
+
+int cmp(const void *a, const void *b)
+{
+    const struct point *pa = a, *pb = b;
+    if (pa->x != pb->x) return pa->x - pb->x;
+    return pa->y - pb->y;
+}
+
+void rotate(struct point *r, struct point *a, struct point *b)
+{
+    int dx = a->x - b->x;
+    int dy = a->y - b->y;
+    r->x = a->x - dy;
+    r->y = a->y + dx;
+}
+
 int main()
 {
-    int i, j, r;
-    int N, M, T;
-    memset(f, -1, sizeof(f));
-    scanf("%d%d%d", &N, &M, &T);
-    for (i = 1; i <= M; i++) {
-        int u, v, w;
-        scanf("%d%d%d", &u, &v, &w);
-        f[u][v] = w;
-    }
-    for (r = 1; r <= N; r++)
-        for (i = 1; i <= N; i++)
-            for (j = 1; j <= N; j++) {
-                if (f[i][r] < 0 || f[r][j] < 0) continue;
-                int t = max(f[i][r], f[r][j]);
-                if (f[i][j] < 0 || t < f[i][j])
-                    f[i][j] = t;
+    int i, j;
+    int ans;
+    int n;
+    struct point p3, p4;
+    while (scanf("%d", &n) == 1 && n) {
+        ans = 0;
+        for (i = 0; i < n; i++)
+            scanf("%d%d", &p[i].x, &p[i].y);
+        qsort(p, n, sizeof(struct point), cmp);
+        for (i = 0; i < n; i++)
+            for (j = i + 1; j < n; j++) {
+                rotate(&p3, &p[i], &p[j]);
+                if (!bsearch(&p3, p, n, sizeof(struct point), cmp)) continue;
+                rotate(&p4, &p3, &p[i]);
+                if (!bsearch(&p4, p, n, sizeof(struct point), cmp)) continue;
+                ans++;
             }
-    for (i = 1; i <= T; i++) {
-        int u, v;
-        scanf("%d%d", &u, &v);
-        printf("%d\n", f[u][v]);
+        printf("%d\n", ans / 2);
     }
     return 0;
 }

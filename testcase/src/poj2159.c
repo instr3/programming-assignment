@@ -24,16 +24,13 @@ SOFTWARE.
 */
 
 char input_buffer[] = 
-"\x35\x20\x36\x20\x33\x0A\x31\x20\x32\x20"
-"\x31\x32\x0A\x33\x20\x32\x20\x38\x0A\x31"
-"\x20\x33\x20\x35\x0A\x32\x20\x35\x20\x33"
-"\x0A\x33\x20\x34\x20\x34\x0A\x32\x20\x34"
-"\x20\x38\x0A\x33\x20\x34\x0A\x31\x20\x32"
-"\x0A\x35\x20\x31\x0A"
+"\x4A\x57\x50\x55\x44\x4A\x53\x54\x56\x50"
+"\x0A\x56\x49\x43\x54\x4F\x52\x49\x4F\x55"
+"\x53\x0A"
 ;
 
 char answer_buffer[] = 
-"\x34\x0A\x38\x0A\x2D\x31\x0A"
+"\x59\x45\x53\x0A"
 ;
 
 #include "trap.h"
@@ -367,33 +364,29 @@ int main()
 /* REAL USER PROGRAM */
 
 
+#include <stdlib.h>
 #include <string.h>
-#define max(a, b) ((a) > (b) ? (a) : (b))
-#define MAXN 300
-int f[MAXN + 1][MAXN + 1];
+#define MAXN 100
+#define MAXC 26
+char a[MAXN + 1];
+char b[MAXN + 1];
+int cnt_a[MAXC];
+int cnt_b[MAXC];
+int cmp(const void *a, const void *b)
+{
+    return *(int *)a - *(int *)b;
+}
 int main()
 {
-    int i, j, r;
-    int N, M, T;
-    memset(f, -1, sizeof(f));
-    scanf("%d%d%d", &N, &M, &T);
-    for (i = 1; i <= M; i++) {
-        int u, v, w;
-        scanf("%d%d%d", &u, &v, &w);
-        f[u][v] = w;
+    int i;
+    scanf("%s%s", a, b);
+    int l = strlen(a);
+    for (i = 0; i < l; i++) {
+        cnt_a[a[i] - 'A']++;
+        cnt_b[b[i] - 'A']++;
     }
-    for (r = 1; r <= N; r++)
-        for (i = 1; i <= N; i++)
-            for (j = 1; j <= N; j++) {
-                if (f[i][r] < 0 || f[r][j] < 0) continue;
-                int t = max(f[i][r], f[r][j]);
-                if (f[i][j] < 0 || t < f[i][j])
-                    f[i][j] = t;
-            }
-    for (i = 1; i <= T; i++) {
-        int u, v;
-        scanf("%d%d", &u, &v);
-        printf("%d\n", f[u][v]);
-    }
+    qsort(cnt_a, MAXC, sizeof(int), cmp);
+    qsort(cnt_b, MAXC, sizeof(int), cmp);
+    puts(memcmp(cnt_a, cnt_b, sizeof(cnt_a)) == 0 ? "YES" : "NO");
     return 0;
 }

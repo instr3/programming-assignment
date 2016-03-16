@@ -24,16 +24,14 @@ SOFTWARE.
 */
 
 char input_buffer[] = 
-"\x35\x20\x36\x20\x33\x0A\x31\x20\x32\x20"
-"\x31\x32\x0A\x33\x20\x32\x20\x38\x0A\x31"
-"\x20\x33\x20\x35\x0A\x32\x20\x35\x20\x33"
-"\x0A\x33\x20\x34\x20\x34\x0A\x32\x20\x34"
-"\x20\x38\x0A\x33\x20\x34\x0A\x31\x20\x32"
-"\x0A\x35\x20\x31\x0A"
+"\x44\x42\x41\x43\x45\x47\x46\x20\x41\x42"
+"\x43\x44\x45\x46\x47\x0A\x42\x43\x41\x44"
+"\x20\x43\x42\x41\x44\x0A"
 ;
 
 char answer_buffer[] = 
-"\x34\x0A\x38\x0A\x2D\x31\x0A"
+"\x41\x43\x42\x46\x47\x45\x44\x0A\x43\x44"
+"\x41\x42\x0A"
 ;
 
 #include "trap.h"
@@ -368,32 +366,24 @@ int main()
 
 
 #include <string.h>
-#define max(a, b) ((a) > (b) ? (a) : (b))
-#define MAXN 300
-int f[MAXN + 1][MAXN + 1];
+
+#define MAXN 26
+
+void solve(char *s1, char *s2, int len)
+{
+    if (len == 0) return;
+    int nlen = strchr(s2, *s1) - s2;
+    solve(s1 + 1, s2, nlen);
+    solve(s1 + nlen + 1, s2 + nlen + 1, len - nlen - 1);
+    putchar(*s1);
+}
+
 int main()
 {
-    int i, j, r;
-    int N, M, T;
-    memset(f, -1, sizeof(f));
-    scanf("%d%d%d", &N, &M, &T);
-    for (i = 1; i <= M; i++) {
-        int u, v, w;
-        scanf("%d%d%d", &u, &v, &w);
-        f[u][v] = w;
-    }
-    for (r = 1; r <= N; r++)
-        for (i = 1; i <= N; i++)
-            for (j = 1; j <= N; j++) {
-                if (f[i][r] < 0 || f[r][j] < 0) continue;
-                int t = max(f[i][r], f[r][j]);
-                if (f[i][j] < 0 || t < f[i][j])
-                    f[i][j] = t;
-            }
-    for (i = 1; i <= T; i++) {
-        int u, v;
-        scanf("%d%d", &u, &v);
-        printf("%d\n", f[u][v]);
+    char s1[MAXN + 1], s2[MAXN + 1];
+    while (scanf("%s%s", s1, s2) == 2) {
+        solve(s1, s2, strlen(s1));
+        putchar('\n');
     }
     return 0;
 }

@@ -23,22 +23,24 @@ SOFTWARE.
 
 */
 
-char input_buffer[] = 
-"\x35\x20\x36\x20\x33\x0A\x31\x20\x32\x20"
-"\x31\x32\x0A\x33\x20\x32\x20\x38\x0A\x31"
-"\x20\x33\x20\x35\x0A\x32\x20\x35\x20\x33"
-"\x0A\x33\x20\x34\x20\x34\x0A\x32\x20\x34"
-"\x20\x38\x0A\x33\x20\x34\x0A\x31\x20\x32"
-"\x0A\x35\x20\x31\x0A"
-;
-
-char answer_buffer[] = 
-"\x34\x0A\x38\x0A\x2D\x31\x0A"
-;
-
 #include "trap.h"
 #include <stdarg.h>
 #include <string.h>
+
+char input_buffer[] = 
+    "2 abc cba\n"
+    "2 abc bca\n"
+    "10 abc bca\n"
+    "13 abejkcfghid jkebfghicda\n"
+    "0\n"
+;
+
+char answer_buffer[] = 
+    "4\n"
+    "1\n"
+    "45\n"
+    "207352860\n"
+;
 
 /* TEMPLATE CODE */
 
@@ -368,32 +370,78 @@ int main()
 
 
 #include <string.h>
-#define max(a, b) ((a) > (b) ? (a) : (b))
-#define MAXN 300
-int f[MAXN + 1][MAXN + 1];
+
+#define MAXL 26
+typedef long long LL;
+typedef unsigned long long ULL;
+void ULLdivULL(ULL a, ULL b, ULL *qp, ULL *rp)
+{
+    ULL r = 0, q = 0;
+    int i;
+    for (i = 0; i < 64; i++) {
+        r = (r << 1) + (a >> 63);
+        a <<= 1;
+        q <<= 1;
+        if (r >= b) {
+            r -= b;
+            q += 1;
+        }
+    }
+    if (qp) *qp = q;
+    if (rp) *rp = r;
+}
+
+void LLdivLL(LL a, LL b, LL *qp, LL *rp)
+{
+    int qf = 0, rf = 0;
+    if (a < 0) { qf = rf = 1; a = -a; }
+    if (b < 0) { qf ^= 1; b = -b; }
+
+    ULLdivULL(a, b, (ULL *) qp, (ULL *) rp);
+
+    if (qp && qf) *qp = -*qp;
+    if (rp && rf) *rp = -*rp;
+}
+
+long long jc(int n)
+{
+    return n ? jc(n - 1) * n : 1;
+}
+
+int c(int p, int q)
+{
+    long long x;
+    LLdivLL(jc(p), (jc(q) * jc(p - q)), &x, NULL);
+    return x;
+}
+
+int solve(char *s1, char *s2, int len, int m)
+{
+    if (len == 1) return 1;
+    
+    char *n1, *n2;
+    int nlen;
+    int ans = 1, cnt = 0;
+
+    for (n1 = s1 + 1, n2 = s2; len > 1; n1 += nlen, n2 += nlen, len -= nlen) {
+        nlen = strchr(n2, *n1) - n2 + 1;
+        ans *= solve(n1, n2, nlen, m);
+        cnt++;
+    }
+
+    return ans * c(m, cnt);
+}
+
 int main()
 {
-    int i, j, r;
-    int N, M, T;
-    memset(f, -1, sizeof(f));
-    scanf("%d%d%d", &N, &M, &T);
-    for (i = 1; i <= M; i++) {
-        int u, v, w;
-        scanf("%d%d%d", &u, &v, &w);
-        f[u][v] = w;
-    }
-    for (r = 1; r <= N; r++)
-        for (i = 1; i <= N; i++)
-            for (j = 1; j <= N; j++) {
-                if (f[i][r] < 0 || f[r][j] < 0) continue;
-                int t = max(f[i][r], f[r][j]);
-                if (f[i][j] < 0 || t < f[i][j])
-                    f[i][j] = t;
-            }
-    for (i = 1; i <= T; i++) {
-        int u, v;
-        scanf("%d%d", &u, &v);
-        printf("%d\n", f[u][v]);
+    char s1[MAXL + 1], s2[MAXL + 1];
+    int m, k;
+    int ans;
+    while (scanf("%d", &m) == 1 && m) {
+        scanf("%s%s", s1, s2);
+        k = strlen(s1);
+        ans = solve(s1, s2, k, m);
+        printf("%d\n", ans);
     }
     return 0;
 }

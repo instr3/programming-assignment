@@ -24,16 +24,13 @@ SOFTWARE.
 */
 
 char input_buffer[] = 
-"\x35\x20\x36\x20\x33\x0A\x31\x20\x32\x20"
-"\x31\x32\x0A\x33\x20\x32\x20\x38\x0A\x31"
-"\x20\x33\x20\x35\x0A\x32\x20\x35\x20\x33"
-"\x0A\x33\x20\x34\x20\x34\x0A\x32\x20\x34"
-"\x20\x38\x0A\x33\x20\x34\x0A\x31\x20\x32"
-"\x0A\x35\x20\x31\x0A"
+"\x35\x20\x33\x0A\x33\x20\x31\x30\x0A\x39"
+"\x20\x32\x0A\x35\x20\x36\x0A\x38\x20\x34"
+"\x0A\x36\x20\x35\x0A"
 ;
 
 char answer_buffer[] = 
-"\x34\x0A\x38\x0A\x2D\x31\x0A"
+"\x35\x0A"
 ;
 
 #include "trap.h"
@@ -367,33 +364,29 @@ int main()
 /* REAL USER PROGRAM */
 
 
-#include <string.h>
-#define max(a, b) ((a) > (b) ? (a) : (b))
-#define MAXN 300
-int f[MAXN + 1][MAXN + 1];
+#include <stdlib.h>
+#define MAXN 50000
+int a[MAXN + 1], b[MAXN + 1], c[MAXN + 1];
+
+int cmp(const void *x, const void *y)
+{
+    return a[*(int *)y] - a[*(int *)x];
+}
+
 int main()
 {
-    int i, j, r;
-    int N, M, T;
-    memset(f, -1, sizeof(f));
-    scanf("%d%d%d", &N, &M, &T);
-    for (i = 1; i <= M; i++) {
-        int u, v, w;
-        scanf("%d%d%d", &u, &v, &w);
-        f[u][v] = w;
+    int i;
+    int n, k;
+    scanf("%d%d", &n, &k);
+    for (i = 1; i <= n; i++) {
+        scanf("%d%d", &a[i], &b[i]);
+        c[i] = i;
     }
-    for (r = 1; r <= N; r++)
-        for (i = 1; i <= N; i++)
-            for (j = 1; j <= N; j++) {
-                if (f[i][r] < 0 || f[r][j] < 0) continue;
-                int t = max(f[i][r], f[r][j]);
-                if (f[i][j] < 0 || t < f[i][j])
-                    f[i][j] = t;
-            }
-    for (i = 1; i <= T; i++) {
-        int u, v;
-        scanf("%d%d", &u, &v);
-        printf("%d\n", f[u][v]);
-    }
+    qsort(c + 1, n, sizeof(int), cmp);
+    int r = c[0];
+    for (i = 1; i <= k; i++)
+        if (b[c[i]] > b[r])
+            r = c[i];
+    printf("%d\n", r);
     return 0;
 }

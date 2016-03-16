@@ -24,16 +24,29 @@ SOFTWARE.
 */
 
 char input_buffer[] = 
-"\x35\x20\x36\x20\x33\x0A\x31\x20\x32\x20"
-"\x31\x32\x0A\x33\x20\x32\x20\x38\x0A\x31"
-"\x20\x33\x20\x35\x0A\x32\x20\x35\x20\x33"
-"\x0A\x33\x20\x34\x20\x34\x0A\x32\x20\x34"
-"\x20\x38\x0A\x33\x20\x34\x0A\x31\x20\x32"
-"\x0A\x35\x20\x31\x0A"
+"\x32\x0A\x31\x20\x32\x20\x32\x20\x31\x0A"
+"\x35\x0A\x31\x20\x31\x20\x31\x20\x32\x20"
+"\x31\x20\x33\x20\x33\x20\x32\x20\x32\x20"
+"\x32\x0A\x32\x20\x31\x20\x34\x20\x32\x20"
+"\x34\x20\x31\x20\x35\x20\x31\x20\x33\x20"
+"\x31\x0A\x34\x20\x35\x20\x35\x20\x32\x20"
+"\x35\x20\x33\x20\x35\x20\x35\x20\x35\x20"
+"\x34\x0A\x32\x20\x35\x20\x33\x20\x34\x20"
+"\x33\x20\x35\x20\x34\x20\x33\x20\x34\x20"
+"\x34\x0A\x35\x0A\x31\x20\x31\x20\x31\x20"
+"\x32\x20\x31\x20\x33\x20\x33\x20\x32\x20"
+"\x32\x20\x32\x0A\x32\x20\x31\x20\x33\x20"
+"\x31\x20\x34\x20\x31\x20\x35\x20\x31\x20"
+"\x34\x20\x32\x0A\x34\x20\x35\x20\x35\x20"
+"\x32\x20\x35\x20\x33\x20\x35\x20\x35\x20"
+"\x35\x20\x34\x0A\x32\x20\x34\x20\x31\x20"
+"\x34\x20\x33\x20\x35\x20\x34\x20\x33\x20"
+"\x34\x20\x34\x0A\x30\x0A"
 ;
 
 char answer_buffer[] = 
-"\x34\x0A\x38\x0A\x2D\x31\x0A"
+"\x77\x72\x6F\x6E\x67\x0A\x67\x6F\x6F\x64"
+"\x0A\x77\x72\x6F\x6E\x67\x0A"
 ;
 
 #include "trap.h"
@@ -367,33 +380,62 @@ int main()
 /* REAL USER PROGRAM */
 
 
-#include <string.h>
-#define max(a, b) ((a) > (b) ? (a) : (b))
-#define MAXN 300
-int f[MAXN + 1][MAXN + 1];
+#define MAXN 100
+int a[MAXN + 2][MAXN + 2];
+int sx[MAXN + 1], sy[MAXN + 1];
+int vis[MAXN + 2][MAXN + 2];
+int viscnt;
+void dfs(int x, int y)
+{
+    static int u[] = {0, 1, 0, -1};
+    static int v[] = {1, 0, -1, 0};
+    viscnt += vis[x][y] = 1;
+    int i;
+    for (i = 0; i < 4; i++) {
+        int nx = x + u[i], ny = y + v[i];
+        if (!vis[nx][ny] && a[x][y] == a[nx][ny])
+            dfs(nx, ny);
+    }
+}
+void solve(int n)
+{
+    int i, j;
+    for (i = 0; i <= n + 1; i++)
+        for (j = 0; j <= n + 1; j++) {
+            a[i][j] = j == 0 || j == n + 1 || i == 0 || i == n + 1 ? -1 : 0;
+            vis[i][j] = 0;
+        }
+    for (i = 1; i <= n - 1; i++)
+        for (j = 1; j <= n; j++) {
+            int x, y;
+            scanf("%d%d", &x, &y);
+            a[x][y] = i;
+            sx[i] = x;
+            sy[i] = y;
+        }
+
+    if (0) {
+        for (i = 0; i <= n + 1; i++) {
+            for (j = 0; j <= n + 1; j++)
+                printf("%d", a[i][j]);
+            printf("\n");
+        }
+    }
+    
+    for (i = 1; i <= n - 1; i++) {
+        viscnt = 0;
+        dfs(sx[i], sy[i]);
+        if (viscnt != n) {
+            puts("wrong");
+            return;
+        }
+    }
+    puts("good");
+}
 int main()
 {
-    int i, j, r;
-    int N, M, T;
-    memset(f, -1, sizeof(f));
-    scanf("%d%d%d", &N, &M, &T);
-    for (i = 1; i <= M; i++) {
-        int u, v, w;
-        scanf("%d%d%d", &u, &v, &w);
-        f[u][v] = w;
-    }
-    for (r = 1; r <= N; r++)
-        for (i = 1; i <= N; i++)
-            for (j = 1; j <= N; j++) {
-                if (f[i][r] < 0 || f[r][j] < 0) continue;
-                int t = max(f[i][r], f[r][j]);
-                if (f[i][j] < 0 || t < f[i][j])
-                    f[i][j] = t;
-            }
-    for (i = 1; i <= T; i++) {
-        int u, v;
-        scanf("%d%d", &u, &v);
-        printf("%d\n", f[u][v]);
-    }
+    int n;
+    while (scanf("%d", &n) == 1 && n)
+        solve(n);
     return 0;
 }

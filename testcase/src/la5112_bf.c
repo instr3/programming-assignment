@@ -24,16 +24,19 @@ SOFTWARE.
 */
 
 char input_buffer[] = 
-"\x35\x20\x36\x20\x33\x0A\x31\x20\x32\x20"
-"\x31\x32\x0A\x33\x20\x32\x20\x38\x0A\x31"
-"\x20\x33\x20\x35\x0A\x32\x20\x35\x20\x33"
-"\x0A\x33\x20\x34\x20\x34\x0A\x32\x20\x34"
-"\x20\x38\x0A\x33\x20\x34\x0A\x31\x20\x32"
-"\x0A\x35\x20\x31\x0A"
+"\x32\x0A\x34\x20\x31\x20\x31\x0A\x31\x0A"
+"\x32\x0A\x33\x20\x32\x20\x33\x0A\x31\x20"
+"\x31\x0A\x31\x20\x31\x0A"
 ;
 
 char answer_buffer[] = 
-"\x34\x0A\x38\x0A\x2D\x31\x0A"
+"\x53\x28\x31\x29\x3D\x31\x0A\x53\x28\x32"
+"\x29\x3D\x32\x0A\x53\x28\x33\x29\x3D\x34"
+"\x0A\x53\x28\x34\x29\x3D\x38\x0A\x61\x6E"
+"\x73\x3D\x31\x35\x0A\x53\x28\x33\x29\x3D"
+"\x32\x0A\x53\x28\x36\x29\x3D\x38\x0A\x53"
+"\x28\x39\x29\x3D\x33\x34\x0A\x61\x6E\x73"
+"\x3D\x34\x34\x0A"
 ;
 
 #include "trap.h"
@@ -367,33 +370,78 @@ int main()
 /* REAL USER PROGRAM */
 
 
-#include <string.h>
-#define max(a, b) ((a) > (b) ? (a) : (b))
-#define MAXN 300
-int f[MAXN + 1][MAXN + 1];
+typedef unsigned long long ULL;
+typedef long long LL;
+
+void ULLdivULL(ULL a, ULL b, ULL *qp, ULL *rp)
+{
+    ULL r = 0, q = 0;
+    int i;
+    for (i = 0; i < 64; i++) {
+        r = (r << 1) + (a >> 63);
+        a <<= 1;
+        q <<= 1;
+        if (r >= b) {
+            r -= b;
+            q += 1;
+        }
+    }
+    if (qp) *qp = q;
+    if (rp) *rp = r;
+}
+
+void LLdivLL(LL a, LL b, LL *qp, LL *rp)
+{
+    int qf = 0, rf = 0;
+    if (a < 0) { qf = rf = 1; a = -a; }
+    if (b < 0) { qf ^= 1; b = -b; }
+
+    ULLdivULL(a, b, (ULL *) qp, (ULL *) rp);
+
+    if (qp && qf) *qp = -*qp;
+    if (rp && rf) *rp = -*rp;
+}
+
+
+#define MOD 1000000007
+int S[100], A[100];
+int N, R, K;
+long long s(int n)
+{
+    if (n <= R) return S[n];
+    long long ans = 0;
+    int i;
+    for (i = 1; i <= R; i++) {
+        ans += A[i] * s(n - i);
+        LLdivLL(ans, MOD, NULL, &ans);
+    }
+    return ans;
+}
+void solve()
+{
+    int i;
+    scanf("%d%d%d", &N, &R, &K);
+    for (i = 1; i <= R; i++)
+        scanf("%d", &S[i]);
+    for (i = 1; i <= R; i++)
+        scanf("%d", &A[i]);
+    
+    long long ans = 0;
+    long long cur;
+    for (i = 1; i <= N; i++) {
+        cur = s(i * K);
+        printf("S(%d)=%d\n", i * K, (int) cur);
+        ans += cur;
+        LLdivLL(ans, MOD, NULL, &ans);
+    }
+
+    printf("ans=%d\n", (int) ans);
+}
 int main()
 {
-    int i, j, r;
-    int N, M, T;
-    memset(f, -1, sizeof(f));
-    scanf("%d%d%d", &N, &M, &T);
-    for (i = 1; i <= M; i++) {
-        int u, v, w;
-        scanf("%d%d%d", &u, &v, &w);
-        f[u][v] = w;
-    }
-    for (r = 1; r <= N; r++)
-        for (i = 1; i <= N; i++)
-            for (j = 1; j <= N; j++) {
-                if (f[i][r] < 0 || f[r][j] < 0) continue;
-                int t = max(f[i][r], f[r][j]);
-                if (f[i][j] < 0 || t < f[i][j])
-                    f[i][j] = t;
-            }
-    for (i = 1; i <= T; i++) {
-        int u, v;
-        scanf("%d%d", &u, &v);
-        printf("%d\n", f[u][v]);
-    }
+    int T;
+    scanf("%d", &T);
+    while (T--) solve();
     return 0;
 }
+

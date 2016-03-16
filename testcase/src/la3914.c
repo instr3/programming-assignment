@@ -24,16 +24,20 @@ SOFTWARE.
 */
 
 char input_buffer[] = 
-"\x35\x20\x36\x20\x33\x0A\x31\x20\x32\x20"
-"\x31\x32\x0A\x33\x20\x32\x20\x38\x0A\x31"
-"\x20\x33\x20\x35\x0A\x32\x20\x35\x20\x33"
-"\x0A\x33\x20\x34\x20\x34\x0A\x32\x20\x34"
-"\x20\x38\x0A\x33\x20\x34\x0A\x31\x20\x32"
-"\x0A\x35\x20\x31\x0A"
+"\x33\x20\x0A\x33\x20\x31\x20\x2D\x33\x20"
+"\x2D\x32\x20\x0A\x34\x20\x2D\x33\x20\x31"
+"\x20\x2D\x32\x20\x2D\x34\x20\x0A\x35\x20"
+"\x31\x20\x32\x20\x33\x20\x34\x20\x2D\x35"
+"\x0A"
 ;
 
 char answer_buffer[] = 
-"\x34\x0A\x38\x0A\x2D\x31\x0A"
+"\x31\x20\x36\x20\x32\x20\x31\x20\x33\x20"
+"\x31\x20\x32\x20\x31\x0A\x32\x20\x38\x20"
+"\x34\x20\x31\x20\x34\x20\x31\x20\x31\x20"
+"\x33\x20\x31\x20\x32\x0A\x33\x20\x39\x20"
+"\x35\x20\x31\x20\x35\x20\x34\x20\x34\x20"
+"\x33\x20\x33\x20\x32\x20\x32\x0A"
 ;
 
 #include "trap.h"
@@ -367,33 +371,65 @@ int main()
 /* REAL USER PROGRAM */
 
 
-#include <string.h>
-#define max(a, b) ((a) > (b) ? (a) : (b))
-#define MAXN 300
-int f[MAXN + 1][MAXN + 1];
+
+void swap(int *a, int *b)
+{
+    int t = *a;
+    *a = *b;
+    *b = t;
+}
+
+#define MAXM 30
+int m;
+int a[MAXM + 1];
+int b[MAXM * 3 - 2];
+int bcnt;
+
+void flip(int k)
+{
+    int i;
+    b[bcnt++] = k;
+    for (i = 1; i <= k / 2; i++)
+        swap(&a[i], &a[k - i + 1]);
+    for (i = 1; i <= k; i++)
+        a[i] = -a[i];
+    
+    /*printf("flip(%d): ", k);
+    for (i = 1; i <= m; i++)
+        printf("%d ", a[i]);
+    printf("\n");*/
+}
+
+int find(int v)
+{
+    int i;
+    for (i = 1; i <= m; i++)
+        if (a[i] == v || a[i] == -v)
+            return i;
+    return -1;
+}
+
 int main()
 {
-    int i, j, r;
-    int N, M, T;
-    memset(f, -1, sizeof(f));
-    scanf("%d%d%d", &N, &M, &T);
-    for (i = 1; i <= M; i++) {
-        int u, v, w;
-        scanf("%d%d%d", &u, &v, &w);
-        f[u][v] = w;
-    }
-    for (r = 1; r <= N; r++)
-        for (i = 1; i <= N; i++)
-            for (j = 1; j <= N; j++) {
-                if (f[i][r] < 0 || f[r][j] < 0) continue;
-                int t = max(f[i][r], f[r][j]);
-                if (f[i][j] < 0 || t < f[i][j])
-                    f[i][j] = t;
-            }
-    for (i = 1; i <= T; i++) {
-        int u, v;
-        scanf("%d%d", &u, &v);
-        printf("%d\n", f[u][v]);
+    int i, k, t;
+    int n;
+    scanf("%d", &n);
+    for (t = 1; t <= n; t++) {
+        scanf("%d", &m);
+        for (i = 1; i <= m; i++)
+            scanf("%d", &a[i]);
+        bcnt = 0;
+        for (i = m; i >= 2; i--) {
+            k = find(i);
+            flip(k);
+            if (a[1] > 0) flip(1);
+            flip(i);
+        }
+        if (a[1] < 0) flip(1);
+        printf("%d %d", t, bcnt);
+        for (i = 0; i < bcnt; i++)
+            printf(" %d", b[i]);
+        printf("\n");
     }
     return 0;
 }

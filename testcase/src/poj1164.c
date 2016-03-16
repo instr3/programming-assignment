@@ -24,16 +24,18 @@ SOFTWARE.
 */
 
 char input_buffer[] = 
-"\x35\x20\x36\x20\x33\x0A\x31\x20\x32\x20"
-"\x31\x32\x0A\x33\x20\x32\x20\x38\x0A\x31"
-"\x20\x33\x20\x35\x0A\x32\x20\x35\x20\x33"
-"\x0A\x33\x20\x34\x20\x34\x0A\x32\x20\x34"
-"\x20\x38\x0A\x33\x20\x34\x0A\x31\x20\x32"
-"\x0A\x35\x20\x31\x0A"
+"\x34\x0A\x37\x0A\x31\x31\x20\x36\x20\x31"
+"\x31\x20\x36\x20\x33\x20\x31\x30\x20\x36"
+"\x0A\x37\x20\x39\x20\x36\x20\x31\x33\x20"
+"\x35\x20\x31\x35\x20\x35\x0A\x31\x20\x31"
+"\x30\x20\x31\x32\x20\x37\x20\x31\x33\x20"
+"\x37\x20\x35\x0A\x31\x33\x20\x31\x31\x20"
+"\x31\x30\x20\x38\x20\x31\x30\x20\x31\x32"
+"\x20\x31\x33\x0A"
 ;
 
 char answer_buffer[] = 
-"\x34\x0A\x38\x0A\x2D\x31\x0A"
+"\x35\x0A\x39\x0A"
 ;
 
 #include "trap.h"
@@ -366,34 +368,79 @@ int main()
 
 /* REAL USER PROGRAM */
 
-
 #include <string.h>
-#define max(a, b) ((a) > (b) ? (a) : (b))
-#define MAXN 300
-int f[MAXN + 1][MAXN + 1];
+#define MAXN 50
+char a[2 * MAXN + 1][2 * MAXN + 1];
+int id[2 * MAXN + 1][2 * MAXN + 1];
+int sz[MAXN * MAXN + 1];
+
+void dfs(int x, int y, int cur)
+{
+    static const int u[] = {0, -1, 0, 1};
+    static const int v[] = {-1, 0, 1, 0};
+    int i;
+    id[x][y] = cur;
+    if (a[x][y] == 'X')
+        sz[cur]++;
+    for (i = 0; i < 4; i++) {
+        int next_x = x + u[i];
+        int next_y = y + v[i];
+        if (a[next_x][next_y] != '#' && id[next_x][next_y] == 0) {
+            dfs(next_x, next_y, cur);
+        }
+    }
+}
 int main()
 {
-    int i, j, r;
-    int N, M, T;
-    memset(f, -1, sizeof(f));
-    scanf("%d%d%d", &N, &M, &T);
-    for (i = 1; i <= M; i++) {
-        int u, v, w;
-        scanf("%d%d%d", &u, &v, &w);
-        f[u][v] = w;
-    }
-    for (r = 1; r <= N; r++)
-        for (i = 1; i <= N; i++)
-            for (j = 1; j <= N; j++) {
-                if (f[i][r] < 0 || f[r][j] < 0) continue;
-                int t = max(f[i][r], f[r][j]);
-                if (f[i][j] < 0 || t < f[i][j])
-                    f[i][j] = t;
+    int n, m;
+    int i, j, cnt, maxsz;
+    scanf("%d%d", &n, &m);
+
+    /* convert input data to char map */
+    memset(a, '.', sizeof(a));
+    for (i = 1; i <= 2 * n - 1; i += 2)
+        for (j = 1; j <= 2 * m - 1; j += 2) {
+            int t;
+            a[i][j] = 'X';
+            scanf("%d", &t);
+            if (t & 1) {
+                a[i - 1][j - 1] = '#';
+                a[i][j - 1] = '#';
+                a[i + 1][j - 1] = '#';
             }
-    for (i = 1; i <= T; i++) {
-        int u, v;
-        scanf("%d%d", &u, &v);
-        printf("%d\n", f[u][v]);
-    }
+            if (t & 2) {
+                a[i - 1][j - 1] = '#';
+                a[i - 1][j] = '#';
+                a[i - 1][j + 1] = '#';
+            }
+            if (t & 4) {
+                a[i - 1][j + 1] = '#';
+                a[i][j + 1] = '#';
+                a[i + 1][j + 1] = '#';
+            }
+            if (t & 8) {
+                a[i + 1][j - 1] = '#';
+                a[i + 1][j] = '#';
+                a[i + 1][j + 1] = '#';
+            }
+        }
+
+    /*for (i = 0; i < n * 2 + 1; i++)
+        printf("%.*s\n", m * 2 + 1, a[i]);*/
+    
+    cnt = 0;
+    memset(id, 0, sizeof(id));
+    memset(sz, 0, sizeof(sz));
+    for (i = 1; i <= 2 * n - 1; i += 2)
+        for (j = 1; j <= 2 * m - 1; j += 2) {
+            if (id[i][j] == 0) {
+                dfs(i, j, ++cnt);
+            }
+        }
+    maxsz = 0;
+    for (i = 1; i <= cnt; i++)
+        if (sz[i] > maxsz)
+            maxsz = sz[i];
+    printf("%d\n%d\n", cnt, maxsz);
     return 0;
 }

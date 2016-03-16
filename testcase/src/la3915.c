@@ -24,16 +24,13 @@ SOFTWARE.
 */
 
 char input_buffer[] = 
-"\x35\x20\x36\x20\x33\x0A\x31\x20\x32\x20"
-"\x31\x32\x0A\x33\x20\x32\x20\x38\x0A\x31"
-"\x20\x33\x20\x35\x0A\x32\x20\x35\x20\x33"
-"\x0A\x33\x20\x34\x20\x34\x0A\x32\x20\x34"
-"\x20\x38\x0A\x33\x20\x34\x0A\x31\x20\x32"
-"\x0A\x35\x20\x31\x0A"
+"\x33\x0A\x5B\x5D\x0A\x0A\x5B\x5B\x5D\x5B"
+"\x5B\x5D\x5D\x5D\x0A"
 ;
 
 char answer_buffer[] = 
-"\x34\x0A\x38\x0A\x2D\x31\x0A"
+"\x31\x20\x32\x0A\x32\x20\x31\x0A\x33\x20"
+"\x38\x0A"
 ;
 
 #include "trap.h"
@@ -367,33 +364,28 @@ int main()
 /* REAL USER PROGRAM */
 
 
-#include <string.h>
-#define max(a, b) ((a) > (b) ? (a) : (b))
-#define MAXN 300
-int f[MAXN + 1][MAXN + 1];
+#define fgets(p, x, y) mygets(p)
+void mygets(char *p) { while (scanf("%c", p) == 1 && *p++ != '\n'); }
 int main()
 {
-    int i, j, r;
-    int N, M, T;
-    memset(f, -1, sizeof(f));
-    scanf("%d%d%d", &N, &M, &T);
-    for (i = 1; i <= M; i++) {
-        int u, v, w;
-        scanf("%d%d%d", &u, &v, &w);
-        f[u][v] = w;
-    }
-    for (r = 1; r <= N; r++)
-        for (i = 1; i <= N; i++)
-            for (j = 1; j <= N; j++) {
-                if (f[i][r] < 0 || f[r][j] < 0) continue;
-                int t = max(f[i][r], f[r][j]);
-                if (f[i][j] < 0 || t < f[i][j])
-                    f[i][j] = t;
+    int n, t;
+    int d, cnt;
+    char buf[150 + 2];
+    char *p;
+//    fgets(buf, sizeof(buf), stdin);
+//    sscanf(buf, "%d", &n);
+    scanf("%d", &n); scanf("%c", buf);
+    for (t = 1; t <= n; t++) {
+        fgets(buf, sizeof(buf), stdin);
+        d = cnt = 0;
+        for (p = buf; *p == '[' || *p == ']'; p++)
+            if (*p == '[') {
+                cnt++;
+                if (cnt > d) d = cnt;
+            } else {
+                cnt--;
             }
-    for (i = 1; i <= T; i++) {
-        int u, v;
-        scanf("%d%d", &u, &v);
-        printf("%d\n", f[u][v]);
+        printf("%d %d\n", t, 1 << d);
     }
     return 0;
 }

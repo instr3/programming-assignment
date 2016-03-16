@@ -24,34 +24,29 @@ SOFTWARE.
 */
 
 #include "trap.h"
-
 int main()
 {
-    volatile int a, c;
-    
+    int x, y;
     __asm__ __volatile__ (
-        "mov $0xAABBCCDD, %%eax\n\t"
-        "mov $0x11223344, %%ecx\n\t"
-        "xor %%edx, %%edx\n\t"
-        "xor %%ebx, %%ebx\n\t"
-        "mov $0xab, %%dh\n\t"
-        "mov $0x23, %%bh\n\t"
-        "mov $-1, %%esi\n\t"
-        "mov $0x22334455, %%edi\n\t"
+        "mov $0x11223344, %%eax\n\t"
+        "mov $0x1a2b3c4d, %%edx\n\t"
+        "clc\n\t"
+        "mov $0xaabbccdd, %%ecx\n\t"
+        "cmovc %%eax, %%edx\n\t"
+        "mov %%edx, %0\n\t"
         
-        // you may use esi/edi instead of dh/bh, that's wrong!
-        "movsx %%dh, %%eax\n\t"
-        "movsx %%bh, %%ecx\n\t"
-        
-        "mov %%eax, %0\n\t"
-        "mov %%ecx, %1\n\t"
-        
-        :"=m"(a), "=m"(c)
+        "mov $0x11223344, %%eax\n\t"
+        "mov $0x1a2b3c4d, %%edx\n\t"
+        "stc\n\t"
+        "mov $0xaabbccdd, %%ecx\n\t"
+        "cmovc %%eax, %%edx\n\t"
+        "mov %%edx, %1\n\t"
+        :"=m"(x), "=m"(y)
         :
-        :"eax", "ecx", "ebx", "edx", "esi", "edi");
-    
-    nemu_assert(a == 0xffffffab);
-    nemu_assert(c == 0x23);
+        :"eax", "ecx", "edx");
+        
+    nemu_assert(x == 0x1a2b3c4d);
+    nemu_assert(y == 0x11223344);
     
     HIT_GOOD_TRAP;
     return 0;

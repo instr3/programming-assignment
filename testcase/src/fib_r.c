@@ -25,34 +25,21 @@ SOFTWARE.
 
 #include "trap.h"
 
-int main()
+int ans[] = {0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597, 2584, 4181, 6765, 10946, 17711, 28657, 46368, 75025, 121393, 196418, 317811, 514229, 832040, 1346269, 2178309, 3524578, 5702887, 9227465, 14930352, 24157817, 39088169, 63245986, 102334155};
+
+
+int f(int x)
 {
-    volatile int a, c;
-    
-    __asm__ __volatile__ (
-        "mov $0xAABBCCDD, %%eax\n\t"
-        "mov $0x11223344, %%ecx\n\t"
-        "xor %%edx, %%edx\n\t"
-        "xor %%ebx, %%ebx\n\t"
-        "mov $0xab, %%dh\n\t"
-        "mov $0x23, %%bh\n\t"
-        "mov $-1, %%esi\n\t"
-        "mov $0x22334455, %%edi\n\t"
-        
-        // you may use esi/edi instead of dh/bh, that's wrong!
-        "movsx %%dh, %%eax\n\t"
-        "movsx %%bh, %%ecx\n\t"
-        
-        "mov %%eax, %0\n\t"
-        "mov %%ecx, %1\n\t"
-        
-        :"=m"(a), "=m"(c)
-        :
-        :"eax", "ecx", "ebx", "edx", "esi", "edi");
-    
-    nemu_assert(a == 0xffffffab);
-    nemu_assert(c == 0x23);
-    
-    HIT_GOOD_TRAP;
-    return 0;
+    if (x <= 2) return 1;
+    return f(x - 1) + f(x - 2);
+}
+
+int main() {
+	int i;
+	for(i = 1; i <= 20; i ++) {
+		nemu_assert(f(i) == ans[i]);
+	}
+
+	HIT_GOOD_TRAP;
+	return 0;
 }

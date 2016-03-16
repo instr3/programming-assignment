@@ -25,34 +25,53 @@ SOFTWARE.
 
 #include "trap.h"
 
-int main()
+#define CBW "cbtw\n\t"
+#define CWDE "cwtl\n\t"
+
+#define MAKE_EAX_EDX_ASM(INSTR) \
+    __asm__ __volatile__ ("mov %1, %%eax\n\t" \
+                          INSTR \
+                          "mov %%eax, %0\n\t" \
+                          :"=m"(newa) \
+                          :"m"(a) \
+                          :"eax")
+
+void test_cbw(int x)
 {
-    volatile int a, c;
+    volatile int a, newa;
     
-    __asm__ __volatile__ (
-        "mov $0xAABBCCDD, %%eax\n\t"
-        "mov $0x11223344, %%ecx\n\t"
-        "xor %%edx, %%edx\n\t"
-        "xor %%ebx, %%ebx\n\t"
-        "mov $0xab, %%dh\n\t"
-        "mov $0x23, %%bh\n\t"
-        "mov $-1, %%esi\n\t"
-        "mov $0x22334455, %%edi\n\t"
-        
-        // you may use esi/edi instead of dh/bh, that's wrong!
-        "movsx %%dh, %%eax\n\t"
-        "movsx %%bh, %%ecx\n\t"
-        
-        "mov %%eax, %0\n\t"
-        "mov %%ecx, %1\n\t"
-        
-        :"=m"(a), "=m"(c)
-        :
-        :"eax", "ecx", "ebx", "edx", "esi", "edi");
+    a = x;
     
-    nemu_assert(a == 0xffffffab);
-    nemu_assert(c == 0x23);
+    MAKE_EAX_EDX_ASM(CBW);
     
-    HIT_GOOD_TRAP;
-    return 0;
+    nemu_assert((short) newa == (short)(signed char) a);
+}
+
+void test_cwde(int x)
+{
+    volatile int a, newa;
+    
+    a = x;
+    
+    MAKE_EAX_EDX_ASM(CWDE);
+    
+    nemu_assert(newa == (int)(short) a);
+}
+
+
+int data[] = {
+    0, 1, -1, 2, -2, 0x1111ffff, 0xffff1111, 0x11223344, 0x7777777, 0xffff, 0x7fff, 0xff11, 0x11ff
+};
+int datalen = sizeof(data) / sizeof(data[0]);
+
+int main()
+{	
+	int i;
+	for (i = 0; i < datalen; i++) {
+	    test_cbw(data[i]);
+	    test_cwde(data[i]);
+	}
+
+	HIT_GOOD_TRAP;
+	return 0;
 }

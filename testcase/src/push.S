@@ -25,34 +25,58 @@ SOFTWARE.
 
 #include "trap.h"
 
-int main()
-{
-    volatile int a, c;
+.globl start
+start:
+
+    mov $0, %ebp
+    mov $0x08000000, %esp
+    sub $0x10, %esp
     
-    __asm__ __volatile__ (
-        "mov $0xAABBCCDD, %%eax\n\t"
-        "mov $0x11223344, %%ecx\n\t"
-        "xor %%edx, %%edx\n\t"
-        "xor %%ebx, %%ebx\n\t"
-        "mov $0xab, %%dh\n\t"
-        "mov $0x23, %%bh\n\t"
-        "mov $-1, %%esi\n\t"
-        "mov $0x22334455, %%edi\n\t"
-        
-        // you may use esi/edi instead of dh/bh, that's wrong!
-        "movsx %%dh, %%eax\n\t"
-        "movsx %%bh, %%ecx\n\t"
-        
-        "mov %%eax, %0\n\t"
-        "mov %%ecx, %1\n\t"
-        
-        :"=m"(a), "=m"(c)
-        :
-        :"eax", "ecx", "ebx", "edx", "esi", "edi");
     
-    nemu_assert(a == 0xffffffab);
-    nemu_assert(c == 0x23);
+    // use this nemu command to test:
+    //      si; x (0x8000000-$esp) $esp
     
-    HIT_GOOD_TRAP;
-    return 0;
-}
+    
+    
+    push $0x11                      // opcode = 6a
+    push $0x22
+    push $0x33
+    push $0x44
+    
+    pushw $0xaabb                   // opcode = 68
+    pushw $0xccdd
+    pushl $0xaabbccdd
+    
+    mov $0x1234aaaa, %eax           // opcode = 50
+    mov $0x5678bbbb, %ebx
+    push %eax
+    push %ebx
+    push %ax
+    push %bx
+    
+    push $0xdeadbeef
+    mov %esp, %eax
+    pushw (%eax)                    // opcode = FF/6
+    pushw 2(%eax)
+    pushl (%eax)
+    
+    push %eax
+    push %ecx
+    push %edx
+    push %ebx
+    push %esp
+    push %ebp
+    push %esi
+    push %edi
+    
+    push %ax
+    push %cx
+    push %dx
+    push %bx
+    push %sp
+    push %bp
+    push %si
+    push %di
+    
+	HIT_GOOD_TRAP
+

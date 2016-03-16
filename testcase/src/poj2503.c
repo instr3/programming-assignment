@@ -24,16 +24,30 @@ SOFTWARE.
 */
 
 char input_buffer[] = 
-"\x35\x20\x36\x20\x33\x0A\x31\x20\x32\x20"
-"\x31\x32\x0A\x33\x20\x32\x20\x38\x0A\x31"
-"\x20\x33\x20\x35\x0A\x32\x20\x35\x20\x33"
-"\x0A\x33\x20\x34\x20\x34\x0A\x32\x20\x34"
-"\x20\x38\x0A\x33\x20\x34\x0A\x31\x20\x32"
-"\x0A\x35\x20\x31\x0A"
+"\x64\x6F\x67\x20\x6F\x67\x64\x61\x79\x0A"
+"\x63\x61\x74\x20\x61\x74\x63\x61\x79\x0A"
+"\x70\x69\x67\x20\x69\x67\x70\x61\x79\x0A"
+"\x66\x72\x6F\x6F\x74\x20\x6F\x6F\x74\x66"
+"\x72\x61\x79\x0A\x6C\x6F\x6F\x70\x73\x20"
+"\x6F\x6F\x70\x73\x6C\x61\x79\x0A\x68\x65"
+"\x6C\x6C\x6F\x61\x20\x61\x0A\x68\x65\x6C"
+"\x6C\x6F\x64\x20\x64\x0A\x68\x65\x6C\x6C"
+"\x6F\x63\x20\x63\x0A\x68\x65\x6C\x6C\x6F"
+"\x65\x20\x65\x0A\x68\x65\x6C\x6C\x6F\x62"
+"\x20\x62\x0A\x0A\x61\x74\x63\x61\x79\x0A"
+"\x69\x74\x74\x65\x6E\x6B\x61\x79\x0A\x6F"
+"\x6F\x70\x73\x6C\x61\x79\x0A\x61\x0A\x62"
+"\x0A\x68\x61\x68\x61\x0A\x68\x65\x68\x65"
+"\x0A\x63\x0A\x64\x0A\x65\x0A"
 ;
 
 char answer_buffer[] = 
-"\x34\x0A\x38\x0A\x2D\x31\x0A"
+"\x63\x61\x74\x0A\x65\x68\x0A\x6C\x6F\x6F"
+"\x70\x73\x0A\x68\x65\x6C\x6C\x6F\x61\x0A"
+"\x68\x65\x6C\x6C\x6F\x62\x0A\x65\x68\x0A"
+"\x65\x68\x0A\x68\x65\x6C\x6C\x6F\x63\x0A"
+"\x68\x65\x6C\x6C\x6F\x64\x0A\x68\x65\x6C"
+"\x6C\x6F\x65\x0A"
 ;
 
 #include "trap.h"
@@ -367,33 +381,62 @@ int main()
 /* REAL USER PROGRAM */
 
 
+#include <stdlib.h>
 #include <string.h>
-#define max(a, b) ((a) > (b) ? (a) : (b))
-#define MAXN 300
-int f[MAXN + 1][MAXN + 1];
+
+#define MAXLEN 10
+#define MAXN 100000
+#define SIZE MAXLEN * 2 + 3
+
+int mygets(char *s)
+{
+    char *p = s;
+    while (scanf("%c", p) == 1 && *p++ != '\n');
+    return p > s;
+}
+
+struct dict {
+    char *key;
+    char *value;
+} dict[MAXN];
+
+int cmp(const void *a, const void *b)
+{
+    return strcmp(((struct dict *)a)->key, ((struct dict *)b)->key);
+}
+
+char line[MAXN * 2 + 1][SIZE];
+int lineptr = 0;
+
 int main()
 {
-    int i, j, r;
-    int N, M, T;
-    memset(f, -1, sizeof(f));
-    scanf("%d%d%d", &N, &M, &T);
-    for (i = 1; i <= M; i++) {
-        int u, v, w;
-        scanf("%d%d%d", &u, &v, &w);
-        f[u][v] = w;
-    }
-    for (r = 1; r <= N; r++)
-        for (i = 1; i <= N; i++)
-            for (j = 1; j <= N; j++) {
-                if (f[i][r] < 0 || f[r][j] < 0) continue;
-                int t = max(f[i][r], f[r][j]);
-                if (f[i][j] < 0 || t < f[i][j])
-                    f[i][j] = t;
+    int n;
+    int flag = 0;
+    while (mygets(line[lineptr])) {
+        char *s, *t;
+        struct dict *d;
+        s = line[lineptr];
+        *strchr(s, '\n') = '\0';
+        t = strchr(s, ' ');
+        if (!flag) {
+            if (t) {
+                d = &dict[lineptr];
+                d->key = t + 1;
+                *t = '\0';
+                d->value = s;
+            } else {
+                n = lineptr;
+                flag = 1;
+                qsort(dict, n, sizeof(struct dict), cmp);
             }
-    for (i = 1; i <= T; i++) {
-        int u, v;
-        scanf("%d%d", &u, &v);
-        printf("%d\n", f[u][v]);
+        } else {
+            struct dict tdict;
+            tdict.key = s;
+            d = bsearch(&tdict, dict, n, sizeof(struct dict), cmp);
+            puts(d ? d->value : "eh");
+        }
+        lineptr++;
     }
+
     return 0;
 }

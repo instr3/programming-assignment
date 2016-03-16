@@ -24,16 +24,23 @@ SOFTWARE.
 */
 
 char input_buffer[] = 
-"\x35\x20\x36\x20\x33\x0A\x31\x20\x32\x20"
-"\x31\x32\x0A\x33\x20\x32\x20\x38\x0A\x31"
-"\x20\x33\x20\x35\x0A\x32\x20\x35\x20\x33"
-"\x0A\x33\x20\x34\x20\x34\x0A\x32\x20\x34"
-"\x20\x38\x0A\x33\x20\x34\x0A\x31\x20\x32"
-"\x0A\x35\x20\x31\x0A"
+"\x30\x0A\x39\x0A\x33\x34\x35\x34\x33\x35"
+"\x34\x35\x0A\x38\x33\x38\x33\x38\x0A\x34"
+"\x38\x35\x38\x35\x38\x35\x0A\x39\x32\x33"
+"\x34\x38\x37\x36\x35\x32\x0A\x38\x33\x38"
+"\x33\x38\x35\x34\x33\x35\x0A\x38\x32\x0A"
+"\x31\x38\x38\x39\x31\x38\x39\x31\x0A\x39"
+"\x39\x39\x39\x39\x39\x39\x39\x39\x0A\x31"
+"\x30\x30\x30\x30\x30\x30\x30\x30\x30\x0A"
+"\x2D\x31\x0A"
 ;
 
 char answer_buffer[] = 
-"\x34\x0A\x38\x0A\x2D\x31\x0A"
+"\x30\x0A\x33\x34\x0A\x39\x31\x37\x30\x0A"
+"\x39\x39\x34\x34\x0A\x33\x35\x38\x35\x0A"
+"\x35\x32\x39\x39\x0A\x37\x30\x36\x35\x0A"
+"\x31\x35\x39\x31\x0A\x39\x36\x33\x34\x0A"
+"\x36\x32\x36\x0A\x36\x38\x37\x35\x0A"
 ;
 
 #include "trap.h"
@@ -367,33 +374,59 @@ int main()
 /* REAL USER PROGRAM */
 
 
-#include <string.h>
-#define max(a, b) ((a) > (b) ? (a) : (b))
-#define MAXN 300
-int f[MAXN + 1][MAXN + 1];
+#define M 10000
+
+struct mat {
+    int a11, a12;
+    int a21, a22;
+};
+
+void mat_mul(struct mat *c, struct mat *a, struct mat *b)
+{
+    int a11, a12;
+    int a21, a22;
+    a11 = (a->a11 * b->a11 + a->a12 * b->a21) % M;
+    a12 = (a->a11 * b->a12 + a->a12 * b->a22) % M;
+    a21 = (a->a21 * b->a11 + a->a22 * b->a21) % M;
+    a22 = (a->a21 * b->a12 + a->a22 * b->a22) % M;
+    c->a11 = a11;
+    c->a12 = a12;
+    c->a21 = a21;
+    c->a22 = a22;
+}
+
+void fast_power(struct mat *result, struct mat *a, int n)
+{
+    if (n == 0) {
+        result->a11 = 1;
+        result->a12 = 0;
+        result->a21 = 0;
+        result->a22 = 1;
+        return;
+    }
+    else if (n == 1) {
+        *result = *a;
+        return;
+    }
+    fast_power(result, a, n / 2);
+    mat_mul(result, result, result);
+    if (n % 2) mat_mul(result, result, a);
+}
+int fib(int n)
+{
+    struct mat r, t;
+    t.a11 = t.a12 = t.a21 = 1;
+    t.a22 = 0;
+    fast_power(&r, &t, n);
+    return r.a12;
+}
 int main()
 {
-    int i, j, r;
-    int N, M, T;
-    memset(f, -1, sizeof(f));
-    scanf("%d%d%d", &N, &M, &T);
-    for (i = 1; i <= M; i++) {
-        int u, v, w;
-        scanf("%d%d%d", &u, &v, &w);
-        f[u][v] = w;
-    }
-    for (r = 1; r <= N; r++)
-        for (i = 1; i <= N; i++)
-            for (j = 1; j <= N; j++) {
-                if (f[i][r] < 0 || f[r][j] < 0) continue;
-                int t = max(f[i][r], f[r][j]);
-                if (f[i][j] < 0 || t < f[i][j])
-                    f[i][j] = t;
-            }
-    for (i = 1; i <= T; i++) {
-        int u, v;
-        scanf("%d%d", &u, &v);
-        printf("%d\n", f[u][v]);
+    int n;
+    while (1) {
+        scanf("%d", &n);
+        if (n < 0) break;
+        printf("%d\n", fib(n));
     }
     return 0;
 }

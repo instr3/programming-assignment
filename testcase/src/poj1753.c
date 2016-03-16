@@ -24,16 +24,13 @@ SOFTWARE.
 */
 
 char input_buffer[] = 
-"\x35\x20\x36\x20\x33\x0A\x31\x20\x32\x20"
-"\x31\x32\x0A\x33\x20\x32\x20\x38\x0A\x31"
-"\x20\x33\x20\x35\x0A\x32\x20\x35\x20\x33"
-"\x0A\x33\x20\x34\x20\x34\x0A\x32\x20\x34"
-"\x20\x38\x0A\x33\x20\x34\x0A\x31\x20\x32"
-"\x0A\x35\x20\x31\x0A"
+"\x62\x77\x77\x62\x0A\x62\x62\x77\x62\x0A"
+"\x62\x77\x77\x62\x0A\x62\x77\x77\x77\x0A"
+""
 ;
 
 char answer_buffer[] = 
-"\x34\x0A\x38\x0A\x2D\x31\x0A"
+"\x34\x0A"
 ;
 
 #include "trap.h"
@@ -368,32 +365,62 @@ int main()
 
 
 #include <string.h>
-#define max(a, b) ((a) > (b) ? (a) : (b))
-#define MAXN 300
-int f[MAXN + 1][MAXN + 1];
+int f[16];
+int bfs(int pos)
+{
+    static int q[1 << 16];
+    static int step[1 << 16];
+    memset(step, -1, sizeof(step));
+    int t, w;
+    t = w = 0;
+    q[0] = pos;
+    step[pos] = 0;
+    while (t <= w) {
+        int cur_pos = q[t++];
+        int cur_step = step[cur_pos];
+        int i;
+        if (cur_pos == 0 || cur_pos == 0xffff)
+            return cur_step;
+        for (i = 0; i < 16; i++) {
+            int next = cur_pos ^ f[i];
+            if (step[next] < 0) {
+                q[++w] = next;
+                step[next] = cur_step + 1;
+            }
+        }
+    }
+    return -1;
+}
 int main()
 {
-    int i, j, r;
-    int N, M, T;
-    memset(f, -1, sizeof(f));
-    scanf("%d%d%d", &N, &M, &T);
-    for (i = 1; i <= M; i++) {
-        int u, v, w;
-        scanf("%d%d%d", &u, &v, &w);
-        f[u][v] = w;
-    }
-    for (r = 1; r <= N; r++)
-        for (i = 1; i <= N; i++)
-            for (j = 1; j <= N; j++) {
-                if (f[i][r] < 0 || f[r][j] < 0) continue;
-                int t = max(f[i][r], f[r][j]);
-                if (f[i][j] < 0 || t < f[i][j])
-                    f[i][j] = t;
+    int pos;
+    int i, j, k;
+
+    for (i = 0; i < 4; i++)
+        for (j = 0; j < 4; j++)
+            for (k = 0; k < 5; k++) {
+                static int u[] = {0, 0, 1, 0, -1};
+                static int v[] = {0, 1, 0, -1, 0};
+                int x = i + u[k];
+                int y = j + v[k];
+                if (0 <= x && x < 4 && 0 <= y && y < 4)
+                    f[i * 4 + j] |= 1 << (x * 4 + y);
             }
-    for (i = 1; i <= T; i++) {
-        int u, v;
-        scanf("%d%d", &u, &v);
-        printf("%d\n", f[u][v]);
+
+    pos = 0;
+    for (i = 0; i < 4; i++) {
+        char buf[5];
+        scanf("%s", buf);
+        for (j = 0; j < 4; j++) {
+            if (buf[j] == 'w')
+                pos |= 1 << (i * 4 + j);
+        }
     }
+
+    int ans = bfs(pos);
+    if (ans >= 0)
+        printf("%d\n", ans);
+    else
+        puts("Impossible");
     return 0;
 }

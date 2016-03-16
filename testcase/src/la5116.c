@@ -24,16 +24,20 @@ SOFTWARE.
 */
 
 char input_buffer[] = 
-"\x35\x20\x36\x20\x33\x0A\x31\x20\x32\x20"
-"\x31\x32\x0A\x33\x20\x32\x20\x38\x0A\x31"
-"\x20\x33\x20\x35\x0A\x32\x20\x35\x20\x33"
-"\x0A\x33\x20\x34\x20\x34\x0A\x32\x20\x34"
-"\x20\x38\x0A\x33\x20\x34\x0A\x31\x20\x32"
-"\x0A\x35\x20\x31\x0A"
+"\x39\x0A\x33\x20\x31\x30\x30\x30\x0A\x35"
+"\x20\x31\x30\x30\x30\x0A\x37\x20\x31\x30"
+"\x30\x30\x0A\x38\x20\x32\x33\x32\x33\x34"
+"\x0A\x38\x20\x33\x32\x34\x33\x32\x0A\x33"
+"\x20\x34\x33\x35\x34\x33\x35\x0A\x38\x20"
+"\x34\x39\x34\x39\x34\x0A\x39\x20\x31\x30"
+"\x30\x30\x30\x30\x30\x0A\x39\x20\x31\x30"
+"\x34\x31\x32\x33\x34\x0A\x0A"
 ;
 
 char answer_buffer[] = 
-"\x34\x0A\x38\x0A\x2D\x31\x0A"
+"\x33\x0A\x36\x0A\x31\x31\x0A\x31\x34\x0A"
+"\x31\x34\x0A\x33\x0A\x31\x34\x0A\x31\x38"
+"\x0A\x31\x38\x0A"
 ;
 
 #include "trap.h"
@@ -366,34 +370,124 @@ int main()
 
 /* REAL USER PROGRAM */
 
+typedef unsigned long long ULL;
+typedef long long LL;
+
+void ULLdivULL(ULL a, ULL b, ULL *qp, ULL *rp)
+{
+    ULL r = 0, q = 0;
+    int i;
+    for (i = 0; i < 64; i++) {
+        r = (r << 1) + (a >> 63);
+        a <<= 1;
+        q <<= 1;
+        if (r >= b) {
+            r -= b;
+            q += 1;
+        }
+    }
+    if (qp) *qp = q;
+    if (rp) *rp = r;
+}
+
+void LLdivLL(LL a, LL b, LL *qp, LL *rp)
+{
+    int qf = 0, rf = 0;
+    if (a < 0) { qf = rf = 1; a = -a; }
+    if (b < 0) { qf ^= 1; b = -b; }
+
+    ULLdivULL(a, b, (ULL *) qp, (ULL *) rp);
+
+    if (qp && qf) *qp = -*qp;
+    if (rp && rf) *rp = -*rp;
+}
 
 #include <string.h>
-#define max(a, b) ((a) > (b) ? (a) : (b))
-#define MAXN 300
-int f[MAXN + 1][MAXN + 1];
+
+#define MAXN 10
+#define MOD 200003
+#define MAXV 10000000
+
+int N, P;
+
+long long h[MOD];
+
+long long b[MAXV];
+int bsz = 0;
+
+long long *v[MAXN + 1];
+int sz[MAXN + 1] = {};
+
+
+int find(long long val)
+{
+    long long llhash;
+    LLdivLL(val, MOD, NULL, &llhash);
+    int hash = llhash;
+    while (h[hash] >= 0) {
+        if (h[hash] == val)
+            return 1;
+        hash++;
+        if (hash >= MOD) hash = 0;
+    }
+    return 0;
+}
+void insert(long long val)
+{
+    long long llhash;
+    LLdivLL(val, MOD, NULL, &llhash);
+    int hash = llhash;
+    while (1) {
+        if (h[hash] < 0) {
+            h[hash] = val;
+            break;
+        }
+        hash++;
+        if (hash >= MOD) hash = 0;
+    }
+}
+
+void divide(int n, int x, long long val)
+{
+    if (n == 0) {
+        if (!find(val)) {
+            insert(val);
+            b[bsz++] = val;
+            sz[N]++;
+        }
+        return;
+    }
+    int i;
+    for (i = x; i <= n; i++) {
+        divide(n - i, i, val * i);
+    }
+}
+
 int main()
 {
-    int i, j, r;
-    int N, M, T;
-    memset(f, -1, sizeof(f));
-    scanf("%d%d%d", &N, &M, &T);
-    for (i = 1; i <= M; i++) {
-        int u, v, w;
-        scanf("%d%d%d", &u, &v, &w);
-        f[u][v] = w;
+    for (N = 2; N <= MAXN; N++) {
+        memset(h, -1, sizeof(h));
+        v[N] = b + bsz;
+        divide(N, 1, 1);
     }
-    for (r = 1; r <= N; r++)
-        for (i = 1; i <= N; i++)
-            for (j = 1; j <= N; j++) {
-                if (f[i][r] < 0 || f[r][j] < 0) continue;
-                int t = max(f[i][r], f[r][j]);
-                if (f[i][j] < 0 || t < f[i][j])
-                    f[i][j] = t;
+
+    int T;
+    scanf("%d", &T);
+
+    while (T--) {
+        scanf("%d%d", &N, &P);
+        memset(h, -1, sizeof(h));
+        int i;
+        int ans = 0;
+        for (i = 0; i < sz[N]; i++) {
+            LL ll;
+            LLdivLL(v[N][i], P, NULL, &ll);
+            if (!find(ll)) {
+                insert(ll);
+                ans++;
             }
-    for (i = 1; i <= T; i++) {
-        int u, v;
-        scanf("%d%d", &u, &v);
-        printf("%d\n", f[u][v]);
+        }
+        printf("%d\n", ans);
     }
     return 0;
 }

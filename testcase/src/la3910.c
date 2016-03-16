@@ -24,16 +24,19 @@ SOFTWARE.
 */
 
 char input_buffer[] = 
-"\x35\x20\x36\x20\x33\x0A\x31\x20\x32\x20"
-"\x31\x32\x0A\x33\x20\x32\x20\x38\x0A\x31"
-"\x20\x33\x20\x35\x0A\x32\x20\x35\x20\x33"
-"\x0A\x33\x20\x34\x20\x34\x0A\x32\x20\x34"
-"\x20\x38\x0A\x33\x20\x34\x0A\x31\x20\x32"
-"\x0A\x35\x20\x31\x0A"
+"\x34\x0A\x34\x20\x4D\x49\x53\x53\x50\x45"
+"\x4C\x4C\x0A\x31\x20\x50\x52\x4F\x47\x52"
+"\x41\x4D\x4D\x49\x4E\x47\x0A\x37\x20\x43"
+"\x4F\x4E\x54\x45\x53\x54\x0A\x33\x20\x42"
+"\x41\x4C\x4C\x4F\x4F\x4E\x0A"
 ;
 
 char answer_buffer[] = 
-"\x34\x0A\x38\x0A\x2D\x31\x0A"
+"\x31\x20\x4D\x49\x53\x50\x45\x4C\x4C\x0A"
+"\x32\x20\x52\x4F\x47\x52\x41\x4D\x4D\x49"
+"\x4E\x47\x0A\x33\x20\x43\x4F\x4E\x54\x45"
+"\x53\x0A\x34\x20\x42\x41\x4C\x4F\x4F\x4E"
+"\x0A"
 ;
 
 #include "trap.h"
@@ -367,33 +370,22 @@ int main()
 /* REAL USER PROGRAM */
 
 
-#include <string.h>
-#define max(a, b) ((a) > (b) ? (a) : (b))
-#define MAXN 300
-int f[MAXN + 1][MAXN + 1];
 int main()
 {
-    int i, j, r;
-    int N, M, T;
-    memset(f, -1, sizeof(f));
-    scanf("%d%d%d", &N, &M, &T);
-    for (i = 1; i <= M; i++) {
-        int u, v, w;
-        scanf("%d%d%d", &u, &v, &w);
-        f[u][v] = w;
-    }
-    for (r = 1; r <= N; r++)
-        for (i = 1; i <= N; i++)
-            for (j = 1; j <= N; j++) {
-                if (f[i][r] < 0 || f[r][j] < 0) continue;
-                int t = max(f[i][r], f[r][j]);
-                if (f[i][j] < 0 || t < f[i][j])
-                    f[i][j] = t;
-            }
-    for (i = 1; i <= T; i++) {
-        int u, v;
-        scanf("%d%d", &u, &v);
-        printf("%d\n", f[u][v]);
+    int i;
+    int n, m;
+    char s[81];
+    scanf("%d", &n);
+    for (i = 1; i <= n; i++) {
+        scanf("%d", &m);
+        scanf("%s", s);
+        printf("%d ", i);
+        if (m > 1) {
+            s[m - 1] = '\0';
+            printf("%s%s\n", s, s + m);
+        } else {
+            printf("%s\n", s + 1);
+        }
     }
     return 0;
 }

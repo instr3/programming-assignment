@@ -24,16 +24,17 @@ SOFTWARE.
 */
 
 char input_buffer[] = 
-"\x35\x20\x36\x20\x33\x0A\x31\x20\x32\x20"
-"\x31\x32\x0A\x33\x20\x32\x20\x38\x0A\x31"
-"\x20\x33\x20\x35\x0A\x32\x20\x35\x20\x33"
-"\x0A\x33\x20\x34\x20\x34\x0A\x32\x20\x34"
-"\x20\x38\x0A\x33\x20\x34\x0A\x31\x20\x32"
-"\x0A\x35\x20\x31\x0A"
+"\x33\x20\x0A\x31\x20\x31\x32\x33\x20\x0A"
+"\x32\x20\x32\x37\x39\x31\x33\x34\x33\x39"
+"\x39\x37\x34\x32\x20\x0A\x33\x20\x39\x38"
+"\x37\x0A"
 ;
 
 char answer_buffer[] = 
-"\x34\x0A\x38\x0A\x2D\x31\x0A"
+"\x31\x20\x31\x33\x32\x0A\x32\x20\x32\x37"
+"\x39\x31\x33\x34\x34\x32\x33\x37\x39\x39"
+"\x0A\x33\x20\x42\x49\x47\x47\x45\x53\x54"
+"\x0A"
 ;
 
 #include "trap.h"
@@ -368,32 +369,62 @@ int main()
 
 
 #include <string.h>
-#define max(a, b) ((a) > (b) ? (a) : (b))
-#define MAXN 300
-int f[MAXN + 1][MAXN + 1];
+#define MAXN 1000
+char s[MAXN + 1];
+int max(int a, int b) { return a > b ? a : b; }
+void swap(char *a, char *b)
+{
+    int t;
+    t = *a;
+    *a = *b;
+    *b = t;
+}
+void sort(char *a, char *b)
+{
+    int l = b - a;
+    int i, j;
+    for (i = 0; i < l; i++)
+        for (j = i + 1; j < l; j++)
+            if (a[i] > a[j])
+                swap(&a[i], &a[j]);
+}
+void solve()
+{
+    int l = strlen(s);
+    int m = '0', p = 0;
+    int q = 0;
+    int i;
+    for (i = l - 1; i > 0; i--) {
+        m = max(s[i], m);
+        if (s[i - 1] < m) {
+            q = i;
+            break;
+        }
+    }
+    if (i == 0) { puts("BIGGEST"); return; }
+
+    for (i = q; i < l; i++) {
+        if (s[i] > s[q - 1]) {
+            if (s[i] < s[p] || p == 0)
+                p = i;
+        }
+    }
+
+    swap(&s[p], &s[q - 1]);
+    sort(s + q, s + l);
+    puts(s);
+}
 int main()
 {
-    int i, j, r;
-    int N, M, T;
-    memset(f, -1, sizeof(f));
-    scanf("%d%d%d", &N, &M, &T);
-    for (i = 1; i <= M; i++) {
-        int u, v, w;
-        scanf("%d%d%d", &u, &v, &w);
-        f[u][v] = w;
-    }
-    for (r = 1; r <= N; r++)
-        for (i = 1; i <= N; i++)
-            for (j = 1; j <= N; j++) {
-                if (f[i][r] < 0 || f[r][j] < 0) continue;
-                int t = max(f[i][r], f[r][j]);
-                if (f[i][j] < 0 || t < f[i][j])
-                    f[i][j] = t;
-            }
-    for (i = 1; i <= T; i++) {
-        int u, v;
-        scanf("%d%d", &u, &v);
-        printf("%d\n", f[u][v]);
+    int n;
+    scanf("%d", &n);
+    while (n--) {
+        int x;
+        scanf("%d", &x);
+        printf("%d ", x);
+        
+        scanf("%s", s);
+        solve();
     }
     return 0;
 }

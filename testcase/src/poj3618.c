@@ -24,16 +24,12 @@ SOFTWARE.
 */
 
 char input_buffer[] = 
-"\x35\x20\x36\x20\x33\x0A\x31\x20\x32\x20"
-"\x31\x32\x0A\x33\x20\x32\x20\x38\x0A\x31"
-"\x20\x33\x20\x35\x0A\x32\x20\x35\x20\x33"
-"\x0A\x33\x20\x34\x20\x34\x0A\x32\x20\x34"
-"\x20\x38\x0A\x33\x20\x34\x0A\x31\x20\x32"
-"\x0A\x35\x20\x31\x0A"
+"\x32\x35\x20\x35\x0A\x31\x30\x0A\x2D\x33"
+"\x0A\x38\x0A\x2D\x37\x0A\x31\x0A"
 ;
 
 char answer_buffer[] = 
-"\x34\x0A\x38\x0A\x2D\x31\x0A"
+"\x34\x0A"
 ;
 
 #include "trap.h"
@@ -367,33 +363,63 @@ int main()
 /* REAL USER PROGRAM */
 
 
-#include <string.h>
-#define max(a, b) ((a) > (b) ? (a) : (b))
-#define MAXN 300
-int f[MAXN + 1][MAXN + 1];
+#include <stdlib.h>
+
+#define MAXN 50000
+int a[MAXN];
+int b[MAXN];
+int asz, bsz;
+
+int abs(int x) { return x >= 0 ? x : -x; }
+int cmp(const void *a, const void *b)
+{
+    return abs(*(int *)a) - abs(*(int *)b);
+}
 int main()
 {
-    int i, j, r;
-    int N, M, T;
-    memset(f, -1, sizeof(f));
-    scanf("%d%d%d", &N, &M, &T);
-    for (i = 1; i <= M; i++) {
-        int u, v, w;
-        scanf("%d%d%d", &u, &v, &w);
-        f[u][v] = w;
+    int i;
+    int T, N;
+    scanf("%d%d", &T, &N);
+    for (i = 1; i <= N; i++) {
+        int x;
+        scanf("%d", &x);
+        if (x >= 0)
+            a[asz++] = x;
+        else
+            b[bsz++] = x;
     }
-    for (r = 1; r <= N; r++)
-        for (i = 1; i <= N; i++)
-            for (j = 1; j <= N; j++) {
-                if (f[i][r] < 0 || f[r][j] < 0) continue;
-                int t = max(f[i][r], f[r][j]);
-                if (f[i][j] < 0 || t < f[i][j])
-                    f[i][j] = t;
-            }
-    for (i = 1; i <= T; i++) {
-        int u, v;
-        scanf("%d%d", &u, &v);
-        printf("%d\n", f[u][v]);
+
+    qsort(a, asz, sizeof(int), cmp);
+    qsort(b, bsz, sizeof(int), cmp);
+
+    int pa = 0, pb = 0;
+    int last = 0;
+    int curT = 0;
+    int ans = 0;
+    while (1) {
+        int next, dist;
+        if (pa >= asz && pb >= bsz) break;
+        if (pa >= asz)
+            next = b[pb++];
+        else if (pb >= bsz)
+            next = a[pa++];
+        else {
+            int adist, bdist;
+            adist = abs(a[pa]);
+            bdist = abs(b[pb]);
+            if (adist <= bdist)
+                next = a[pa++];
+            else
+                next = b[pb++];
+        }
+        
+        dist = abs(next - last);
+        if (curT + dist > T) break;
+        curT += dist;
+        last = next;
+        ans++;
     }
+
+    printf("%d\n", ans);
     return 0;
 }

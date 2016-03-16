@@ -25,34 +25,60 @@ SOFTWARE.
 
 #include "trap.h"
 
-int main()
-{
-    volatile int a, c;
+.globl start
+start:
+    mov $0, %ebp
+    mov $0x08000000, %esp
+    sub $0x10, %esp
+    mov %esp, %esi
     
-    __asm__ __volatile__ (
-        "mov $0xAABBCCDD, %%eax\n\t"
-        "mov $0x11223344, %%ecx\n\t"
-        "xor %%edx, %%edx\n\t"
-        "xor %%ebx, %%ebx\n\t"
-        "mov $0xab, %%dh\n\t"
-        "mov $0x23, %%bh\n\t"
-        "mov $-1, %%esi\n\t"
-        "mov $0x22334455, %%edi\n\t"
-        
-        // you may use esi/edi instead of dh/bh, that's wrong!
-        "movsx %%dh, %%eax\n\t"
-        "movsx %%bh, %%ecx\n\t"
-        
-        "mov %%eax, %0\n\t"
-        "mov %%ecx, %1\n\t"
-        
-        :"=m"(a), "=m"(c)
-        :
-        :"eax", "ecx", "ebx", "edx", "esi", "edi");
+    call func1
+    push %eax
+    push %ecx
+    push %edx
+    push %ebx
+    call func2
+    call func3
     
-    nemu_assert(a == 0xffffffab);
-    nemu_assert(c == 0x23);
+    cmp %esp, %esi
+    je test_ok
+    HIT_BAD_TRAP
     
-    HIT_GOOD_TRAP;
-    return 0;
-}
+func1:
+    push %eax
+    push %ecx
+    push %edx
+    push %ebx
+    pop %eax
+    pop %eax
+    pop %eax
+    pop %eax
+    xor %eax, %eax
+    ret
+    HIT_BAD_TRAP
+
+func2:
+    push %eax
+    pop %eax
+    push %eax
+    pop %eax
+    ret $16
+    HIT_BAD_TRAP
+
+func3:
+    push %eax
+    push %ecx
+    push %edx
+    push %ebx
+    call func2
+    xor %eax, %eax
+    ret
+    HIT_BAD_TRAP
+
+test_ok:
+    HIT_GOOD_TRAP
+test_fail:
+    HIT_BAD_TRAP
+    HIT_BAD_TRAP
+    HIT_BAD_TRAP
+    

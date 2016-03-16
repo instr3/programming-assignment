@@ -40,8 +40,8 @@ int main()
         "mov $0x22334455, %%edi\n\t"
         
         // you may use esi/edi instead of dh/bh, that's wrong!
-        "movsx %%dh, %%eax\n\t"
-        "movsx %%bh, %%ecx\n\t"
+        "movzx %%dh, %%eax\n\t"
+        "movzx %%bh, %%ecx\n\t"
         
         "mov %%eax, %0\n\t"
         "mov %%ecx, %1\n\t"
@@ -50,7 +50,7 @@ int main()
         :
         :"eax", "ecx", "ebx", "edx", "esi", "edi");
     
-    nemu_assert(a == 0xffffffab);
+    nemu_assert(a == 0xab);
     nemu_assert(c == 0x23);
     
     HIT_GOOD_TRAP;

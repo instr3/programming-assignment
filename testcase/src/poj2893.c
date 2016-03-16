@@ -24,16 +24,20 @@ SOFTWARE.
 */
 
 char input_buffer[] = 
-"\x35\x20\x36\x20\x33\x0A\x31\x20\x32\x20"
-"\x31\x32\x0A\x33\x20\x32\x20\x38\x0A\x31"
-"\x20\x33\x20\x35\x0A\x32\x20\x35\x20\x33"
-"\x0A\x33\x20\x34\x20\x34\x0A\x32\x20\x34"
-"\x20\x38\x0A\x33\x20\x34\x0A\x31\x20\x32"
-"\x0A\x35\x20\x31\x0A"
+"\x33\x20\x33\x0A\x31\x20\x30\x20\x33\x0A"
+"\x34\x20\x32\x20\x35\x0A\x37\x20\x38\x20"
+"\x36\x0A\x34\x20\x33\x0A\x31\x20\x32\x20"
+"\x35\x0A\x34\x20\x36\x20\x39\x0A\x31\x31"
+"\x20\x38\x20\x31\x30\x0A\x33\x20\x37\x20"
+"\x30\x0A\x33\x20\x34\x0A\x31\x20\x34\x20"
+"\x31\x31\x20\x33\x0A\x32\x20\x36\x20\x38"
+"\x20\x37\x0A\x35\x20\x39\x20\x31\x30\x20"
+"\x30\x0A\x30\x20\x30\x0A"
 ;
 
 char answer_buffer[] = 
-"\x34\x0A\x38\x0A\x2D\x31\x0A"
+"\x59\x45\x53\x0A\x4E\x4F\x0A\x4E\x4F\x0A"
+""
 ;
 
 #include "trap.h"
@@ -368,32 +372,81 @@ int main()
 
 
 #include <string.h>
-#define max(a, b) ((a) > (b) ? (a) : (b))
-#define MAXN 300
-int f[MAXN + 1][MAXN + 1];
+#define MAXN 999
+#define MAP(X) (((X) - 1) % N * M + ((X) - 1) / N + 1)
+int p[MAXN * MAXN];
+
+int inv_cnt;
+void merge_sort(int *a, int n)
+{
+    if (n <= 1) return;
+    int l = n / 2;
+    int r = n - l;
+    int *b = a + l;
+    merge_sort(a, l);
+    merge_sort(b, r);
+    int p, q, sz;
+    static int c[MAXN * MAXN];
+    p = q = sz = 0;
+    while (1) {
+        if (p >= l && q >= r) break;
+        if (p >= l)
+            c[sz++] = b[q++];
+        else if (q >= r)
+            c[sz++] = a[p++];
+        else {
+            if (a[p] <= b[q])
+                c[sz++] = a[p++];
+            else {
+                c[sz++] = b[q++];
+                inv_cnt += l - p;
+            }
+        }
+    }
+    memcpy(a, c, sizeof(int) * n);
+}
+int get_inv(int *a, int n)
+{
+    /*int ans = 0;
+    int i, j;
+    for (i = 0; i < n; i++)
+        for (j = i + 1; j < n; j++)
+            if (a[i] > a[j])
+                ans++;*/
+    inv_cnt = 0;
+    merge_sort(a, n);
+    //printf("ans=%d inv_cnt=%d\n", ans, inv_cnt);
+    return inv_cnt;
+}
+
 int main()
 {
-    int i, j, r;
-    int N, M, T;
-    memset(f, -1, sizeof(f));
-    scanf("%d%d%d", &N, &M, &T);
-    for (i = 1; i <= M; i++) {
-        int u, v, w;
-        scanf("%d%d%d", &u, &v, &w);
-        f[u][v] = w;
-    }
-    for (r = 1; r <= N; r++)
-        for (i = 1; i <= N; i++)
-            for (j = 1; j <= N; j++) {
-                if (f[i][r] < 0 || f[r][j] < 0) continue;
-                int t = max(f[i][r], f[r][j]);
-                if (f[i][j] < 0 || t < f[i][j])
-                    f[i][j] = t;
+    int i, j;
+    int M, N;
+    while (scanf("%d%d", &M, &N) == 2) {
+        if (!N || !M) break;
+        if (N % 2 == 1)
+            for (i = 0; i < M; i++)
+                for (j = 0; j < N; j++)
+                    scanf("%d", &p[i * N + j]);
+        else
+            for (i = 0; i < M; i++)
+                for (j = 0; j < N; j++) {
+                    int t;
+                    scanf("%d", &t);
+                    p[j * M + i] = t ? MAP(t) : 0;
+                }
+        for (i = 0; i < M * N; i++)
+            if (p[i] == 0) {
+                for (j = i + 1; j < M * N; j++)
+                    p[j - 1] = p[j];
+                break;
             }
-    for (i = 1; i <= T; i++) {
-        int u, v;
-        scanf("%d%d", &u, &v);
-        printf("%d\n", f[u][v]);
+        //for (i = 0; i < M * N - 1; i++)
+            //printf("a[%d]=%d\n", i, p[i]);
+        int inv = get_inv(p, M * N - 1);
+        //printf("inv=%d\n", inv);
+        puts(inv % 2 ? "NO" : "YES");
     }
     return 0;
 }
