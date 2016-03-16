@@ -79,8 +79,8 @@ uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
 	if (((addr+len-1)>>PAGE_OFFSET_LEN)!=(addr>>PAGE_OFFSET_LEN)) {
 		uint32_t more=(addr+len)&PAGING_MASK;
 		//split into 2 parts
-		//printf("more:%x\n",more);
-		//fflush(stdout);
+		printf("rmore:%x\n",more);
+		fflush(stdout);
 		return lnaddr_read(addr,len-more) | 
 			(lnaddr_read((addr+len)&~PAGING_MASK,more)<<(len-more));
 		//assert(0);
@@ -95,8 +95,8 @@ uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
 void lnaddr_write(lnaddr_t addr, size_t len, uint32_t data) {
 	if (((addr+len-1)>>PAGE_OFFSET_LEN)!=(addr>>PAGE_OFFSET_LEN)) {
 		uint32_t more=(addr+len)&PAGING_MASK;
-		//printf("more:%x\n",more);
-		//fflush(stdout);
+		printf("wmore:%x\n",more);
+		fflush(stdout);
 		//split into 2 parts
 		lnaddr_write(addr, len-more, data&((1<<(len-more))-1));
 		lnaddr_write((addr+len)&~PAGING_MASK, more, data>>(len-more));
