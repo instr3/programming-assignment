@@ -78,19 +78,12 @@ void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
 uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
 	if (((addr+len-1)>>PAGE_OFFSET_LEN)!=(addr>>PAGE_OFFSET_LEN)) {
 		uint32_t more=(addr+len)&PAGING_MASK;
+		uint32_t tmp=(len-more)*8;
 		//split into 2 parts
-		printf("rmore:%x\n",more);
-		printf("%x +%x\n",addr,(unsigned)(len-more));
-		printf("%x +%x\n",(unsigned)(addr+len)&~PAGING_MASK,(unsigned)more);
-		fflush(stdout);
-		printf("GET:%x , %x\n",lnaddr_read(addr,len-more),(lnaddr_read((addr+len)&~PAGING_MASK,more)));
-		printf("%x\n",
-		 lnaddr_read(addr,len-more) |
-			(lnaddr_read((addr+len)&~PAGING_MASK,more)<<(len-more))
-		);
-		hwaddr_t hwaddr = page_translate(addr);
-		printf("GET2:%x\n",hwaddr_read(hwaddr, len));
-		return hwaddr_read(hwaddr, len);
+		//printf("more:%x\n",more);
+		//fflush(stdout);
+		return lnaddr_read(addr,len-more) | 
+			(lnaddr_read((addr+len)&~PAGING_MASK,more)<<tmp);
 		//assert(0);
 
 	}
@@ -103,12 +96,13 @@ uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
 void lnaddr_write(lnaddr_t addr, size_t len, uint32_t data) {
 	if (((addr+len-1)>>PAGE_OFFSET_LEN)!=(addr>>PAGE_OFFSET_LEN)) {
 		uint32_t more=(addr+len)&PAGING_MASK;
-		printf("wmore:%x\n",more);
-		fflush(stdout);
+		uint32_t tmp=(len-more)*8;
+		//printf("more:%x\n",more);
+		//fflush(stdout);
 		//split into 2 parts
-		lnaddr_write(addr, len-more, data&((1<<(len-more))-1));
-		lnaddr_write((addr+len)&~PAGING_MASK, more, data>>(len-more));
-		//assert(0);
+		lnaddr_write(addr, len-more, data&((1<<tmp)-1));
+		lnaddr_write((addr+len)&~PAGING_MASK, more, data>>tmp);
+		assert(0 && "Not Tested");
 
 	}
 	else {
