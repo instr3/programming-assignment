@@ -83,9 +83,11 @@ uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
 		printf("%x +%x\n",addr,(unsigned)(len-more));
 		printf("%x +%x\n",(unsigned)(addr+len)&~PAGING_MASK,(unsigned)more);
 		fflush(stdout);
-		 lnaddr_read(addr,len-more) ; 
-			(lnaddr_read((addr+len)&~PAGING_MASK,more));//<<(len-more));
+		printf("GET:%x , %x\n",lnaddr_read(addr,len-more),(lnaddr_read((addr+len)&~PAGING_MASK,more)));
+		// lnaddr_read(addr,len-more) |
+		//	(lnaddr_read((addr+len)&~PAGING_MASK,more));//<<(len-more));
 		hwaddr_t hwaddr = page_translate(addr);
+		printf("GET2:%x\n",hwaddr_read(hwaddr, len));
 		return hwaddr_read(hwaddr, len);
 		//assert(0);
 
