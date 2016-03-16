@@ -76,16 +76,17 @@ void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
 }
 
 uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
-	if(false){
-	// (((addr+len-1)>>PAGE_OFFSET_LEN)!=(addr>>PAGE_OFFSET_LEN)) {
+	if (((addr+len-1)>>PAGE_OFFSET_LEN)!=(addr>>PAGE_OFFSET_LEN)) {
 		uint32_t more=(addr+len)&PAGING_MASK;
 		//split into 2 parts
 		printf("rmore:%x\n",more);
 		printf("%x +%x\n",addr,(unsigned)(len-more));
 		printf("%x +%x\n",(unsigned)(addr+len)&~PAGING_MASK,(unsigned)more);
 		fflush(stdout);
-		return lnaddr_read(addr,len-more) | 
-			(lnaddr_read((addr+len)&~PAGING_MASK,more)<<(len-more));
+		 lnaddr_read(addr,len-more) ; 
+			(lnaddr_read((addr+len)&~PAGING_MASK,more));//<<(len-more));
+		hwaddr_t hwaddr = page_translate(addr);
+		return hwaddr_read(hwaddr, len);
 		//assert(0);
 
 	}
