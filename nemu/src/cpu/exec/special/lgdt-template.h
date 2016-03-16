@@ -3,7 +3,7 @@
 #define instr lgdt
 
 static void do_execute() {
-	DATA_TYPE addr=op_src->val;
+	DATA_TYPE addr=op_src->addr;
 	cpu.gdtr_limit=lnaddr_read(addr,2);
 	cpu.gdtr_base=lnaddr_read(addr+2,4);
 	if(ops_decoded.is_data_size_16)
