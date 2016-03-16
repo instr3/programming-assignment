@@ -43,6 +43,18 @@ typedef struct
 		};
 		#pragma pack()
 	};
+	//IDTR
+	union
+	{
+		uint64_t idtr : 48;
+		#pragma pack(2)
+		struct
+		{
+			uint16_t idtr_limit;
+			uint32_t idtr_base;
+		};
+		#pragma pack()
+	};
 	//Segment registers
 	uint16_t cs,ds,es,ss;
 	//Invisible part for segment register used as cache
