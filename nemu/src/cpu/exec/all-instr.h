@@ -45,11 +45,12 @@
 #include "misc/misc.h"
 
 #include "special/special.h"
+#include "special/lgdt.h"
 
 #include "transfer/call.h"
 #include "transfer/jcc.h"
 #include "transfer/jmp.h"
 #include "transfer/ret.h"
 
-#include "segment/lgtd.h"
+//#include "segment/lgtd.h"
 
