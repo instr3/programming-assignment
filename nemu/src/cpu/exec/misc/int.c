@@ -27,6 +27,8 @@ void raise_intr(uint8_t NO) {
 }
 
 make_helper(int_i) {
+	extern void printRegInfo();;
+	printRegInfo();
 	//int i;
 	//for(i=0;i<10;++i)
 	//printf("[%x]\n",(char)swaddr_read(cpu.ecx+i,1,SREG_DS));
