@@ -34,7 +34,6 @@ make_helper(nemu_trap) {
 				putchar(swaddr_read(cpu.ecx+i,1,SREG_DS));
 			}
 			putchar('\n');
-			cpu.eax=cpu.edx;
 		   	break;
 
 		default:
