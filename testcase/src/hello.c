@@ -62,7 +62,9 @@ int isatty(int fd) {
 int main() {
 	set_bp();
 	printf("%s", "Hello world!\n");
-	printf("%d + %d = %d\n", 1, 1, 2);
+	printf("%d +", 1);
+	printf(" %d = ", 1);
+	printf(" %d\n", 2);
 	//printf("%s", buf);
 	HIT_GOOD_TRAP;
 	return 0;
