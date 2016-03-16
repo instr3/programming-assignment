@@ -30,6 +30,7 @@ make_helper(int_i) {
 	uint8_t id = instr_fetch(eip + 1, 1);
 	push_data(cpu.eflags,4);
 	push_data(cpu.cs,4);
+	reg_flag_set(EFLAGS_IF,0);
 	push_data(cpu.eip+2,4);
 	raise_intr(id);
 	//Well, can't process to here, sadly.
