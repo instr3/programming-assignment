@@ -46,6 +46,7 @@
 
 #include "special/special.h"
 #include "special/lgdt.h"
+#include "special/lidt.h"
 
 #include "transfer/call.h"
 #include "transfer/jcc.h"
