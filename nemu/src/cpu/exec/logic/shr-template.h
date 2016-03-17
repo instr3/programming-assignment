@@ -13,6 +13,11 @@ static void do_execute () {
 	/* There is no need to update EFLAGS, since no other instructions 
 	 * in PA will test the flags updated by this instruction.
 	 */
+	//OF, CF Not set
+
+	influence_zf(dest);
+	influence_sf(dest);
+	influence_pf(dest);
 
 	print_asm_template2();
 }
