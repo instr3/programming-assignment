@@ -3,7 +3,7 @@
 #define instr movzx
 #if DATA_BYTE == 2 || DATA_BYTE == 4
 static void do_execute() {
-	DATA_TYPE_S res;
+	DATA_TYPE res;
 	if(ops_decoded.opcode==0x1B7)//16->32
 		res=(uint16_t)op_src->val;
 	else
