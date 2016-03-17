@@ -17,7 +17,6 @@ make_helper(concat(ret_, SUFFIX)) {
 	return 1;
 }
 make_helper(concat(ret_i_, SUFFIX)) {
-	assert(0);
 	uint16_t imm=instr_fetch(cpu.eip+1,2);
 #if DATA_BYTE == 2
 	uint16_t res;
