@@ -102,7 +102,7 @@ void lnaddr_write(lnaddr_t addr, size_t len, uint32_t data) {
 		//split into 2 parts
 		lnaddr_write(addr, len-more, data&((1<<tmp)-1));
 		lnaddr_write((addr+len)&~PAGING_MASK, more, data>>tmp);
-		assert(0 && "Not Tested");
+		//assert(0 && "Not Tested");
 
 	}
 	else {
