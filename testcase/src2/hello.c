@@ -60,9 +60,9 @@ int isatty(int fd) {
 }
 //char buf[128];
 int main() {
-	set_bp();
 	printf("%s", "Hello world!\n");
-	printf("%d + %d = %d\n", 1, 1, 2);
+	//set_bp();
+	printf("%d + %d = %d\n", 1, 12, 2);
 	//printf("%s", buf);
 	HIT_GOOD_TRAP;
 	return 0;
