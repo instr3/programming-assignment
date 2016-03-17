@@ -2,6 +2,7 @@
 
 make_helper(exec);
 make_helper(rep) {
+	assert(ops_decoded.is_data_size_16==false);
 	int len;
 	int op=ops_decoded.opcode;
 	int count = 0;
@@ -25,7 +26,7 @@ make_helper(rep) {
 				|| ops_decoded.opcode == 0xae	// scasb
 				|| ops_decoded.opcode == 0xaf	// scasw
 				);
-			if(ops_decoded.opcode==0xa6||ops_decoded.opcode==0xa7)
+			if(ops_decoded.opcode==0xa6||ops_decoded.opcode==0xa7||ops_decoded.opcode==0xae||ops_decoded.opcode==0xaf)
 			{
 				if(op==0xf3)
 				{
