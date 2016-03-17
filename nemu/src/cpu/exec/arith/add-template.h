@@ -9,7 +9,7 @@ static void do_execute () {
 	influence_pf(result);
 	influence_sf(result);
 	influence_of(result,op_dest->val,op_src->val);
-	influence_cf(result,op_dest->val+0ull+op_src->val,0);
+	influence_cf(op_dest->val+0ull+op_src->val,0);
 
 	print_asm_template2();
 }

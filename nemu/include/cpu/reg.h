@@ -144,7 +144,7 @@ static inline int check_reg_index(int index) {
 #define influence_sf(res) reg_flag_set(EFLAGS_SF,highestbit(res))
 #define influence_of(res,op1,op2) reg_flag_set(EFLAGS_OF,highestbit(op1)==highestbit(op2)&& \
 	highestbit(op1)!=highestbit(res))
-#define influence_cf(res,resull,sub) reg_flag_set(EFLAGS_CF,((res)!=(resull))^(sub))
+#define influence_cf(resull,sub) reg_flag_set(EFLAGS_CF,(!!((resull)&1ull<<(8*DATA_BYTE)))^(sub))
 /*Bit Name Function page 419
 0 CF Carry Flag ── Set on high-order bit carry or borrow; cleared
 otherwise.

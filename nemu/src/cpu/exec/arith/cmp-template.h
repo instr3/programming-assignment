@@ -4,12 +4,14 @@
 
 static void do_execute () {
 	DATA_TYPE result = op_dest->val - op_src->val;
+	DATA_TYPE src=op_src->val,dest=op_dest->val;
 	//OPERAND_W(op_dest, result);
 	influence_zf(result);
 	influence_pf(result);
 	influence_sf(result);
-	influence_of(result,op_dest->val,~op_src->val);
-	influence_cf(result,op_dest->val+1ull+(~op_src->val),1);
+	influence_of(result,dest,~src);
+	influence_cf(dest+1ull+(DATA_TYPE)~src,1);
+	//printf("%x:[%x]-[%x]=[%x]:%x\n",DATA_BYTE,dest,src,result,dest+(uint32_t)1+(DATA_TYPE)~src);
 
 	print_asm_template2();
 }
