@@ -3,6 +3,7 @@
 make_helper(exec);
 make_helper(rep) {
 	assert(ops_decoded.is_data_size_16==false);
+	assert(reg_flag(EFLAGS_DF)==0);
 	int len;
 	int op=ops_decoded.opcode;
 	int count = 0;
