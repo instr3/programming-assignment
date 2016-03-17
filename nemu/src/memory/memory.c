@@ -84,7 +84,7 @@ uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
 		//fflush(stdout);
 		return lnaddr_read(addr,len-more) | 
 			(lnaddr_read((addr+len)&~PAGING_MASK,more)<<tmp);
-		assert(0);
+		//assert(0);
 
 	}
 	else {

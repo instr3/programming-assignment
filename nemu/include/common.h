@@ -11,7 +11,7 @@
 //#define USE_TLB
 
 #define DEBUG
-//#define LOG_FILE
+#define LOG_FILE
 
 #include "debug.h"
 #include "macro.h"
