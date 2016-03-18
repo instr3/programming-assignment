@@ -27,9 +27,10 @@ hwaddr_t page_translate(lnaddr_t addr)
 	{
 
 		printf("Level 1 Page Miss!\nLnaddr:[%x]\n",addr);
-		printf("(1)0x%x*4+0x%x\n",tmp.dir,base);
-		printf("*=0x%x\n",pte.val);
 		fflush(stdout);
+		//printf("(1)0x%x*4+0x%x\n",tmp.dir,base);
+		//printf("*=0x%x\n",pte.val);
+		page_info(addr);
 		assert(0);
 	}
 	base=pte.page_frame << PAGE_OFFSET_LEN;
@@ -37,10 +38,10 @@ hwaddr_t page_translate(lnaddr_t addr)
 	if(!pte.present)
 	{
 		printf("Level 2 Page Miss!\nLnaddr:[%x]\n",addr);
+		fflush(stdout);
 		//printf("(2)0x%x*4+0x%x\n",tmp.dir,base);
 		//printf("*=0x%x\n",pte.val);
 		page_info(addr);
-		fflush(stdout);
 		assert(0);
 		
 	}
