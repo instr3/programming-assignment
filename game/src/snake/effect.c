@@ -67,6 +67,7 @@ update_keypress(void) {
 
 	cli();
 	//Log("%d",last_key_code());
+	int last=nd;
 	switch(last_key_code())
 	{
 		case 72:nd=3;break;
@@ -76,6 +77,7 @@ update_keypress(void) {
 
 		default:break;
 	}
+	if(snake[ns-1].x-snake[ns].x==dirx[nd]&&snake[ns-1].y-snake[ns].y==diry[nd])nd=last;
 	/* 寻找相应键已被按下、最底部且未被击中的字符 */
 	for (it = head; it != NULL; it = it->_next) {
 		assert(it->text >= 0 && it->text < 26);
