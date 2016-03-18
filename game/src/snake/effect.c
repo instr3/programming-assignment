@@ -68,7 +68,8 @@ update_keypress(void) {
 	cli();
 	switch(get_fps())
 	{
-		case 75:nd=1;break;
+		case 72:nd=4;break;
+		case 75:nd=3;break;
 
 		default:break;
 	}
