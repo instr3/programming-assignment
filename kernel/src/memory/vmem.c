@@ -16,10 +16,8 @@ void create_video_mapping() {
 	 * some page tables to create this mapping.
 	 */
 	PDE* pde=get_updir();
-	Log("%x",pde->val);
-
-	pde->val=make_pde(screenpage+0);
-	screenpage->val=make_pte(0xa0000);
+	pde->val=make_pde(screenpage);
+	screenpage[0xa0].val=make_pte(0xa0000);
 	set_bp();
 	//panic("please implement me");
 }
