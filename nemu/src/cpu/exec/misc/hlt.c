@@ -3,8 +3,8 @@ extern uint8_t i8259_query_intr();
 make_helper(hlt)
 {
 	while(!(cpu.INTR & reg_flag(EFLAGS_IF)));
-	printf("intr:%x\n",cpu.INTR);
-	printf("flag:%x",reg_flag(EFLAGS_IF));
+	//printf("intr:%x",cpu.INTR);
+	//printf("flag:%x\n",reg_flag(EFLAGS_IF));
 	print_asm("hlt");
 	return 1;
 }

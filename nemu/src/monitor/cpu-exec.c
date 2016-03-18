@@ -80,15 +80,15 @@ void cpu_exec(volatile uint32_t n) {
 		}
 
 		if(nemu_state != RUNNING) { return; }
+		if(cpu.INTR & reg_flag(EFLAGS_IF)) {
+			uint32_t intr_no = i8259_query_intr();
+			i8259_ack_intr();
+			extern void raise_intr(uint8_t);//In int.c
+			//printf("RAISE:%x",intr_no);
+			raise_intr(intr_no);
+		}
 	}
 
 	if(nemu_state == RUNNING) { nemu_state = STOP; }
-
-	if(cpu.INTR & reg_flag(EFLAGS_IF)) {
-		uint32_t intr_no = i8259_query_intr();
-		i8259_ack_intr();
-		extern void raise_intr(uint8_t);//In int.c
-		printf("RAISE:%x",intr_no);
-		raise_intr(intr_no);
-	}
 }
+
