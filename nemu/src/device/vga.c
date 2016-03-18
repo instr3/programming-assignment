@@ -80,7 +80,6 @@ void update_screen() {
 }
 
 void vga_dac_io_handler(ioaddr_t addr, size_t len, bool is_write) {
-	printf("HERE!");
 	static uint8_t *color_ptr; 
 	if(addr == VGA_DAC_WRITE_INDEX && is_write) {
 		color_ptr = (void *)&palette[ vga_dac_port_base[0] ];
