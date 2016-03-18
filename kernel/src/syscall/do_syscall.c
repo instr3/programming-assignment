@@ -30,10 +30,11 @@ void do_syscall(TrapFrame *tf) {
 		case SYS_write:
 			if(tf->ebx==1||tf->ebx==2)
 			{
+				//Todo : Not TESTED!
 				extern void serial_printc(char);
 				int i;char *c=(void *)tf->edx;
 				for(i=0;i<tf->ecx;++i)
-					serial_printc(*(c+i)+1);
+					serial_printc(*(c+i));
 				//This is an old method
 				//asm volatile (".byte 0xd6" : : "a"(2), "c"(tf->ecx), "d"(tf->edx));
 				tf->eax=tf->edx;
