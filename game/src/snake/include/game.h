@@ -2,7 +2,7 @@
 #include "adt/linklist.h"
 #include "FLOAT.h"
 
-#define HZ 1000
+#define HZ 300
 
 /* 按键相关 */
 void press_key(int scan_code);
