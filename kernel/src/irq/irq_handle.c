@@ -32,13 +32,11 @@ void irq_handle(TrapFrame *tf) {
 	//panic("Have you re-organized the ``TrapFrame'' structure?");
 
 	int irq = tf->irq;
-
+	if (irq == 0xFF) irq=1001;
 	if (irq < 0) {
 		panic("Unhandled exception!");
 	} else if (irq == 0x80) {
 		do_syscall(tf);
-	} else if (irq == 0xFF) { //255
-
 	} else if (irq < 1000) {
 		panic("Unexpected exception #%d at eip = %x", irq, tf->eip);
 	} else if (irq >= 1000) {
