@@ -66,11 +66,11 @@ update_keypress(void) {
 	FLOAT min = -int2F(100);
 
 	cli();
-	Log("%d",last_key_code());
+	//Log("%d",last_key_code());
 	switch(last_key_code())
 	{
-		case 72:nd=4;break;
-		case 75:nd=3;break;
+		//case 72:nd=4;break;
+		//case 75:nd=3;break;
 
 		default:break;
 	}
