@@ -56,7 +56,6 @@ update_letter_pos(void) {
 		ngrow+=2;
 		hit+=10;
 		placefood();
-		return;
 	}
 	if(ngrow>0)
 	{
