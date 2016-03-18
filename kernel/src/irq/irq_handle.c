@@ -40,7 +40,7 @@ void irq_handle(TrapFrame *tf) {
 	} else if (irq < 1000) {
 		panic("Unexpected exception #%d at eip = %x", irq, tf->eip);
 	} else if (irq >= 1000) {
-		Log("Encountered:%d\n",irq);
+		//Log("Encountered:%d\n",irq);
 		int irq_id = irq - 1000;
 		assert(irq_id < NR_HARD_INTR);
 		struct IRQ_t *f = handles[irq_id];
