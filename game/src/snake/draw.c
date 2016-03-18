@@ -50,7 +50,7 @@ redraw_screen() {
 		draw_string(buf, F2int(it->x), it->y, 15);
 	}*/
 	draw_snake();
-	draw_grid(food,14);
+	draw_grid(food,10);
 
 	/* 绘制命中数、miss数、最后一次按键扫描码和fps */
 	draw_string(itoa(last_key_code()), SCR_HEIGHT - 8, 0, 48);
