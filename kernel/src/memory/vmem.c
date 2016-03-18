@@ -7,7 +7,7 @@
 
 /* Use the function to get the start address of user page directory. */
 inline PDE* get_updir();
-static PTE screenpage[1] align_to_page;
+static PTE screenpage[NR_PTE] align_to_page;
 
 void create_video_mapping() {
 	/* TODO: create an identical mapping from virtual memory area 
@@ -16,6 +16,8 @@ void create_video_mapping() {
 	 * some page tables to create this mapping.
 	 */
 	PDE* pde=get_updir();
+	Log("%x",pde->val);
+
 	pde->val=make_pde(screenpage+0);
 	screenpage->val=make_pte(0xa0000);
 	set_bp();
