@@ -52,6 +52,7 @@
 #include "misc/popa.h"
 #include "misc/in.h"
 #include "misc/out.h"
+#include "misc/hlt.h"
 
 #include "special/special.h"
 
