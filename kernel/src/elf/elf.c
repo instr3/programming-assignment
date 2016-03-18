@@ -23,9 +23,6 @@ uint32_t loader() {
 
 #ifdef HAS_DEVICE
 	ide_read(buf, ELF_OFFSET_IN_DISK, 4096);
-	//int t=0;
-	//for(t=0;t<10;++t)
-	//Log("[%x]",buf[t]);
 #else
 	ramdisk_read(buf, ELF_OFFSET_IN_DISK, 4096);
 #endif
@@ -45,7 +42,8 @@ uint32_t loader() {
 			uint32_t hwaddr=mm_malloc(ph->p_vaddr, ph->p_memsz);
 			//Physical memory and Virtual memory pointed to the same page
 			//So (void *)((hwaddr)) or (void *)(pa_to_va(hwaddr)) all works in memcpy and memset.
-			memcpy((void *)((hwaddr)),(void *)(ph->p_offset),ph->p_filesz);
+			ide_read((void *)((hwaddr)), ph->p_offset, ph->p_filesz);
+			//memcpy((void *)((hwaddr)),(void *)(ph->p_offset),ph->p_filesz);
 			memset((void *)((hwaddr)+ph->p_filesz),0,ph->p_memsz-ph->p_filesz);
 
 #ifdef IA32_PAGE
