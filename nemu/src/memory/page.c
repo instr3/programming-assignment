@@ -37,8 +37,9 @@ hwaddr_t page_translate(lnaddr_t addr)
 	if(!pte.present)
 	{
 		printf("Level 2 Page Miss!\nLnaddr:[%x]\n",addr);
-		printf("(2)0x%x*4+0x%x\n",tmp.dir,base);
-		printf("*=0x%x\n",pte.val);
+		//printf("(2)0x%x*4+0x%x\n",tmp.dir,base);
+		//printf("*=0x%x\n",pte.val);
+		page_info(addr);
 		fflush(stdout);
 		assert(0);
 		
