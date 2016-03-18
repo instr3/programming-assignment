@@ -4,7 +4,7 @@
 #define USE_RAMDISK
 
 /* You will define this macro in PA4 */
-//#define HAS_DEVICE
+#define HAS_DEVICE
 
 /* Want to use a simulated cache? Uncomment below. */
 #define USE_CACHE

@@ -63,6 +63,8 @@ typedef struct
 		uint32_t limit;
 		uint32_t base;
 	} cs_inv,ds_inv,es_inv,ss_inv;
+	//intr
+	bool INTR;
 
 } CPU_state;
 
