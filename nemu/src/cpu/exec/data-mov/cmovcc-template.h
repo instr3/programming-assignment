@@ -35,6 +35,7 @@ static void do_execute () {
 	{
 		OPERAND_W(op_dest, op_src->val);
 	}
+	jname=jname;//Someone said I didn't use jname
 	print_asm("%s %s,%s",jname,op_src->str,op_dest->str);
 }
 make_instr_helper(rm2r)

@@ -32,6 +32,7 @@ static void do_execute () {
 #undef f
 #undef optest
 	OPERAND_W(op_src,cond);
+	jname=jname;
 	print_asm("%s %s",jname,op_src->str);
 }
 make_instr_helper(rm)

@@ -44,7 +44,7 @@ make_helper(rep) {
 		}
 		len = 1;
 	}
-	
+	opname=opname;
 #ifdef DEBUG
 	char temp[80];
 	sprintf(temp, "%s %s", opname, assembly);

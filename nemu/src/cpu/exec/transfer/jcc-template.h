@@ -33,6 +33,7 @@ make_helper(concat(jcc_, SUFFIX)) {
 #undef optest
 	extern char *PrintAddressInFunction(uint32_t,bool);//elf.c
 	char *infun=PrintAddressInFunction(cpu.eip+addr+1+DATA_BYTE,true);
+	jname=jname;
 	if(infun)
 		print_asm("%s %x %s",jname,cpu.eip+addr+1+DATA_BYTE,infun);
 	else

@@ -28,7 +28,7 @@ static void do_execute() {
 			//cr3 modification caused tlb refresh
 #endif
 		}
-		//TODO: into vitrual mode
+		destname=destname;
 		print_asm("mov %s %s",op_src->str,destname);
 	}
 

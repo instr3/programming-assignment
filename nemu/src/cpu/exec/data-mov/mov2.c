@@ -16,6 +16,7 @@ make_helper(mov2_set_seg)
 		case 0xc0:write_seg(SREG_ES,cpu.eax);segname="es";break;
 		case 0xd0:write_seg(SREG_SS,cpu.eax);segname="ss";break;
 	}
+	segname=segname;
 	print_asm("mov %%eax,%%%s",segname);
 	return 2;
 }

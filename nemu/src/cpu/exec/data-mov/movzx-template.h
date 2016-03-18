@@ -29,6 +29,7 @@ static void do_execute() {
 	}
 	OPERAND_W(op_dest, res);
 	//print_asm_template2();
+	opname=opname;
 	print_asm("%s" str(SUFFIX) " %s,%s", opname, op_src->str, op_dest->str);
 }
 
