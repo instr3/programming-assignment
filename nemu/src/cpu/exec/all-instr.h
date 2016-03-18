@@ -50,6 +50,8 @@
 #include "misc/iret.h"
 #include "misc/pusha.h"
 #include "misc/popa.h"
+#include "misc/in.h"
+#include "misc/out.h"
 
 #include "special/special.h"
 
