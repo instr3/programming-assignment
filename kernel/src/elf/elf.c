@@ -23,10 +23,9 @@ uint32_t loader() {
 
 #ifdef HAS_DEVICE
 	ide_read(buf, ELF_OFFSET_IN_DISK, 4096);
-	int t=0;
-	for(t=0;t<10;++t)
-	Log("[%x]",buf[t]);
-	set_bp();
+	//int t=0;
+	//for(t=0;t<10;++t)
+	//Log("[%x]",buf[t]);
 #else
 	ramdisk_read(buf, ELF_OFFSET_IN_DISK, 4096);
 #endif
@@ -35,6 +34,7 @@ uint32_t loader() {
 	const uint32_t elf_magic = 0x464c457f;
 	uint32_t *p_magic = (void *)buf;
 	nemu_assert(*p_magic == elf_magic);
+	set_bp();
 
 	/* Load each program segment */
 	int i=0;
