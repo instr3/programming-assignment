@@ -25,24 +25,23 @@ hwaddr_t page_translate(lnaddr_t addr)
 	pte.val=hwaddr_read(base+tmp.dir*4,4);
 	if(!pte.present)
 	{
+
+		printf("Level 1 Page Miss!\nLnaddr:[%x]\n",addr);
 		printf("(1)0x%x*4+0x%x\n",tmp.dir,base);
 		printf("*=0x%x\n",pte.val);
-		printf("%x\n",addr);
 		fflush(stdout);
-
+		assert(0);
 	}
-	assert(pte.present);
 	base=pte.page_frame << PAGE_OFFSET_LEN;
 	pte.val=hwaddr_read(base+tmp.page*4,4);
 	if(!pte.present)
 	{
+		printf("Level 2 Page Miss!\nLnaddr:[%x]\n",addr);
 		printf("(2)0x%x*4+0x%x\n",tmp.dir,base);
 		printf("*=0x%x\n",pte.val);
-		printf("%x\n",addr);
 		fflush(stdout);
 		
 	}
-	assert(pte.present);
 #ifdef USE_TLB
 	write_tlb(tlb, addr>>PAGE_OFFSET_LEN, pte.page_frame);
 #endif
