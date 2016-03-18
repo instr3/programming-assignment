@@ -53,6 +53,7 @@ update_letter_pos(void) {
 	if(snake[ns].x+dirx[nd]==food.x&&snake[ns].y+diry[nd]==food.y)
 	{
 		snake[++ns]=food;
+		hit+=10;
 		placefood();
 		return;
 	}
