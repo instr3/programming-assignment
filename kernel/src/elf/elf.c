@@ -23,6 +23,7 @@ uint32_t loader() {
 
 #ifdef HAS_DEVICE
 	ide_read(buf, ELF_OFFSET_IN_DISK, 4096);
+	Log("IDE[%s]\n",buf);
 #else
 	ramdisk_read(buf, ELF_OFFSET_IN_DISK, 4096);
 #endif
