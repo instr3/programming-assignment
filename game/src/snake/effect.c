@@ -50,20 +50,29 @@ create_new_letter(void) {
 void
 update_letter_pos(void) {
 	
+	int i;
 	if(snake[ns].x+dirx[nd]==food.x&&snake[ns].y+diry[nd]==food.y)
 	{
-		snake[++ns]=food;
+		ngrow+=2;
 		hit+=10;
 		placefood();
 		return;
 	}
-	int i;
-	for(i=1;i<ns;++i)
+	if(ngrow>0)
 	{
-		snake[i]=snake[i+1];
+		snake[ns].x=snake[ns].x+dirx[nd];
+		snake[ns].y=snake[ns].y+diry[nd];
+		--ngrow;
 	}
-	snake[i].x=snake[i].x+dirx[nd];
-	snake[i].y=snake[i].y+diry[nd];
+	else
+	{
+		for(i=1;i<ns;++i)
+		{
+			snake[i]=snake[i+1];
+		}
+		snake[i].x=snake[i].x+dirx[nd];
+		snake[i].y=snake[i].y+diry[nd];
+	}
 	for(i=1;i<ns;++i)
 	{
 		assert(snake[i].x!=snake[ns].x||snake[i].y!=snake[ns].y);
