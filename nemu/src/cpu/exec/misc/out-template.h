@@ -2,7 +2,7 @@
 
 extern void pio_write(ioaddr_t addr, size_t len, uint32_t data);
 make_helper(concat(out_, SUFFIX)){
-	pio_write(reg_w(R_EDX),DATA_BYTE,REG(R_EAX));
+	pio_write(reg_w(R_EDX),DATA_BYTE,REG(R_EAX)+1);
 	print_asm("out" str(SUFFIX) " %%%s, (%%dx)", REG_NAME(R_EAX));
 	return 1;
 }
