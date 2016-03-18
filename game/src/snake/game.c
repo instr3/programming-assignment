@@ -44,6 +44,7 @@ main_loop(void) {
 	snake[3].x=5;snake[3].y=7;
 	dirx[1]=diry[2]=1;
 	dirx[3]=diry[4]=-1;
+	nd=2;
 	while (true) {
 		wait_intr();
 		cli();
