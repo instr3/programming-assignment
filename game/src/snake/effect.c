@@ -66,6 +66,7 @@ update_keypress(void) {
 	FLOAT min = -int2F(100);
 
 	cli();
+	Log("%d",get_fps());
 	switch(get_fps())
 	{
 		case 72:nd=4;break;
