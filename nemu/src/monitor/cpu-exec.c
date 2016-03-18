@@ -1,5 +1,6 @@
 #include "monitor/monitor.h"
 #include "cpu/helper.h"
+#include "device/i8259.h"
 #include <setjmp.h>
 
 /* The assembly code of instructions executed is only output to the screen
@@ -72,7 +73,6 @@ void cpu_exec(volatile uint32_t n) {
 		}
 #endif
 
-		/* TODO: check watchpoints here. */
 		extern bool wp_check_change();
 		if (wp_check_change())
 		{
@@ -83,4 +83,11 @@ void cpu_exec(volatile uint32_t n) {
 	}
 
 	if(nemu_state == RUNNING) { nemu_state = STOP; }
+
+	if(cpu.INTR & reg_flag(EFLAGS_IF)) {
+		uint32_t intr_no = i8259_query_intr();
+		i8259_ack_intr();
+		extern void raise_intr(uint8_t);//In int.c
+		raise_intr(intr_no);
+	}
 }
