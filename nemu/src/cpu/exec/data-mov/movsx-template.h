@@ -12,6 +12,18 @@ static void do_execute() {
 	}
 	else
 	{
+		//Some error formats
+		if(instr_fetch(cpu.eip+1,2)==0xc6be)
+		{
+			strcpy(op_src->str,"%dh");
+			op_src->val=reg_w(R_EDX)>>8;
+			printf("%x\n",reg_l(R_EDX));
+		}
+		if(instr_fetch(cpu.eip+1,2)==0xcfbe)
+		{
+			strcpy(op_src->str,"%bh");
+			op_src->val=reg_w(R_EBX)>>8;
+		}
 		res=(int8_t)op_src->val;
 		opname="movsb";
 	}
