@@ -2,7 +2,7 @@
 extern uint8_t i8259_query_intr();
 make_helper(hlt)
 {
-	while(i8259_query_intr()==-1);
+	while(!(cpu.INTR & reg_flag(EFLAGS_IF)));
 	print_asm("hlt");
 	return 1;
 }
