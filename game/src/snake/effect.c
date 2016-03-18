@@ -61,8 +61,8 @@ update_letter_pos(void) {
 	if(ngrow>0)
 	{
 		++ns;
-		snake[ns].x=snake[ns].x+dirx[nd];
-		snake[ns].y=snake[ns].y+diry[nd];
+		snake[ns].x=snake[ns-1].x+dirx[nd];
+		snake[ns].y=snake[ns-1].y+diry[nd];
 		--ngrow;
 	}
 	else
