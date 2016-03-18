@@ -52,8 +52,8 @@ clean: clean-cpp
 
 ##### some convinient rules #####
 
-USERPROG := obj/testcase/hello-inline-asm
-ENTRY := $(game_BIN)
+USERPROG := $(game_BIN)#obj/testcase/hello-inline-asm
+ENTRY := $(kernel_BIN)
 
 entry: $(ENTRY)
 	objcopy -S -O binary $(ENTRY) entry
