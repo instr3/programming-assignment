@@ -60,6 +60,7 @@ update_letter_pos(void) {
 	}
 	if(ngrow>0)
 	{
+		++ns;
 		snake[ns].x=snake[ns].x+dirx[nd];
 		snake[ns].y=snake[ns].y+diry[nd];
 		--ngrow;
