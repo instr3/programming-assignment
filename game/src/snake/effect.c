@@ -69,8 +69,10 @@ update_keypress(void) {
 	//Log("%d",last_key_code());
 	switch(last_key_code())
 	{
-		//case 72:nd=4;break;
-		//case 75:nd=3;break;
+		case 72:nd=3;break;
+		case 75:nd=4;break;
+		case 80:nd=1;break;
+		case 77:nd=2;break;
 
 		default:break;
 	}
