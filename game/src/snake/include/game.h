@@ -35,8 +35,9 @@ typedef struct position2d
 {
 	int x,y;
 }point;
-point snake[1001];
+point snake[1001],food,limit;
 int ns,nd;
 int dirx[5],diry[5];
 
 void drawgrid(point p,int color);
+void placefood();

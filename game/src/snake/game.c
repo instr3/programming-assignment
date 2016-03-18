@@ -1,7 +1,9 @@
 #include "game.h"
 #include "x86.h"
+#include "device/video.h"
 
 #include <string.h>
+#include <stdlib.h>
 
 #define FPS 30
 #define CHARACTER_PER_SECOND 3
@@ -22,6 +24,19 @@ set_fps(int value) {
 int
 get_fps() {
 	return real_fps;
+}
+void placefood()
+{
+	do
+	{
+		food.x=rand()%limit.x;
+		food.y=rand()%limit.y;
+		int i;
+		for(i=1;i<=ns;++i)
+		{
+			if(food.x==snake[i].x&&food.y==snake[i].y)continue;
+		}
+	}while(0);
 }
 
 /* 游戏主循环。
@@ -44,7 +59,10 @@ main_loop(void) {
 	snake[3].x=15;snake[3].y=7;
 	dirx[1]=diry[2]=1;
 	dirx[3]=diry[4]=-1;
+	limit.x=SCR_HEIGHT/5;
+	limit.y=SCR_WIDTH/5;
 	nd=2;
+	placefood();
 	while (true) {
 		wait_intr();
 		cli();

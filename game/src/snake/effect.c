@@ -50,6 +50,12 @@ create_new_letter(void) {
 void
 update_letter_pos(void) {
 	
+	if(snake[ns].x+dirx[nd]==food.x&&snake[ns].y+diry[nd]==food.y)
+	{
+		snake[++ns]=food;
+		placefood();
+		return;
+	}
 	int i;
 	for(i=1;i<ns;++i)
 	{
@@ -57,6 +63,10 @@ update_letter_pos(void) {
 	}
 	snake[i].x=snake[i].x+dirx[nd];
 	snake[i].y=snake[i].y+diry[nd];
+	for(i=1;i<ns;++i)
+	{
+		assert(snake[i].x!=snake[ns].x||snake[i].y!=snake[ns].y);
+	}
 }
 
 /* 更新按键 */
