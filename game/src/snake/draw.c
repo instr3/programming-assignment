@@ -21,11 +21,20 @@ static char *itoa(int a) {
  * draw_pixel或draw_string绘制的内容将保存在缓冲区内(暂时不会显示在屏幕上)，调用
  * display_buffer后才会显示。
 */
+
 void draw_my_rect(int x1,int y1,int x2,int y2,int color){
 	int i,j;
 	for (i = x1; i < x1 + x2; i ++) 
 		for (j = y1; j < y1 + y2; j ++) 
 			draw_pixel(i, j, color);
+}
+void draw_grid(point p,int color){
+	draw_my_rect(p.x*5,p.y*5,5,5,color);
+}
+
+void draw_snake(){
+	int i;
+	for(i=1;i<=ns;++i)draw_grid(snake[i],15);
 }
 void
 redraw_screen() {
@@ -40,7 +49,7 @@ redraw_screen() {
 		buf[0] = it->text + 'A'; buf[1] = 0;
 		draw_string(buf, F2int(it->x), it->y, 15);
 	}*/
-	draw_my_rect(10,10,50,50,15);
+	draw_snake();
 
 	/* 绘制命中数、miss数、最后一次按键扫描码和fps */
 	draw_string(itoa(last_key_code()), SCR_HEIGHT - 8, 0, 48);

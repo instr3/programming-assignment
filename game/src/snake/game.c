@@ -38,7 +38,12 @@ main_loop(void) {
 	int now = 0, target;
 	int num_draw = 0;
 	bool redraw;
-
+	ns=3;
+	snake[1].x=5;snake[1].y=5;
+	snake[2].x=5;snake[2].y=6;
+	snake[3].x=5;snake[3].y=7;
+	dirx[1]=diry[2]=1;
+	dirx[3]=diry[4]=-1;
 	while (true) {
 		wait_intr();
 		cli();

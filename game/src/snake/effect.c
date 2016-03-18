@@ -49,19 +49,14 @@ create_new_letter(void) {
 /* 逻辑时钟前进1单位 */
 void
 update_letter_pos(void) {
-	fly_t it;
-	for (it = head; it != NULL; ) {
-		fly_t next = it->_next;
-		it->x += it->v; /* 根据速度更新位置 */
-		if (it->x < 0 || it->x + f2F(7.9) > int2F(SCR_HEIGHT)) {
-			if (it->x < 0) hit ++; /* 从上部飞出屏幕 */
-			else miss ++; /* 从下部飞出屏幕 */
-			fly_remove(it);
-			fly_free(it);
-			if (it == head) head = next; /* 更新链表 */
-		}
-		it = next;
+	
+	int i;
+	for(i=1;i<ns;++i)
+	{
+		snake[i]=snake[i+1];
 	}
+	snake[i].x=snake[i].x+dirx[nd];
+	snake[i].y=snake[i].y+diry[nd];
 }
 
 /* 更新按键 */
