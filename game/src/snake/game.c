@@ -69,9 +69,9 @@ main_loop(void) {
 			//	create_new_letter();
 			//} 
 			/* 每隔一定时间更新屏幕上字符的位置 */
-			if (now % (HZ / UPDATE_PER_SECOND) == 0) {
-				update_letter_pos();
-			}
+			//if (now % (HZ / UPDATE_PER_SECOND) == 0) {
+			//	update_letter_pos();
+			//}
 			/* 每隔一定时间需要刷新屏幕。注意到这里实现了“跳帧”的机制：假设
 			 *   HZ = 1000, FPS = 100, now = 10, target = 1000
 			 * 即我们要模拟990个时钟中断之间发生的事件，其中包含了9次屏幕更新，
@@ -91,6 +91,7 @@ main_loop(void) {
 
 		if (redraw) { /* 当需要重新绘图时重绘 */
 			num_draw ++;
+			update_letter_pos();
 			redraw_screen();
 		}
 	}
