@@ -54,7 +54,6 @@ void init_page(void) {
 		}
 	*/
 
-	 Log("%x",ptable);
 
 	/* make CR3 to be the entry of page directory */
 	cr3.val = 0;
