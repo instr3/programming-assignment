@@ -6,6 +6,11 @@ extern jmp_buf jbuf;
 
 void raise_intr(uint8_t NO) {
 
+	push_data(cpu.eflags,4);
+	push_data(cpu.cs,4);
+	reg_flag_set(EFLAGS_IF,0);
+	push_data(cpu.eip+2,4);
+
 	idtitem_t gate;
 	lnaddr_t address=(uint32_t)NO*8+cpu.idtr_base;
 	assert(address<cpu.idtr_limit+cpu.idtr_base);
@@ -34,10 +39,6 @@ make_helper(int_i) {
 	//for(i=0;i<10;++i)
 	//printf("[%c]\n",(char)swaddr_read(cpu.ecx+i,1,SREG_DS));
 	uint8_t id = instr_fetch(eip + 1, 1);
-	push_data(cpu.eflags,4);
-	push_data(cpu.cs,4);
-	reg_flag_set(EFLAGS_IF,0);
-	push_data(cpu.eip+2,4);
 	raise_intr(id);
 	//Well, can't process to here, sadly.
 	print_asm("int $0x%X", id);
