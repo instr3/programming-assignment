@@ -72,7 +72,11 @@ uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
 
 void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
 	int map_no=is_mmio(addr);
-	if(map_no!=-1)mmio_write(addr,len,data,map_no);
+	if(map_no!=-1)
+	{
+		printf("Caught:%x\n",addr);
+		mmio_write(addr,len,data,map_no);
+	}
 #ifdef USE_CACHE
 	cache1.write(&cache1,addr,len,data);
 #else
