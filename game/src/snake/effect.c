@@ -66,6 +66,12 @@ update_keypress(void) {
 	FLOAT min = -int2F(100);
 
 	cli();
+	switch(get_fps())
+	{
+		case 75:nd=1;break;
+
+		default:break;
+	}
 	/* 寻找相应键已被按下、最底部且未被击中的字符 */
 	for (it = head; it != NULL; it = it->_next) {
 		assert(it->text >= 0 && it->text < 26);
