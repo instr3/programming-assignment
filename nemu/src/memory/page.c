@@ -40,6 +40,7 @@ hwaddr_t page_translate(lnaddr_t addr)
 		printf("(2)0x%x*4+0x%x\n",tmp.dir,base);
 		printf("*=0x%x\n",pte.val);
 		fflush(stdout);
+		assert(0);
 		
 	}
 #ifdef USE_TLB
