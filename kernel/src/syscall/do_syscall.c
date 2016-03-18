@@ -30,7 +30,6 @@ void do_syscall(TrapFrame *tf) {
 		case SYS_write:
 			if(tf->ebx==1||tf->ebx==2)
 			{
-				//Todo : Not TESTED!
 				extern void serial_printc(char);
 				int i;char *c=(void *)tf->ecx;
 				for(i=0;i<tf->edx;++i)
