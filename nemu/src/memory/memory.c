@@ -74,7 +74,7 @@ void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
 	int map_no=is_mmio(addr);
 	if(map_no!=-1)
 	{
-		printf("Caught:%x,%x\n",addr,data);
+		printf("Caught:%x,%x,%x,%x\n",addr,(int)len,data,map_no);
 		mmio_write(addr,len,data,map_no);
 	}
 #ifdef USE_CACHE
