@@ -10,7 +10,7 @@
 #define USE_CACHE
 #define USE_TLB
 
-//#define DEBUG
+#define DEBUG
 //#define LOG_FILE
 
 #include "debug.h"
