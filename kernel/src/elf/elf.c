@@ -32,6 +32,7 @@ uint32_t loader() {
 	uint32_t *p_magic = (void *)buf;
 	set_bp();
 	//Log("%x\n",*p_magic);
+	*p_magic=*p_magic;
 	nemu_assert(*p_magic == elf_magic);
 	set_bp();
 
