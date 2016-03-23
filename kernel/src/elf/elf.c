@@ -19,21 +19,21 @@ uint32_t loader() {
 	Elf32_Ehdr *elf;
 	Elf32_Phdr *ph = NULL;
 
-	uint8_t buf[5];
+	uint8_t buf[4096];
 
 #ifdef HAS_DEVICE
-	ide_read(buf, ELF_OFFSET_IN_DISK, 4);
+	ide_read(buf, ELF_OFFSET_IN_DISK, 4096);
 #else
-	ramdisk_read(buf, ELF_OFFSET_IN_DISK, 4);
+	ramdisk_read(buf, ELF_OFFSET_IN_DISK, 4096);
 #endif
 	elf = (void*)buf;
 
 	const uint32_t elf_magic = 0x464c457f;
 	uint32_t *p_magic = (void *)buf;
-	set_bp();
+	//set_bp();
 	//Log("%x\n",*p_magic);
 	nemu_assert(*p_magic == elf_magic);
-	set_bp();
+	//set_bp();
 
 	/* Load each program segment */
 	int i=0;
