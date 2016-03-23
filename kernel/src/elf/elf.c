@@ -43,7 +43,7 @@ uint32_t loader() {
 			//Physical memory and Virtual memory pointed to the same page
 			//So (void *)((hwaddr)) or (void *)(pa_to_va(hwaddr)) all works in memcpy and memset.
 #ifdef HAS_DEVICE
-			Log("%x\n",ph->p_filesz);
+			//Log("%x\n",ph->p_filesz);
 			ide_read((void *)((hwaddr)), ph->p_offset, ph->p_filesz);
 #else
 			memcpy((void *)((hwaddr)),(void *)(ph->p_offset),ph->p_filesz);
