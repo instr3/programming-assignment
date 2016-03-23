@@ -98,7 +98,7 @@ uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
 	}
 	else {
 		hwaddr_t hwaddr = page_translate(addr);
-		if(addr>=0xc0000000)
+		if(hwaddr>=0xc0000000)
 		printf("Translated:%x\n",hwaddr);
 		return hwaddr_read(hwaddr, len);
 	}
