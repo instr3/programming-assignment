@@ -16,7 +16,7 @@ void create_video_mapping() {
 	 * some page tables to create this mapping.
 	 */
 	PDE* pde=get_updir()+0x0;//Create First Level Page At dir=0
-	pde->val=make_pde(screenpage);
+	pde->val=make_pde(va_to_pa(screenpage));
 	uint32_t start_pos=0xa0000;
 	//Create Second Level Page Of Range [0xa0000, 0xa0000 + SCR_SIZE) 
 	for(;start_pos<0xa0000 + SCR_SIZE;start_pos+=PAGE_SIZE)
