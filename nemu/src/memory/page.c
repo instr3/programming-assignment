@@ -22,6 +22,8 @@ hwaddr_t page_translate(lnaddr_t addr)
 	PTE pte;
 	hwaddr_t base;
 	base=cpu.cr3.val & 0xfffff000;//Get PAGE DIRECTORY start position
+	if(base+tmp.dir*4>0xc0000000)
+	printf("1st:%x,%x = %x\n",base,tmp.dir,base+tmp.dir*4);
 	pte.val=hwaddr_read(base+tmp.dir*4,4);
 	if(!pte.present)
 	{
@@ -34,6 +36,8 @@ hwaddr_t page_translate(lnaddr_t addr)
 		assert(0);
 	}
 	base=pte.page_frame << PAGE_OFFSET_LEN;
+	if(base+tmp.dir*4>0xc0000000)
+	printf("2nd:%x,%x = %x\n",base,tmp.dir,base+tmp.dir*4);
 	pte.val=hwaddr_read(base+tmp.page*4,4);
 	if(!pte.present)
 	{
