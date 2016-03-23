@@ -5,7 +5,7 @@
 extern jmp_buf jbuf;
 
 void raise_intr(uint8_t NO) {
-	printf("Raise:%x\n",NO);
+	//printf("Raise:%x\n",NO);
 	push_data(cpu.eflags,4);
 	push_data(cpu.cs,4);
 	reg_flag_set(EFLAGS_IF,0);
