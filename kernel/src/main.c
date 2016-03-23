@@ -101,8 +101,8 @@ void init_cond() {
 	asm volatile("movl $0, %ebp");
 	asm volatile("subl $16, %esp");
 	
-	set_bp();
 	Log("%x\n",eip);
+	set_bp();
 	/* Here we go! */
 	((void(*)(void))eip)();
 
