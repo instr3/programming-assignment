@@ -15,7 +15,7 @@ void ramdisk_read(uint8_t *, uint32_t, uint32_t);
 void create_video_mapping();
 uint32_t get_ucr3();
 
-uint32_t loader() {
+volatile uint32_t loader() {
 	Elf32_Ehdr *elf;
 	Elf32_Phdr *ph = NULL;
 
@@ -32,7 +32,7 @@ uint32_t loader() {
 	const uint32_t elf_magic = 0x464c457f;
 	uint32_t *p_magic = (void *)buf;
 	//set_bp();
-	Log("%x\n",*p_magic);
+	//Log("%x\n",*p_magic);
 	nemu_assert(*p_magic == elf_magic);
 	//set_bp();
 
