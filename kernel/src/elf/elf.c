@@ -33,6 +33,7 @@ uint32_t loader() {
 	set_bp();
 	//Log("%x\n",*p_magic);
 	nemu_assert(*p_magic == elf_magic);
+	set_bp();
 
 	/* Load each program segment */
 	int i=0;
