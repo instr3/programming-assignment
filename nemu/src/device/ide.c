@@ -93,7 +93,7 @@ void bmr_io_handler(ioaddr_t addr, size_t len, bool is_write) {
 
 					/* the address of Physical Region Descriptor Table */
 					hwaddr_t prdt_addr = *(uint32_t *)(bmr_base + 4);
-					assert(prdt_addr<0xc0000000);
+
 					hwaddr_t addr = hwaddr_read(prdt_addr, 4);
 					uint32_t hi_entry = hwaddr_read(prdt_addr + 4, 4);
 					uint16_t byte_cnt = hi_entry & 0xffff;
