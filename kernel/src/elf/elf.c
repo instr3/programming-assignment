@@ -23,6 +23,7 @@ uint32_t loader() {
 
 #ifdef HAS_DEVICE
 	ide_read(buf, ELF_OFFSET_IN_DISK, 4096);
+	set_bp();
 #else
 	ramdisk_read(buf, ELF_OFFSET_IN_DISK, 4096);
 #endif
@@ -32,7 +33,6 @@ uint32_t loader() {
 	uint32_t *p_magic = (void *)buf;
 	set_bp();
 	//Log("%x\n",*p_magic);
-	*p_magic=*p_magic;
 	nemu_assert(*p_magic == elf_magic);
 	set_bp();
 
