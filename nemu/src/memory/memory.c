@@ -57,12 +57,10 @@ void debug_cache_address(hwaddr_t addr)
 	cache2.debug(&cache2,addr);
 }
 #endif
-bool gdb_break;
+
 /* Memory accessing interfaces */
 
 uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
-	if(addr>0xc0000000)
-	gdb_break=true;
 	int map_no=is_mmio(addr);
 	if(map_no!=-1)return mmio_read(addr,len,map_no);
 #ifdef USE_CACHE
@@ -73,8 +71,6 @@ uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
 }
 
 void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
-	if(addr>0xc0000000)
-	printf("Write Error:%x\n",addr);
 	int map_no=is_mmio(addr);
 	if(map_no!=-1)
 	{

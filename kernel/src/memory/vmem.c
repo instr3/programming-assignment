@@ -21,7 +21,7 @@ void create_video_mapping() {
 	//Create Second Level Page Of Range [0xa0000, 0xa0000 + SCR_SIZE) 
 	for(;start_pos<0xa0000 + SCR_SIZE;start_pos+=PAGE_SIZE)
 		screenpage[start_pos/PAGE_SIZE].val=make_pte(start_pos);
-	set_bp();
+	//set_bp();
 	//panic("please implement me");
 }
 
