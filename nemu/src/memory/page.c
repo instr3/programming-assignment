@@ -6,6 +6,7 @@
 
 extern CPU_state cpu;
 extern tlb_t tlb;
+bool gdb_break;
 hwaddr_t page_translate(lnaddr_t addr)
 {
 	if(cpu.cr0.paging==0)return addr;//Page not enabled
@@ -38,6 +39,7 @@ hwaddr_t page_translate(lnaddr_t addr)
 	if(!pte.present)
 	{
 		printf("Level 2 Page Miss!\nLnaddr:[%x]\n",addr);
+		gdb_break=true;
 		fflush(stdout);
 		//printf("(2)0x%x*4+0x%x\n",tmp.dir,base);
 		//printf("*=0x%x\n",pte.val);
