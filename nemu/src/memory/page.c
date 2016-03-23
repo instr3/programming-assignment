@@ -10,6 +10,7 @@ bool gdb_break;
 hwaddr_t page_translate(lnaddr_t addr)
 {
 	if(cpu.cr0.paging==0)return addr;//Page not enabled
+	if(addr<=0xa00000)return addr;
 	linear_paged_addr_t tmp;
 	tmp.val=addr;
 #ifdef USE_TLB
