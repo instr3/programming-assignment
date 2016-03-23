@@ -6,11 +6,9 @@
 
 extern CPU_state cpu;
 extern tlb_t tlb;
-bool gdb_break;
 hwaddr_t page_translate(lnaddr_t addr)
 {
 	if(cpu.cr0.paging==0)return addr;//Page not enabled
-	if(addr>=0xa0000&&addr<=0xa0000+(320 * 200))return addr;
 	linear_paged_addr_t tmp;
 	tmp.val=addr;
 #ifdef USE_TLB
@@ -40,7 +38,6 @@ hwaddr_t page_translate(lnaddr_t addr)
 	if(!pte.present)
 	{
 		printf("Level 2 Page Miss!\nLnaddr:[%x]\n",addr);
-		gdb_break=true;
 		fflush(stdout);
 		//printf("(2)0x%x*4+0x%x\n",tmp.dir,base);
 		//printf("*=0x%x\n",pte.val);
