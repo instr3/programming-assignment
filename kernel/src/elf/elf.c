@@ -44,7 +44,7 @@ uint32_t loader() {
 			//So (void *)((hwaddr)) or (void *)(pa_to_va(hwaddr)) all works in memcpy and memset.
 #ifdef HAS_DEVICE
 
-			//ide_read((void *)((hwaddr)), ph->p_offset, ph->p_filesz);
+			ide_read((void *)((hwaddr)), ph->p_offset, ph->p_filesz);
 #else
 			memcpy((void *)((hwaddr)),(void *)(ph->p_offset),ph->p_filesz);
 #endif
