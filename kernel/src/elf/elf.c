@@ -19,12 +19,12 @@ uint32_t loader() {
 	Elf32_Ehdr *elf;
 	Elf32_Phdr *ph = NULL;
 
-	uint8_t buf[4096];
+	uint8_t buf[409600];
 
 #ifdef HAS_DEVICE
-	ide_read(buf, ELF_OFFSET_IN_DISK, 4096);
+	ide_read(buf, ELF_OFFSET_IN_DISK, 409600);
 #else
-	ramdisk_read(buf, ELF_OFFSET_IN_DISK, 4096);
+	ramdisk_read(buf, ELF_OFFSET_IN_DISK, 409600);
 #endif
 	elf = (void*)buf;
 
@@ -43,7 +43,7 @@ uint32_t loader() {
 			//Physical memory and Virtual memory pointed to the same page
 			//So (void *)((hwaddr)) or (void *)(pa_to_va(hwaddr)) all works in memcpy and memset.
 #ifdef HAS_DEVICE
-			
+
 			ide_read((void *)((hwaddr)), ph->p_offset, ph->p_filesz);
 #else
 			memcpy((void *)((hwaddr)),(void *)(ph->p_offset),ph->p_filesz);
