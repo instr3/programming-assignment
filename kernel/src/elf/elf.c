@@ -31,7 +31,6 @@ uint32_t loader() {
 	const uint32_t elf_magic = 0x464c457f;
 	uint32_t *p_magic = (void *)buf;
 	nemu_assert(*p_magic == elf_magic);
-	//set_bp();
 
 	/* Load each program segment */
 	int i=0;
@@ -40,6 +39,7 @@ uint32_t loader() {
 		if(ph->p_type == PT_LOAD) {
 			//Allocate user page for segment
 			uint32_t hwaddr=mm_malloc(ph->p_vaddr, ph->p_memsz);
+			set_bp();
 			//Physical memory and Virtual memory pointed to the same page
 			//So (void *)((hwaddr)) or (void *)(pa_to_va(hwaddr)) all works in memcpy and memset.
 #ifdef HAS_DEVICE
