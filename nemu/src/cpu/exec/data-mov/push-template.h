@@ -11,7 +11,7 @@ make_helper(concat(push_reg_, SUFFIX)) {
 }
 #endif*/
 static void do_execute() {
-	if(cpu.esp>0xc0160000)
+	if(cpu.esp>0xc0160000&&cpu.esp<0xc70000000)
 	printf("%x\n",cpu.esp);
 	push_data(op_src->val,ops_decoded.is_data_size_16?2:4);
 	print_asm_template1();
