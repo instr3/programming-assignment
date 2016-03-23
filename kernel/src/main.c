@@ -102,6 +102,7 @@ void init_cond() {
 	asm volatile("subl $16, %esp");
 	
 	set_bp();
+	Log("%x\n",eip);
 	/* Here we go! */
 	((void(*)(void))eip)();
 
