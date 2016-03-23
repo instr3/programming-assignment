@@ -61,7 +61,8 @@ void debug_cache_address(hwaddr_t addr)
 /* Memory accessing interfaces */
 
 uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
-	printf("Read:%x\n",addr);
+	if(addr>0xc0000000)
+	printf("Read Error:%x\n",addr);
 	int map_no=is_mmio(addr);
 	if(map_no!=-1)return mmio_read(addr,len,map_no);
 #ifdef USE_CACHE
@@ -72,7 +73,8 @@ uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
 }
 
 void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
-	printf("Write:%x\n",addr);
+	if(addr>0xc0000000)
+	printf("Write Error:%x\n",addr);
 	int map_no=is_mmio(addr);
 	if(map_no!=-1)
 	{
