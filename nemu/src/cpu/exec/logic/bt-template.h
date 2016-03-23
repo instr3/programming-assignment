@@ -3,7 +3,7 @@
 #define instr bt
 
 static void do_execute () {
-	reg_flag_set(EFLAGS_CF,op_dest->val&(1<<op_src->val));
+	reg_flag_set(EFLAGS_CF,op_dest->val&(1<<(op_src->val%(DATA_BYTE<<3))));
 
 	print_asm_template2();
 }
