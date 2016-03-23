@@ -61,6 +61,7 @@ void debug_cache_address(hwaddr_t addr)
 /* Memory accessing interfaces */
 
 uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
+	printf("Read:%x\n",addr);
 	int map_no=is_mmio(addr);
 	if(map_no!=-1)return mmio_read(addr,len,map_no);
 #ifdef USE_CACHE
@@ -71,6 +72,7 @@ uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
 }
 
 void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
+	printf("Write:%x\n",addr);
 	int map_no=is_mmio(addr);
 	if(map_no!=-1)
 	{
@@ -98,8 +100,6 @@ uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
 	}
 	else {
 		hwaddr_t hwaddr = page_translate(addr);
-		if(hwaddr>=0xc0000000)
-		printf("Translated:%x\n",hwaddr);
 		return hwaddr_read(hwaddr, len);
 	}
 }
@@ -118,8 +118,6 @@ void lnaddr_write(lnaddr_t addr, size_t len, uint32_t data) {
 	}
 	else {
 		hwaddr_t hwaddr = page_translate(addr);
-		if(hwaddr>=0xc0000000)
-		printf("Translated:%x\n",hwaddr);
 		hwaddr_write(hwaddr, len, data);
 	}
 }
