@@ -1,6 +1,6 @@
 #include "common.h"
 #include "memory.h"
-
+uint32_t eip;
 void init_page();
 void init_serial();
 void init_ide();
@@ -79,7 +79,7 @@ void init_cond() {
 #endif
 
 	/* Load the program. */
-	uint32_t eip = loader();
+	eip = loader();
 	
 #if defined(IA32_PAGE) && defined(HAS_DEVICE)
 	/* Read data in the video memory to check whether 
