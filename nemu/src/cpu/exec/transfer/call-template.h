@@ -15,9 +15,9 @@ static void concat(do_execute,direct)(uint32_t len)
 	extern char *PrintAddressInFunction(swaddr_t,bool);//elf.c
 	char *infun=PrintAddressInFunction(newop,true);
 	if(infun)
-		print_asm("call %x %s", newop,infun);
+		printf("call %x %s\n", newop,infun);
 	else
-		print_asm("call %x", newop);
+		printf("call %x\n", newop);
 
 }
 
