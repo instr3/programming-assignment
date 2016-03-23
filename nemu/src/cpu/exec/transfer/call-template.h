@@ -14,10 +14,11 @@ static void concat(do_execute,direct)(uint32_t len)
 #endif
 	extern char *PrintAddressInFunction(swaddr_t,bool);//elf.c
 	char *infun=PrintAddressInFunction(newop,true);
-	if(infun&&newop!=0xc01003b0&&newop!=0xc01004b0)
+	if(newop!=0xc01003b0&&newop!=0xc01004b){
+	if(infun)
 		printf("call %x %s\n", newop,infun);
 	else
-		printf("call %x\n", newop);
+		printf("call %x\n", newop);}
 
 }
 
