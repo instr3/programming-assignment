@@ -63,8 +63,6 @@ void cpu_exec(volatile uint32_t n) {
 		int instr_len = exec(cpu.eip);
 
 		cpu.eip += instr_len;
-		if(cpu.eip>0xc0160000)
-		printf("%x\n",cpu.eip);
 
 #ifdef DEBUG
 		print_bin_instr(eip_temp, instr_len);
