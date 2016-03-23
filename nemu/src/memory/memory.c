@@ -98,6 +98,8 @@ uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
 	}
 	else {
 		hwaddr_t hwaddr = page_translate(addr);
+		if(addr>=0xc0000000)
+		printf("Translated:%x\n",hwaddr);
 		return hwaddr_read(hwaddr, len);
 	}
 }
@@ -116,6 +118,8 @@ void lnaddr_write(lnaddr_t addr, size_t len, uint32_t data) {
 	}
 	else {
 		hwaddr_t hwaddr = page_translate(addr);
+		if(addr>=0xc0000000)
+		printf("Translated:%x\n",hwaddr);
 		hwaddr_write(hwaddr, len, data);
 	}
 }
