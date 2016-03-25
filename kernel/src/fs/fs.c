@@ -62,7 +62,7 @@ int fs_read(int fd, void *buf, int len)
 		return 0;
 	}
 	int i=fd-3;
-	Log("read %d %p %d:%x",fd,buf,len,file_state[i+3].offset);
+	//Log("read %d %p %d:%x",fd,buf,len,file_state[i+3].offset);
 	
 	assert(file_state[i+3].opened);
 	uint32_t offset=file_state[i+3].offset+file_table[i].disk_offset;
@@ -70,7 +70,7 @@ int fs_read(int fd, void *buf, int len)
 	assert(readbyte>=0);
 	ide_read(buf,offset,readbyte);
 	file_state[i+3].offset+=readbyte;
-	Log("%d\n",readbyte);
+	//Log("%d\n",readbyte);
 	return readbyte;
 }
 int fs_write(int fd, void *buf, int len)

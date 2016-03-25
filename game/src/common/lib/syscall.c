@@ -28,6 +28,7 @@ int write(int fd, char *buf, int len) {
 }
 
 off_t lseek(int fd, off_t offset, int whence) {
+	Log("[%x]",whence);
 	return syscall(SYS_lseek, fd, offset, whence); 
 }
 
