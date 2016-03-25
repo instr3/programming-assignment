@@ -66,7 +66,7 @@ int fs_read(int fd, void *buf, int len)
 	
 	assert(file_state[i+3].opened);
 	uint32_t offset=file_state[i+3].offset+file_table[i].disk_offset;
-	int readbyte=min(len,file_table[i].size-offset);
+	int readbyte=min(len,file_table[i].size-file_state[i+3].offset);
 	assert(readbyte>=0);
 	ide_read(buf,offset,readbyte);
 	file_state[i+3].offset+=readbyte;
@@ -80,7 +80,7 @@ int fs_write(int fd, void *buf, int len)
 	int i=fd-3;
 	assert(file_state[i+3].opened);
 	uint32_t offset=file_state[i+3].offset+file_table[i].disk_offset;
-	int writebyte=min(len,file_table[i].size-offset);
+	int writebyte=min(len,file_table[i].size-file_state[i+3].offset);
 	assert(writebyte>=0);
 	ide_write(buf,offset,writebyte);
 	file_state[i+3].offset+=writebyte;
