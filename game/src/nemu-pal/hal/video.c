@@ -31,8 +31,48 @@ void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
 	 * in surface ``dst'' with color ``color''. If dstrect is
 	 * NULL, fill the whole surface.
 	 */
+    SDL_Rect clipped;
+    //uint8_t * pixels;
 
-	assert(0);
+    /* If 'rect' == NULL, then fill the whole surface */
+    if (dstrect) {
+        dstrect = &clipped;
+    } else {
+        dstrect = &dst->clip_rect;
+    }
+    //pixels = (uint8_t *) dst->pixels + dstrect->y * dst->pitch +
+    //                                 dstrect->x * dst->format->BytesPerPixel;
+    printf("%x",dst->format->BytesPerPixel);
+    assert(0);
+    switch (dst->format->BytesPerPixel) {
+    case 1:
+        {
+            color |= (color << 8);
+            color |= (color << 16);
+            //SDL_FillRect1(pixels, dst->pitch, color, dstrect->w, dstrect->h);
+            break;
+        }
+
+    case 2:
+        {
+            color |= (color << 16);
+            //SDL_FillRect2(pixels, dst->pitch, color, dstrect->w, dstrect->h);
+            break;
+        }
+
+    case 3:
+        /* 24-bit RGB is a slow path, at least for now. */
+        {
+            //SDL_FillRect3(pixels, dst->pitch, color, dstrect->w, dstrect->h);
+            break;
+        }
+
+    case 4:
+        {
+            //SDL_FillRect4(pixels, dst->pitch, color, dstrect->w, dstrect->h);
+            break;
+        }
+    }
 }
 
 void SDL_UpdateRect(SDL_Surface *screen, int x, int y, int w, int h) {

@@ -40,7 +40,7 @@ typedef struct {
 static Fstate file_state[FILE_MAX+3];//stdin,stdout,stderr
 int fs_open(const char *pathname, int flags)	/* Ignore flags */
 {
-	Log("open %s",pathname);
+	//Log("open %s",pathname);
 	int i;
 	for(i=0;i<FILE_MAX;++i)
 	{

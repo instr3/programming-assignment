@@ -15,7 +15,6 @@ void _exit(int status) {
 }
 
 int open(const char *pathname, int flags) {
-	Log("%x",(int)pathname);
 	return syscall(SYS_open, pathname, flags); 
 }
 
@@ -28,7 +27,6 @@ int write(int fd, char *buf, int len) {
 }
 
 off_t lseek(int fd, off_t offset, int whence) {
-	Log("[%x]",whence);
 	return syscall(SYS_lseek, fd, offset, whence); 
 }
 
