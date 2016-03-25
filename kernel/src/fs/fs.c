@@ -56,7 +56,7 @@ int fs_open(const char *pathname, int flags)	/* Ignore flags */
 }
 int fs_read(int fd, void *buf, int len)
 {
-	Log("read %d %p %d",fd,buf,len);
+	//Log("read %d %p %d",fd,buf,len);
 	if(fd<3)
 	{
 		//Ignore Operations
@@ -69,7 +69,7 @@ int fs_read(int fd, void *buf, int len)
 	assert(readbyte>=0);
 	ide_read(buf,offset,readbyte);
 	file_state[i+3].offset+=readbyte;
-	Log("%d\n",readbyte);
+	//Log("%d\n",readbyte);
 	return readbyte;
 }
 int fs_write(int fd, void *buf, int len)
