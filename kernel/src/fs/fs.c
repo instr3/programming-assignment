@@ -56,25 +56,26 @@ int fs_open(const char *pathname, int flags)	/* Ignore flags */
 }
 int fs_read(int fd, void *buf, int len)
 {
-	//Log("read %d %p %d",fd,buf,len);
 	if(fd<3)
 	{
 		//Ignore Operations
 		return 0;
 	}
 	int i=fd-3;
+	Log("read %d %p %d:%x",fd,buf,len,file_state[i+3].offset);
+	
 	assert(file_state[i+3].opened);
 	uint32_t offset=file_state[i+3].offset+file_table[i].disk_offset;
 	int readbyte=min(len,file_table[i].size-offset);
 	assert(readbyte>=0);
 	ide_read(buf,offset,readbyte);
 	file_state[i+3].offset+=readbyte;
-	//Log("%d\n",readbyte);
+	Log("%d\n",readbyte);
 	return readbyte;
 }
 int fs_write(int fd, void *buf, int len)
 {
-	Log("write %d %p %d",fd,buf,len);
+	//Log("write %d %p %d",fd,buf,len);
 	assert(fd>=3);
 	int i=fd-3;
 	assert(file_state[i+3].opened);
@@ -87,7 +88,7 @@ int fs_write(int fd, void *buf, int len)
 }
 int fs_lseek(int fd, int offset, int whence)
 {
-	Log("seek %d %d %d",fd,offset,whence);
+	//Log("seek %d %d %d",fd,offset,whence);
 	assert(fd>=3);
 	int i=fd-3;
 	assert(file_state[i+3].opened);
@@ -107,7 +108,7 @@ int fs_lseek(int fd, int offset, int whence)
 }
 int fs_close(int fd)
 {
-	Log("close %d",fd);
+	//Log("close %d",fd);
 	assert(fd>=3);
 	int i=fd-3;
 	file_state[i+3].opened=false;
