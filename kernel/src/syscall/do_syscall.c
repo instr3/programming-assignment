@@ -19,10 +19,9 @@ void do_syscall(TrapFrame *tf) {
 		 * very dangerous in a real operating system. Therefore such a 
 		 * system call never exists in GNU/Linux.
 		 */
-		#define op1 tf->eax
+		#define op1 tf->ebx
 		#define op2 tf->ecx
-		#define op3 tf->edx
-		#define op4 tf->ebx
+		#define op3 tf->ebx
 		extern int fs_open(const char *pathname, int flags);
 		extern int fs_read(int fd, void *buf, int len);
 		extern void serial_printc(char);
