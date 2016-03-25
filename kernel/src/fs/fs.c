@@ -101,6 +101,10 @@ int fs_lseek(int fd, int offset, int whence)
 	case SEEK_END:
 		file_state[i+3].offset=file_table[i].size+offset;break;
 	default:
+		Log("%x\n",whence);
+		Log("%x\n",SEEK_SET);
+		Log("%x\n",SEEK_CUR);
+		Log("%x\n",SEEK_END);
 		assert(0);
 		return -1;
 	}
