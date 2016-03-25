@@ -41,6 +41,7 @@ static Fstate file_state[FILE_MAX+3];//stdin,stdout,stderr
 int fs_open(const char *pathname, int flags)	/* Ignore flags */
 {
 	int i;
+	Log("%s",pathname);
 	for(i=0;i<FILE_MAX;++i)
 	{
 		if(strcmp(file_table[i].name,pathname)==0)
