@@ -19,6 +19,10 @@ void do_syscall(TrapFrame *tf) {
 		 * very dangerous in a real operating system. Therefore such a 
 		 * system call never exists in GNU/Linux.
 		 */
+		#define op1 tf->eax
+		#define op2 tf->ecx
+		#define op3 tf->edx
+		#define op4 tf->ebx
 		case 0: 
 			cli();
 			add_irq_handle(tf->ebx, (void*)tf->ecx);
@@ -27,6 +31,14 @@ void do_syscall(TrapFrame *tf) {
 
 		case SYS_brk: sys_brk(tf); break;
 
+		case SYS_open:
+			extern int fs_open(const char *pathname, int flags);
+			tf->eax=fs_open(op1,op2);
+			break;
+		case SYS_read:
+			extern int fs_read(int fd, void *buf, int len);
+			tf->eax=fs_read(op1,op2,op3);
+			break;
 		case SYS_write:
 			if(tf->ebx==1||tf->ebx==2)
 			{
@@ -39,7 +51,20 @@ void do_syscall(TrapFrame *tf) {
 				tf->eax=tf->edx;
 				break;
 			}
-			else assert(0);
+			else
+			{
+				extern int fs_write(int fd, void *buf, int len);
+				tf->eax=fs_write(op1,op2,op3);
+				break;
+			}
+		case SYS_lseek:
+			extern int fs_lseek(int fd, int offset, int whence);
+			tf->eax=fs_lseek(op1,op2,op3);
+			break;
+		case SYS_close:
+			extern int fs_close(int fd);
+			tf->eax=fs_close(op1);
+			break;
 		/* TODO: Add more system calls. */
 
 		default: panic("Unhandled system call: id = %d", tf->eax);

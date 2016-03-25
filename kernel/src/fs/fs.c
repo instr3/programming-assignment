@@ -31,4 +31,74 @@ void ide_read(uint8_t *, uint32_t, uint32_t);
 void ide_write(uint8_t *, uint32_t, uint32_t);
 
 /* TODO: implement a simplified file system here. */
-
+const int FILE_MAX = 25;
+typedef struct {
+	bool opened;
+	uint32_t offset;
+} Fstate;
+Fstate file_state[FILE_MAX+3];//stdin,stdout,stderr
+int fs_open(const char *pathname, int flags);	/* Ignore flags */
+{
+	int i;
+	for(i=0;i<FILE_MAX;++i)
+	{
+		if(strcmp(file_table[i].name,pathname)==0)
+		{
+			file_state[i+3].opened=true;
+			file_state[i+3].offset=0;
+			return i+3;
+		}
+	}
+	assert(0);
+}
+int fs_read(int fd, void *buf, int len)
+{
+	if(fd<3)
+	{
+		//Ignore Operations
+		return 0;
+	}
+	int i=fd-3;
+	assert(file_state[i+3].opened);
+	uint32_t offset=file_state[i+3].offset+file_table[i].disk_offset;
+	//while(len&&file_table[i].size>offset)
+	//{
+	int readbyte=min(len,file_table[i].size-offset);
+	assert(readbyte>=0);
+	//readbyte=min(readbyte,4);
+	ide_read(buf,offset,readbyte);
+	return readbyte;
+}
+int fs_write(int fd, void *buf, int len)
+{
+	assert(fd>=3);
+	int i=fd-3;
+	assert(file_state[i+3].opened);
+	uint32_t offset=file_state[i+3].offset+file_table[i].disk_offset;
+	int writebyte=min(len,file_table[i].size-offset);
+	ide_write(buf,offset,writebyte);
+	return writebyte;
+}
+int fs_lseek(int fd, int offset, int whence)
+{
+	assert(fd>=3);
+	int i=fd-3;
+	assert(file_state[i+3].opened);
+	switch(whence)
+	{
+	case SEEK_SET:
+		file_state[i+3].offset=offset;
+	case SEEK_CUR:
+		file_state[i+3].offset+=offset;
+	case SEEK_END:
+		file_state[i+3].offset=file_table[i].size+offset;
+	default:
+		assert(0);
+	}
+}
+int fs_close(int fd)
+{
+	assert(fd>=3);
+	int i=fd-3;
+	file_state[i+3].opened=false;
+}
