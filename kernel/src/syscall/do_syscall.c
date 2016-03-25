@@ -23,6 +23,12 @@ void do_syscall(TrapFrame *tf) {
 		#define op2 tf->ecx
 		#define op3 tf->edx
 		#define op4 tf->ebx
+		extern int fs_open(const char *pathname, int flags);
+		extern int fs_read(int fd, void *buf, int len);
+		extern void serial_printc(char);
+		extern int fs_write(int fd, void *buf, int len);
+		extern int fs_lseek(int fd, int offset, int whence);
+		extern int fs_close(int fd);
 		case 0: 
 			cli();
 			add_irq_handle(tf->ebx, (void*)tf->ecx);
@@ -32,17 +38,14 @@ void do_syscall(TrapFrame *tf) {
 		case SYS_brk: sys_brk(tf); break;
 
 		case SYS_open:
-			extern int fs_open(const char *pathname, int flags);
-			tf->eax=fs_open(op1,op2);
+			tf->eax=fs_open((const char *)op1,op2);
 			break;
 		case SYS_read:
-			extern int fs_read(int fd, void *buf, int len);
-			tf->eax=fs_read(op1,op2,op3);
+			tf->eax=fs_read(op1,(void *)op2,op3);
 			break;
 		case SYS_write:
 			if(tf->ebx==1||tf->ebx==2)
 			{
-				extern void serial_printc(char);
 				int i;char *c=(void *)tf->ecx;
 				for(i=0;i<tf->edx;++i)
 					serial_printc(*(c+i));
@@ -53,16 +56,13 @@ void do_syscall(TrapFrame *tf) {
 			}
 			else
 			{
-				extern int fs_write(int fd, void *buf, int len);
-				tf->eax=fs_write(op1,op2,op3);
+				tf->eax=fs_write(op1,(void *)op2,op3);
 				break;
 			}
 		case SYS_lseek:
-			extern int fs_lseek(int fd, int offset, int whence);
 			tf->eax=fs_lseek(op1,op2,op3);
 			break;
 		case SYS_close:
-			extern int fs_close(int fd);
 			tf->eax=fs_close(op1);
 			break;
 		/* TODO: Add more system calls. */

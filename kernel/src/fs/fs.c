@@ -1,4 +1,6 @@
 #include "common.h"
+#include <string.h>
+#define min(a,b) ((a)>(b)?(b):(a))
 
 typedef struct {
 	char *name;
@@ -30,14 +32,13 @@ static const file_info file_table[] = {
 void ide_read(uint8_t *, uint32_t, uint32_t);
 void ide_write(uint8_t *, uint32_t, uint32_t);
 
-/* TODO: implement a simplified file system here. */
-const int FILE_MAX = 25;
+#define FILE_MAX 25
 typedef struct {
 	bool opened;
 	uint32_t offset;
 } Fstate;
-Fstate file_state[FILE_MAX+3];//stdin,stdout,stderr
-int fs_open(const char *pathname, int flags);	/* Ignore flags */
+static Fstate file_state[FILE_MAX+3];//stdin,stdout,stderr
+int fs_open(const char *pathname, int flags)	/* Ignore flags */
 {
 	int i;
 	for(i=0;i<FILE_MAX;++i)
@@ -50,6 +51,7 @@ int fs_open(const char *pathname, int flags);	/* Ignore flags */
 		}
 	}
 	assert(0);
+	return 0;
 }
 int fs_read(int fd, void *buf, int len)
 {
@@ -87,18 +89,21 @@ int fs_lseek(int fd, int offset, int whence)
 	switch(whence)
 	{
 	case SEEK_SET:
-		file_state[i+3].offset=offset;
+		file_state[i+3].offset=offset;break;
 	case SEEK_CUR:
-		file_state[i+3].offset+=offset;
+		file_state[i+3].offset+=offset;break;
 	case SEEK_END:
-		file_state[i+3].offset=file_table[i].size+offset;
+		file_state[i+3].offset=file_table[i].size+offset;break;
 	default:
 		assert(0);
+		return -1;
 	}
+	return file_state[i+3].offset;
 }
 int fs_close(int fd)
 {
 	assert(fd>=3);
 	int i=fd-3;
 	file_state[i+3].opened=false;
+	return 0;
 }
