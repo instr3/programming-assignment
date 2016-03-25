@@ -21,7 +21,7 @@ void do_syscall(TrapFrame *tf) {
 		 */
 		#define op1 tf->ebx
 		#define op2 tf->ecx
-		#define op3 tf->ebx
+		#define op3 tf->edx
 		extern int fs_open(const char *pathname, int flags);
 		extern int fs_read(int fd, void *buf, int len);
 		extern void serial_printc(char);
