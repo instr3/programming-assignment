@@ -68,8 +68,8 @@ int fs_read(int fd, void *buf, int len)
 	int readbyte=min(len,file_table[i].size-offset);
 	assert(readbyte>=0);
 	ide_read(buf,offset,readbyte);
-	//Log("%d\n",readbyte);
 	file_state[i+3].offset+=readbyte;
+	Log("%d\n",readbyte);
 	return readbyte;
 }
 int fs_write(int fd, void *buf, int len)
