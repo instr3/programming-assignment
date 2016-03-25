@@ -38,6 +38,7 @@ void do_syscall(TrapFrame *tf) {
 		case SYS_brk: sys_brk(tf); break;
 
 		case SYS_open:
+			Log("%x\n",op1);
 			tf->eax=fs_open((const char *)op1,op2);
 			break;
 		case SYS_read:
