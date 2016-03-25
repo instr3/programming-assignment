@@ -40,8 +40,8 @@ typedef struct {
 static Fstate file_state[FILE_MAX+3];//stdin,stdout,stderr
 int fs_open(const char *pathname, int flags)	/* Ignore flags */
 {
+	Log("open %s",pathname);
 	int i;
-	Log("%s",pathname);
 	for(i=0;i<FILE_MAX;++i)
 	{
 		if(strcmp(file_table[i].name,pathname)==0)
@@ -56,6 +56,7 @@ int fs_open(const char *pathname, int flags)	/* Ignore flags */
 }
 int fs_read(int fd, void *buf, int len)
 {
+	Log("read %d %p %d",fd,buf,len);
 	if(fd<3)
 	{
 		//Ignore Operations
@@ -74,6 +75,7 @@ int fs_read(int fd, void *buf, int len)
 }
 int fs_write(int fd, void *buf, int len)
 {
+	Log("write %d %p %d",fd,buf,len);
 	assert(fd>=3);
 	int i=fd-3;
 	assert(file_state[i+3].opened);
@@ -84,6 +86,7 @@ int fs_write(int fd, void *buf, int len)
 }
 int fs_lseek(int fd, int offset, int whence)
 {
+	Log("seek %d %d %d",fd,offset,whence);
 	assert(fd>=3);
 	int i=fd-3;
 	assert(file_state[i+3].opened);
@@ -103,6 +106,7 @@ int fs_lseek(int fd, int offset, int whence)
 }
 int fs_close(int fd)
 {
+	Log("close %d",fd);
 	assert(fd>=3);
 	int i=fd-3;
 	file_state[i+3].opened=false;
