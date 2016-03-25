@@ -42,7 +42,7 @@ void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
     }
     //pixels = (uint8_t *) dst->pixels + dstrect->y * dst->pitch +
     //                                 dstrect->x * dst->format->BytesPerPixel;
-    printf("%x",dst->format->BytesPerPixel);
+    Log("%x",dst->format->BytesPerPixel);
     assert(0);
     switch (dst->format->BytesPerPixel) {
     case 1:
