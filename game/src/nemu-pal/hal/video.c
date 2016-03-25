@@ -96,8 +96,6 @@ void SDL_UpdateRect(SDL_Surface *screen, int x, int y, int w, int h) {
 
 void SDL_SetPalette(SDL_Surface *s, int flags, SDL_Color *colors, 
 		int firstcolor, int ncolors) {
-    Log("%x",s->format->BytesPerPixel);
-    assert(0);
 	assert(s);
 	assert(s->format);
 	assert(s->format->palette);
