@@ -15,6 +15,7 @@ void _exit(int status) {
 }
 
 int open(const char *pathname, int flags) {
+	Log("%x",(int)pathname);
 	return syscall(SYS_open, pathname, flags); 
 }
 
