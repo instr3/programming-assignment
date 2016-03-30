@@ -34,7 +34,7 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect,
 		//asm volatile ("cld; rep movsl" : : "c"(srcrect->w / 4), "S"(&src->pixels[(sx << 8) + (sx << 6)+srcrect->y]), "D"(&dst->pixels[(dx << 8) + (dx << 6)+dstrect->y]));
 	}
 	return;
-	int y;
+	/*int y;
 	for(x=0;x<srcrect->h;++x)
 	{
 		for(y=0;y<srcrect->w;++y)
@@ -45,86 +45,7 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect,
 				src->pixels[(sx << 8) + (sx << 6) + sy];
 		}
 	}
-	return;
-        SDL_Rect fulldst;
-	int srcx, srcy, w, h;
-
-
-	/* If the destination rectangle is NULL, use the entire dest surface */
-	if ( dstrect == NULL ) {
-	        fulldst.x = fulldst.y = 0;
-		dstrect = &fulldst;
-	}
-
-	/* clip the source rectangle to the source surface */
-	if(srcrect) {
-	        int maxw, maxh;
-	
-		srcx = srcrect->x;
-		w = srcrect->w;
-		if(srcx < 0) {
-		        w += srcx;
-			dstrect->x -= srcx;
-			srcx = 0;
-		}
-		maxw = src->w - srcx;
-		if(maxw < w)
-			w = maxw;
-
-		srcy = srcrect->y;
-		h = srcrect->h;
-		if(srcy < 0) {
-		        h += srcy;
-			dstrect->y -= srcy;
-			srcy = 0;
-		}
-		maxh = src->h - srcy;
-		if(maxh < h)
-			h = maxh;
-	    
-	} else {
-	        srcx = srcy = 0;
-		w = src->w;
-		h = src->h;
-	}
-
-	/* clip the destination rectangle against the clip rectangle */
-	{
-	        SDL_Rect *clip = &dst->clip_rect;
-		int dx, dy;
-
-		dx = clip->x - dstrect->x;
-		if(dx > 0) {
-			w -= dx;
-			dstrect->x += dx;
-			srcx += dx;
-		}
-		dx = dstrect->x + w - clip->x - clip->w;
-		if(dx > 0)
-			w -= dx;
-
-		dy = clip->y - dstrect->y;
-		if(dy > 0) {
-			h -= dy;
-			dstrect->y += dy;
-			srcy += dy;
-		}
-		dy = dstrect->y + h - clip->y - clip->h;
-		if(dy > 0)
-			h -= dy;
-	}
-
-	if(w > 0 && h > 0) {
-	        //SDL_Rect sr;
-	        //sr.x = srcx;
-		//sr.y = srcy;
-		//sr.w = dstrect->w = w;
-		//sr.h = dstrect->h = h;
-		//return SDL_LowerBlit(src, &sr, dst, dstrect);
-		return;
-	}
-	dstrect->w = dstrect->h = 0;
-	return;
+	return;*/
 }
 
 void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
@@ -158,8 +79,8 @@ void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
 			int dy=y+dstrect->y;
 			dst->pixels[(dx << 8) + (dx << 6) + dy]=color;
 		}
-	}*/
-	return;
+	}
+	return;*/
 }
 
 void SDL_UpdateRect(SDL_Surface *screen, int x, int y, int w, int h) {
