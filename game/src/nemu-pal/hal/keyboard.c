@@ -19,7 +19,7 @@ keyboard_event(void) {
 	uint32_t key_code = in_byte(0x60);
 	Log("0x%x\n",key_code);
 	/* TODO: Fetch the scancode and update the key states. */
-	assert(0);
+	//assert(0);
 }
 
 static inline int
