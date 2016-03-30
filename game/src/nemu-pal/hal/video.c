@@ -131,6 +131,7 @@ void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
 	 * in surface ``dst'' with color ``color''. If dstrect is
 	 * NULL, fill the whole surface.
 	 */
+	assert(false);
 	assert(dstrect);
 	int x=dstrect->h;
 	while(x--)
