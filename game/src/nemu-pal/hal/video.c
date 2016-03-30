@@ -19,6 +19,8 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect,
 	 * is saved in ``dstrect'' after all clipping is performed
 	 * (``srcrect'' is not modified).
 	 */
+	assert(srcrect&&dstrect);
+	printf("%x,%x-%x,%x",srcrect->x,srcrect->y,srcrect->x+srcrect->h,srcrect->x+srcrect->w);
 	int x,y;
 	for(x=0;x<srcrect->h;++x)
 	{
