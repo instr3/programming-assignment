@@ -19,11 +19,12 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect,
 	 * is saved in ``dstrect'' after all clipping is performed
 	 * (``srcrect'' is not modified).
 	 */
-	if(dstrect==0||srcrect==0||(dstrect->x==0&&dstrect->y==0&&srcrect->h==SCR_HEIGHT&&srcrect->w==SCR_WIDTH))
+	assert(dstrect&&srcrect);
+	/*if(dstrect==0||srcrect==0||(dstrect->x==0&&dstrect->y==0&&srcrect->h==SCR_HEIGHT&&srcrect->w==SCR_WIDTH))
 	{
 		memcpy(dst->pixels,src->pixels,SCR_SIZE);
 		return;
-	}
+	}*/
 	//Log("B:%x,%x-%x,%x",srcrect->x,srcrect->y,srcrect->x+srcrect->h,srcrect->x+srcrect->w);
 	int x=srcrect->h;
 	while(x--)
@@ -56,11 +57,12 @@ void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
 	 * in surface ``dst'' with color ``color''. If dstrect is
 	 * NULL, fill the whole surface.
 	 */
-	if(dstrect==0||(dstrect->x==0&&dstrect->y==0&&dstrect->h==SCR_HEIGHT&&dstrect->w==SCR_WIDTH))
+	assert(dstrect);
+	/*if(dstrect==0||(dstrect->x==0&&dstrect->y==0&&dstrect->h==SCR_HEIGHT&&dstrect->w==SCR_WIDTH))
 	{
 		memset(dst->pixels,color,SCR_SIZE);
 		return;
-	}
+	}*/
 	int x=dstrect->h;
 	while(x--)
 	{
