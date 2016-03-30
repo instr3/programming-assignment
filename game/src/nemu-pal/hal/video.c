@@ -21,7 +21,14 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect,
 	 */
 	assert(srcrect&&dstrect);
 	Log("B:%x,%x-%x,%x",srcrect->x,srcrect->y,srcrect->x+srcrect->h,srcrect->x+srcrect->w);
-	int x,y;
+	int x=srcrect->h;
+	while(x--)
+	{
+		int dx=x+dstrect->x,sx=x+srcrect->x;
+		asm volatile ("cld; rep movsl" : : "c"(srcrect->w / 4), "S"(&src->pixels[(sx << 8) + (sx << 6)]), "D"(&dst->pixels[(dx << 8) + (dx << 6)]));
+	}
+	return;
+	int y;
 	for(x=0;x<srcrect->h;++x)
 	{
 		for(y=0;y<srcrect->w;++y)
