@@ -25,7 +25,7 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect,
 		memcpy(dst->pixels,src->pixels,SCR_SIZE);
 		return;
 	}*/
-	//Log("B:%x,%x-%x,%x",srcrect->x,srcrect->y,srcrect->x+srcrect->h,srcrect->x+srcrect->w);
+	Log("B:%x,%x-%x,%x",srcrect->x,srcrect->y,srcrect->x+srcrect->h,srcrect->x+srcrect->w);
 	int x=srcrect->h;
 	while(x--)
 	{
