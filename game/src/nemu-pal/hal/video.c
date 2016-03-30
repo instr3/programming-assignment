@@ -25,7 +25,7 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect,
 	while(x--)
 	{
 		int dx=x+dstrect->x,sx=x+srcrect->x;
-		asm volatile ("cld; rep movsl" : : "c"(srcrect->w / 4), "S"(&src->pixels[(sx << 8) + (sx << 6)]), "D"(&dst->pixels[(dx << 8) + (dx << 6)]));
+		asm volatile ("cld; rep movsl" : : "c"(srcrect->w / 4), "S"(&src->pixels[(sx << 8) + (sx << 6)+dstrect->y]), "D"(&dst->pixels[(dx << 8) + (dx << 6)+dstrect->y]));
 	}
 	return;
 	int y;
