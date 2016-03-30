@@ -20,7 +20,7 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect,
 	 * (``srcrect'' is not modified).
 	 */
 	assert(srcrect&&dstrect);
-	printf("%x,%x-%x,%x",srcrect->x,srcrect->y,srcrect->x+srcrect->h,srcrect->x+srcrect->w);
+	Log("B:%x,%x-%x,%x",srcrect->x,srcrect->y,srcrect->x+srcrect->h,srcrect->x+srcrect->w);
 	int x,y;
 	for(x=0;x<srcrect->h;++x)
 	{
