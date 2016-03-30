@@ -7,7 +7,7 @@
 
 int get_fps();
 
-void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *scrrect, 
+void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, 
 		SDL_Surface *dst, SDL_Rect *dstrect) {
 	assert(dst && src);
 
@@ -19,8 +19,85 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *scrrect,
 	 * is saved in ``dstrect'' after all clipping is performed
 	 * (``srcrect'' is not modified).
 	 */
+        SDL_Rect fulldst;
+	int srcx, srcy, w, h;
 
-	assert(0);
+
+	/* If the destination rectangle is NULL, use the entire dest surface */
+	if ( dstrect == NULL ) {
+	        fulldst.x = fulldst.y = 0;
+		dstrect = &fulldst;
+	}
+
+	/* clip the source rectangle to the source surface */
+	if(srcrect) {
+	        int maxw, maxh;
+	
+		srcx = srcrect->x;
+		w = srcrect->w;
+		if(srcx < 0) {
+		        w += srcx;
+			dstrect->x -= srcx;
+			srcx = 0;
+		}
+		maxw = src->w - srcx;
+		if(maxw < w)
+			w = maxw;
+
+		srcy = srcrect->y;
+		h = srcrect->h;
+		if(srcy < 0) {
+		        h += srcy;
+			dstrect->y -= srcy;
+			srcy = 0;
+		}
+		maxh = src->h - srcy;
+		if(maxh < h)
+			h = maxh;
+	    
+	} else {
+	        srcx = srcy = 0;
+		w = src->w;
+		h = src->h;
+	}
+
+	/* clip the destination rectangle against the clip rectangle */
+	{
+	        SDL_Rect *clip = &dst->clip_rect;
+		int dx, dy;
+
+		dx = clip->x - dstrect->x;
+		if(dx > 0) {
+			w -= dx;
+			dstrect->x += dx;
+			srcx += dx;
+		}
+		dx = dstrect->x + w - clip->x - clip->w;
+		if(dx > 0)
+			w -= dx;
+
+		dy = clip->y - dstrect->y;
+		if(dy > 0) {
+			h -= dy;
+			dstrect->y += dy;
+			srcy += dy;
+		}
+		dy = dstrect->y + h - clip->y - clip->h;
+		if(dy > 0)
+			h -= dy;
+	}
+
+	if(w > 0 && h > 0) {
+	        //SDL_Rect sr;
+	        //sr.x = srcx;
+		//sr.y = srcy;
+		//sr.w = dstrect->w = w;
+		//sr.h = dstrect->h = h;
+		//return SDL_LowerBlit(src, &sr, dst, dstrect);
+		return;
+	}
+	dstrect->w = dstrect->h = 0;
+	return;
 }
 
 void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
@@ -31,48 +108,7 @@ void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
 	 * in surface ``dst'' with color ``color''. If dstrect is
 	 * NULL, fill the whole surface.
 	 */
-    SDL_Rect clipped;
-    //uint8_t * pixels;
-
-    /* If 'rect' == NULL, then fill the whole surface */
-    if (dstrect) {
-        dstrect = &clipped;
-    } else {
-        dstrect = &dst->clip_rect;
-    }
-    //pixels = (uint8_t *) dst->pixels + dstrect->y * dst->pitch +
-    //                                 dstrect->x * dst->format->BytesPerPixel;
-    Log("%x",dst->format->BytesPerPixel);
-    assert(0);
-    switch (dst->format->BytesPerPixel) {
-    case 1:
-        {
-            color |= (color << 8);
-            color |= (color << 16);
-            //SDL_FillRect1(pixels, dst->pitch, color, dstrect->w, dstrect->h);
-            break;
-        }
-
-    case 2:
-        {
-            color |= (color << 16);
-            //SDL_FillRect2(pixels, dst->pitch, color, dstrect->w, dstrect->h);
-            break;
-        }
-
-    case 3:
-        /* 24-bit RGB is a slow path, at least for now. */
-        {
-            //SDL_FillRect3(pixels, dst->pitch, color, dstrect->w, dstrect->h);
-            break;
-        }
-
-    case 4:
-        {
-            //SDL_FillRect4(pixels, dst->pitch, color, dstrect->w, dstrect->h);
-            break;
-        }
-    }
+	 return;
 }
 
 void SDL_UpdateRect(SDL_Surface *screen, int x, int y, int w, int h) {
@@ -90,8 +126,8 @@ void SDL_UpdateRect(SDL_Surface *screen, int x, int y, int w, int h) {
 	}
 
 	/* TODO: Copy the pixels in the rectangle area to the screen. */
+	asm volatile ("cld; rep movsl" : : "c"(SCR_SIZE / 4), "S"(vmem), "D"(VMEM_ADDR));
 
-	assert(0);
 }
 
 void SDL_SetPalette(SDL_Surface *s, int flags, SDL_Color *colors, 
