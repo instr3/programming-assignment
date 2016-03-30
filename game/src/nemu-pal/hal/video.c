@@ -131,8 +131,17 @@ void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
 	 * in surface ``dst'' with color ``color''. If dstrect is
 	 * NULL, fill the whole surface.
 	 */
-
-	int x,y;
+	assert(dstrect);
+	int x=dstrect->h;
+	while(x--)
+	{
+		int dx=x+dstrect->x;
+		memset(&dst->pixels[(dx << 8) + (dx << 6) + dstrect->y],
+			   0,dstrect->w);
+		//asm volatile ("cld; rep movsl" : : "c"(srcrect->w / 4), "S"(&src->pixels[(sx << 8) + (sx << 6)+srcrect->y]), "D"(&dst->pixels[(dx << 8) + (dx << 6)+dstrect->y]));
+	}
+	return;
+	/*int x,y;
 	for(x=0;x<dstrect->h;++x)
 	{
 		for(y=0;y<dstrect->w;++y)
@@ -141,7 +150,7 @@ void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
 			int dy=y+dstrect->y;
 			dst->pixels[(dx << 8) + (dx << 6) + dy]=color;
 		}
-	}
+	}*/
 	return;
 }
 
