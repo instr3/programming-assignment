@@ -30,8 +30,8 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect,
 	while(x--)
 	{
 		int dx=x+dstrect->x,sx=x+srcrect->x;
-		memcpy(&dst->pixels[dx*dst->w+dstrect->y],
-			   &src->pixels[sx*src->w+srcrect->y],srcrect->w);
+		memcpy(&dst->pixels[dx*dst->pitch+dstrect->y],
+			   &src->pixels[sx*src->pitch+srcrect->y],srcrect->w);
 		//asm volatile ("cld; rep movsl" : : "c"(srcrect->w / 4), "S"(&src->pixels[(sx << 8) + (sx << 6)+srcrect->y]), "D"(&dst->pixels[(dx << 8) + (dx << 6)+dstrect->y]));
 	}
 	return;
@@ -67,7 +67,7 @@ void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
 	while(x--)
 	{
 		int dx=x+dstrect->x;
-		memset(&dst->pixels[dx*dst->w+dstrect->y],
+		memset(&dst->pixels[dx*dst->pitch+dstrect->y],
 			   color,dstrect->w);
 		//asm volatile ("cld; rep movsl" : : "c"(srcrect->w / 4), "S"(&src->pixels[(sx << 8) + (sx << 6)+srcrect->y]), "D"(&dst->pixels[(dx << 8) + (dx << 6)+dstrect->y]));
 	}
