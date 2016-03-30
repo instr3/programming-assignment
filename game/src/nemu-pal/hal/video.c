@@ -99,14 +99,13 @@ void SDL_UpdateRect(SDL_Surface *screen, int x, int y, int w, int h) {
 
 	/* TODO: Copy the pixels in the rectangle area to the screen. */
 
-	/*int x=h;
-	while(x--)
+	while(h--)
 	{
-		int dx=x+dstrect->x;
-		memset(&dst->pixels[(dx << 8) + (dx << 6) + dstrect->y],
-			   color,dstrect->w);
+		int dx=x+h;
+		memcpy(&screen->pixels[(dx << 8) + (dx << 6) + y],
+			   VMEM_ADDR+(dx << 8) + (dx << 6) + y, w);
 		//asm volatile ("cld; rep movsl" : : "c"(srcrect->w / 4), "S"(&src->pixels[(sx << 8) + (sx << 6)+srcrect->y]), "D"(&dst->pixels[(dx << 8) + (dx << 6)+dstrect->y]));
-	}*/
+	}
 	//asm volatile ("cld; rep movsl" : : "c"(SCR_SIZE / 4), "S"(vmem), "D"(VMEM_ADDR));
 
 }
