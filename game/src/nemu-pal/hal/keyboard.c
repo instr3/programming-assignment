@@ -18,6 +18,15 @@ void
 keyboard_event(void) {
 	uint32_t key_code = in_byte(0x60);
 	Log("0x%x\n",key_code);
+	int i;
+	for(i=0;i<NR_KEYS;++i)
+	{
+		if(keycode_array[i]==key_code)
+		{
+			key_state[i]=KEY_STATE_PRESS;
+			return;
+		}
+	}
 	/* TODO: Fetch the scancode and update the key states. */
 	assert(0);
 }
@@ -56,6 +65,20 @@ process_keys(void (*key_press_callback)(int), void (*key_release_callback)(int))
 	 * If no such key is found, the function return false.
 	 * Remember to enable interrupts before returning from the function.
 	 */
+	int i;
+	for(i=0;i<NR_KEYS;++i)
+	{
+		if(key_state[i]==KEY_STATE_PRESS)
+		{
+			key_state[i]=KEY_STATE_EMPTY;
+			key_press_callback(get_keycode(i));
+		}
+		else if(key_state[i]==KEY_STATE_WAIT_RELEASE)
+		{
+			key_state[i]=KEY_STATE_RELEASE;
+			key_release_callback(get_keycode(i));
+		}
+	}
 
 	//assert(0);
 	sti();
