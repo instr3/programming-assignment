@@ -19,6 +19,18 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect,
 	 * is saved in ``dstrect'' after all clipping is performed
 	 * (``srcrect'' is not modified).
 	 */
+	int x,y;
+	for(x=0;x<srcrect->h;++x)
+	{
+		for(y=0;y<srcrect->w;++y)
+		{
+			int dx=x+dstrect->x,sx=x+srcrect->x;
+			int dy=y+dstrect->y,sy=y+srcrect->y;
+			dst->pixels[(dx << 8) + (dx << 6) + dy]=
+				src->pixels[(sx << 8) + (sx << 6) + sy];
+		}
+	}
+	return;
         SDL_Rect fulldst;
 	int srcx, srcy, w, h;
 
@@ -108,7 +120,18 @@ void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
 	 * in surface ``dst'' with color ``color''. If dstrect is
 	 * NULL, fill the whole surface.
 	 */
-	 return;
+
+	int x,y;
+	for(x=0;x<dstrect->h;++x)
+	{
+		for(y=0;y<dstrect->w;++y)
+		{
+			int dx=x+dstrect->x;
+			int dy=y+dstrect->y;
+			dst->pixels[(dx << 8) + (dx << 6) + dy]=color;
+		}
+	}
+	return;
 }
 
 void SDL_UpdateRect(SDL_Surface *screen, int x, int y, int w, int h) {
