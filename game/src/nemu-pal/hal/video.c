@@ -54,7 +54,7 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect,
 void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
 	assert(dst);
 	assert(color <= 0xff);
-
+	Log("Fill:*%d,%d +%d,%d\n",dstrect->x,dstrect->y,dstrect->h,dstrect->w);
 	/* TODO: Fill the rectangle area described by ``dstrect''
 	 * in surface ``dst'' with color ``color''. If dstrect is
 	 * NULL, fill the whole surface.
@@ -102,7 +102,7 @@ void SDL_UpdateRect(SDL_Surface *screen, int x, int y, int w, int h) {
 	}
 
 	/* TODO: Copy the pixels in the rectangle area to the screen. */
-
+	Log("Show:*%d,%d +%d,%d\n",x,y,h,w);
 	while(h--)
 	{
 		int dx=x+h;
@@ -140,7 +140,7 @@ void SDL_SetPalette(SDL_Surface *s, int flags, SDL_Color *colors,
 
 	if(s->flags & SDL_HWSURFACE) {
 		/* TODO: Set the VGA palette by calling write_palette(). */
-		//write_palette(s->format->palette->colors,ncolors);
+		write_palette(s->format->palette->colors,ncolors);
 		//assert(0);
 	}
 }
