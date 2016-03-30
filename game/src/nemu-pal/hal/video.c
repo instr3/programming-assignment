@@ -19,7 +19,21 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect,
 	 * is saved in ``dstrect'' after all clipping is performed
 	 * (``srcrect'' is not modified).
 	 */
-	assert(dstrect&&srcrect);
+	SDL_Rect rect;
+	if(dstrect==0)
+	{
+		dstrect=&rect;
+		dstrect->x=dstrect->y=0;
+		dstrect->w=dst->w;
+		dstrect->h=dst->h;
+	}
+	if(srcrect==0)
+	{
+		srcrect=&rect;
+		srcrect->x=srcrect->y=0;
+		srcrect->w=src->w;
+		srcrect->h=src->h;
+	}
 	/*if(dstrect==0||srcrect==0||(dstrect->x==0&&dstrect->y==0&&srcrect->h==SCR_HEIGHT&&srcrect->w==SCR_WIDTH))
 	{
 		memcpy(dst->pixels,src->pixels,SCR_SIZE);
@@ -52,17 +66,19 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect,
 void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
 	assert(dst);
 	assert(color <= 0xff);
-	Log("Fill:*%d,%d +%d,%d\n",dstrect->x,dstrect->y,dstrect->h,dstrect->w);
+	//Log("Fill:*%d,%d +%d,%d\n",dstrect->x,dstrect->y,dstrect->h,dstrect->w);
 	/* TODO: Fill the rectangle area described by ``dstrect''
 	 * in surface ``dst'' with color ``color''. If dstrect is
 	 * NULL, fill the whole surface.
 	 */
-	assert(dstrect);
-	/*if(dstrect==0||(dstrect->x==0&&dstrect->y==0&&dstrect->h==SCR_HEIGHT&&dstrect->w==SCR_WIDTH))
+	SDL_Rect rect;
+	if(dstrect==0)
 	{
-		memset(dst->pixels,color,SCR_SIZE);
-		return;
-	}*/
+		dstrect=&rect;
+		dstrect->x=dstrect->y=0;
+		dstrect->w=dst->w;
+		dstrect->h=dst->h;
+	}
 	int y=dstrect->h;
 	while(y--)
 	{
@@ -72,17 +88,6 @@ void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
 		//asm volatile ("cld; rep movsl" : : "c"(srcrect->w / 4), "S"(&src->pixels[(sx << 8) + (sx << 6)+srcrect->y]), "D"(&dst->pixels[(dx << 8) + (dx << 6)+dstrect->y]));
 	}
 	return;
-	/*int x,y;
-	for(x=0;x<dstrect->h;++x)
-	{
-		for(y=0;y<dstrect->w;++y)
-		{
-			int dx=x+dstrect->x;
-			int dy=y+dstrect->y;
-			dst->pixels[(dx << 8) + (dx << 6) + dy]=color;
-		}
-	}
-	return;*/
 }
 
 void SDL_UpdateRect(SDL_Surface *screen, int x, int y, int w, int h) {
@@ -103,9 +108,9 @@ void SDL_UpdateRect(SDL_Surface *screen, int x, int y, int w, int h) {
 	Log("Show:*%d,%d +%d,%d\n",x,y,h,w);
 	while(h--)
 	{
-		int dx=x+h;
-		memcpy(&screen->pixels[(dx << 8) + (dx << 6) + y],
-			   VMEM_ADDR+(dx << 8) + (dx << 6) + y, w);
+		int dy=y+h;
+		memcpy(&screen->pixels[(dy << 8) + (dy << 6) + x],
+			   VMEM_ADDR+(dy << 8) + (dy << 6) + x, w);
 		//asm volatile ("cld; rep movsl" : : "c"(srcrect->w / 4), "S"(&src->pixels[(sx << 8) + (sx << 6)+srcrect->y]), "D"(&dst->pixels[(dx << 8) + (dx << 6)+dstrect->y]));
 	}
 	//asm volatile ("cld; rep movsl" : : "c"(SCR_SIZE / 4), "S"(vmem), "D"(VMEM_ADDR));
