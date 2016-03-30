@@ -19,7 +19,11 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect,
 	 * is saved in ``dstrect'' after all clipping is performed
 	 * (``srcrect'' is not modified).
 	 */
-	assert(srcrect&&dstrect);
+	if(dstrect==0||srcrect==0||(dstrect->x==0&&dstrect->y==0&&srcrect->h==SCR_HEIGHT&&srcrect->w==SCR_WIDTH))
+	{
+		memcpy(dst->pixels,src->pixels,SCR_SIZE);
+		return;
+	}
 	//Log("B:%x,%x-%x,%x",srcrect->x,srcrect->y,srcrect->x+srcrect->h,srcrect->x+srcrect->w);
 	int x=srcrect->h;
 	while(x--)
@@ -131,14 +135,17 @@ void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
 	 * in surface ``dst'' with color ``color''. If dstrect is
 	 * NULL, fill the whole surface.
 	 */
-	assert(false);
-	assert(dstrect);
+	if(dstrect==0||(dstrect->x==0&&dstrect->y==0&&dstrect->h==SCR_HEIGHT&&dstrect->w==SCR_WIDTH))
+	{
+		memset(dst->pixels,color,SCR_SIZE);
+		return;
+	}
 	int x=dstrect->h;
 	while(x--)
 	{
 		int dx=x+dstrect->x;
 		memset(&dst->pixels[(dx << 8) + (dx << 6) + dstrect->y],
-			   0,dstrect->w);
+			   color,dstrect->w);
 		//asm volatile ("cld; rep movsl" : : "c"(srcrect->w / 4), "S"(&src->pixels[(sx << 8) + (sx << 6)+srcrect->y]), "D"(&dst->pixels[(dx << 8) + (dx << 6)+dstrect->y]));
 	}
 	return;
