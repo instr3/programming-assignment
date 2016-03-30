@@ -19,13 +19,28 @@ keyboard_event(void) {
 	uint32_t key_code = in_byte(0x60);
 	Log("0x%x\n",key_code);
 	int i;
-	for(i=0;i<NR_KEYS;++i)
+	if(key_code<0x80)
 	{
-		if(keycode_array[i]==key_code)
+		for(i=0;i<NR_KEYS;++i)
 		{
-			key_state[i]=KEY_STATE_PRESS;
-			return;
+			if(keycode_array[i]==key_code)
+			{
+				key_state[i]=KEY_STATE_WAIT_RELEASE;
+				return;
+			}
 		}
+	}
+	else
+	{
+		for(i=0;i<NR_KEYS;++i)
+		{
+			if(keycode_array[i]==key_code-0x80)
+			{
+				key_state[i]=KEY_STATE_PRESS;
+				return;
+			}
+		}
+
 	}
 	/* TODO: Fetch the scancode and update the key states. */
 	assert(0);
