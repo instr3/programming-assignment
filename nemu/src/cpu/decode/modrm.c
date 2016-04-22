@@ -108,7 +108,6 @@ int read_ModR_M(swaddr_t eip, Operand *rm, Operand *reg) {
 	}
 	else {
 		int instr_len = load_addr(eip, &m, rm);
-		//TODO:it's wrong!
 		if(m.R_M==R_EBP||m.R_M==R_ESP)
 		{
 			rm->sreg = SREG_SS;
