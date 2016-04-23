@@ -37,6 +37,7 @@ void printRegInfoByID(uint32_t regID)
 void printSegmentRegistersInfo()
 {
 	printRegLine("cr0",cpu.cr0.val);
+	printRegLine("cr3",cpu.cr3.val);
 	printRegLine("gdtr.limit",cpu.gdtr_limit);
 	printRegLine("gdtr.base",cpu.gdtr_base);
 	printf("%s\t\t0x%X\t\t%u\t[base:0x%X,limit:0x%X]\n", "cs", cpu.cs, cpu.cs, cpu.cs_inv.base, cpu.cs_inv.limit);
