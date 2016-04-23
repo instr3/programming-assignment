@@ -31,8 +31,8 @@ void init() {
 #endif
 
 	/* Jump to init_cond() to continue initialization. */
-	asm volatile("jmp *%0" : : "r"(init_cond));
-
+	//asm volatile("jmp *%0" : : "r"(init_cond));
+	init_cond();
 	panic("should not reach here");
 }
 /* Initialization phase 2 */
@@ -89,13 +89,13 @@ void init_cond() {
 	/* Clear the test data we just written in the video memory. */
 	video_mapping_clear();
 #endif
-	set_bp();
 
 #ifdef IA32_PAGE
 	/* Set the %esp for user program, which is one of the
 	 * convention of the "advanced" runtime environment. */
 	asm volatile("movl %0, %%esp" : : "i"(KOFFSET));
 #endif
+
 	/* Keep the `bt' command happy. */
 	asm volatile("movl $0, %ebp");
 	asm volatile("subl $16, %esp");
