@@ -1,6 +1,7 @@
 #include "common.h"
 #include "nemu.h"
 #include "memory/page.h"
+#include "memory/segment.h"
 #include "device/mmio.h"
 
 uint32_t dram_read(hwaddr_t, size_t);
@@ -91,11 +92,8 @@ uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
 		uint32_t more=(addr+len)&PAGING_MASK;
 		uint32_t tmp=(len-more)*8;
 		//split into 2 parts
-		//printf("more:%x\n",more);
-		//fflush(stdout);
 		return lnaddr_read(addr,len-more) | 
 			(lnaddr_read((addr+len)&~PAGING_MASK,more)<<tmp);
-		//assert(0);
 
 	}
 	else {
@@ -108,12 +106,9 @@ void lnaddr_write(lnaddr_t addr, size_t len, uint32_t data) {
 	if (((addr+len-1)>>PAGE_OFFSET_LEN)!=(addr>>PAGE_OFFSET_LEN)) {
 		uint32_t more=(addr+len)&PAGING_MASK;
 		uint32_t tmp=(len-more)*8;
-		//printf("more:%x\n",more);
-		//fflush(stdout);
 		//split into 2 parts
 		lnaddr_write(addr, len-more, data&((1<<tmp)-1));
 		lnaddr_write((addr+len)&~PAGING_MASK, more, data>>tmp);
-		//assert(0 && "Not Tested");
 
 	}
 	else {
@@ -123,21 +118,6 @@ void lnaddr_write(lnaddr_t addr, size_t len, uint32_t data) {
 }
 
 extern CPU_state cpu;
-lnaddr_t seg_translate(swaddr_t addr, size_t len, uint8_t sreg){
-	//When Protect disabled, segment traslation disabled.
-	if(cpu.cr0.protect_enable==0)return addr;
-	struct invisible_part inv;
-	switch(sreg)
-	{
-		case SREG_CS:inv=cpu.cs_inv;break;
-		case SREG_DS:inv=cpu.ds_inv;break;
-		case SREG_ES:inv=cpu.es_inv;break;
-		case SREG_SS:inv=cpu.ss_inv;break;
-		default: assert(0);
-	}
-	//directly return from invisible part of segment registers.
-	return inv.base+addr;
-}
 
 
 uint32_t swaddr_read(swaddr_t addr, size_t len, uint8_t sreg) {

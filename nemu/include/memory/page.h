@@ -7,6 +7,7 @@
 #define PAGING_MASK ((1<<PAGE_OFFSET_LEN)-1)
 #define PAGE_DIR_LEN 10
 #define PAGE_TABLE_LEN 10
+//Define the linear address division according to I386-intel.pdf.
 typedef union linearaddress
 {
 	struct
