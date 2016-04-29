@@ -12,12 +12,14 @@
 #define install_method(name) \
 	CACHE_ID.name = &concat(CACHE_ID, name);
 
+//Define the cache block structure.
 typedef struct
 {
 	uint8_t block[OFFSET_LEN];
 	bool valid,dirty;
 	uint32_t tag;
 }CACHEBLOCK_T;
+//Define the cache structure.
 struct CACHE_T
 {
 	int hit_count,miss_count;//Simulated clock
@@ -34,6 +36,7 @@ struct CACHE_T
 		}ch;
 #pragma pack ()
 	}converter;
+	//Define the cache's "functions".
 	//void (*modify_cache_at)(struct CACHE_T *this,hwaddr_t addr);
 	CACHEBLOCK_T* (*hit_or_create_cache_at)(struct CACHE_T *this,hwaddr_t addr);
 	//void (*cache_read_raw)(hwaddr_t addr,uint8_t *temp,CACHEBLOCK_T *ch);
@@ -43,10 +46,8 @@ struct CACHE_T
 
 };
 struct CACHE_T CACHE_ID;
-//void concat(CACHE_ID,modify_cache_at)(struct CACHE_T *this,hwaddr_t addr)
-//{
-
-//}
+//void concat(CACHE_ID,modify_cache_at)(struct CACHE_T *this,hwaddr_t addr);
+//Test if an addr hit the cache, return the block if hit.
 CACHEBLOCK_T* concat(CACHE_ID,hit_or_create_cache_at)(struct CACHE_T *this,hwaddr_t addr)
 {
 	this->converter.addr=addr;
@@ -67,7 +68,7 @@ CACHEBLOCK_T* concat(CACHE_ID,hit_or_create_cache_at)(struct CACHE_T *this,hwadd
 	uint32_t temp=this->cache[this->converter.ch.bid][kick].tag;
 	this->cache[this->converter.ch.bid][kick].tag=this->converter.ch.btag;
 	this->converter.ch.btag=temp;
-#ifdef CACHE_WRITE_BACK_AND_WRITE_TRHOUGH
+#ifdef CACHE_WRITE_BACK_AND_WRITE_ALLOCATE
 	if(this->cache[this->converter.ch.bid][kick].dirty)
 	{
 		uint32_t base_addr=this->converter.addr & ~OFFSET_MASK;
@@ -103,6 +104,7 @@ CACHEBLOCK_T* concat(CACHE_ID,hit_or_create_cache_at)(struct CACHE_T *this,hwadd
 	
 	//memcpy(temp, &ch->block[addr & OFFSET_MASK],4);
 //}
+//Read addr from a cache. If miss, read from next level memory interface.
 uint32_t concat(CACHE_ID,read)(struct CACHE_T *this,hwaddr_t addr, size_t len) {
 	uint8_t temp[4];
 	uint32_t cache_offset = addr & OFFSET_MASK;
@@ -121,8 +123,10 @@ uint32_t concat(CACHE_ID,read)(struct CACHE_T *this,hwaddr_t addr, size_t len) {
 	//Infact, it's align_rw
 	return unalign_rw(temp + len, 4);
 }
+//Write addr from a cache. 
+//If write-back, set the 
 void concat(CACHE_ID,write)(struct CACHE_T *this,hwaddr_t addr, size_t len, uint32_t data) {
-#ifdef CACHE_WRITE_BACK_AND_WRITE_TRHOUGH
+#ifdef CACHE_WRITE_BACK_AND_WRITE_ALLOCATE
 	uint8_t temp[4];
 	memcpy(temp,&data,4);
 	//printf("0x%X:%x %x %x %x",data,temp[0],temp[1],temp[2],temp[3]);

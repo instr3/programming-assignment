@@ -52,7 +52,7 @@ clean: clean-cpp
 
 ##### some convinient rules #####
 
-USERPROG := obj/testcase/add-longlong#$(game_BIN)
+USERPROG := obj/testcase/qsort#$(game_BIN)
 ENTRY := $(kernel_BIN)
 
 entry: $(ENTRY)

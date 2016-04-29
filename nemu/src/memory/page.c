@@ -3,9 +3,9 @@
 #include "memory/page.h"
 #include "memory/memory.h"
 #include "memory/tlb.h"
-
 extern CPU_state cpu;
 extern tlb_t tlb;
+//Translate from leaner address to hardware address
 hwaddr_t page_translate(lnaddr_t addr)
 {
 	if(cpu.cr0.paging==0)return addr;//Page not enabled
@@ -50,6 +50,8 @@ hwaddr_t page_translate(lnaddr_t addr)
 #endif
 	return (pte.page_frame<<PAGE_OFFSET_LEN)+tmp.offset;
 }
+//Print page information of a leaner address
+//Used by monitor debug command 'page'
 void page_info(lnaddr_t addr)
 {
 	printf("=======================\nlnaddr:\t0x%X\n",addr);
