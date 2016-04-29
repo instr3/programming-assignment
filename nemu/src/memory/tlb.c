@@ -2,10 +2,13 @@
 #include "common.h"
 #include "stdlib.h"
 
+//Test if TLB is enabled.
+//Disable the #define at "common.h"
 #ifdef USE_TLB
 tlb_t tlb;
 #endif
 
+//Find a tag in the tlb. *success = 0 if failed.
 uint32_t find_tlb(tlb_t tlb, uint32_t tag, bool *success)
 {
 	int i;
@@ -20,6 +23,9 @@ uint32_t find_tlb(tlb_t tlb, uint32_t tag, bool *success)
 	*success=false;
 	return 0;
 }
+
+//Write a tag in the tlb. 
+//If tlb is full, use random replace algorithm.
 void write_tlb(tlb_t tlb, uint32_t tag, uint32_t data)
 {
 	int i;
@@ -33,6 +39,8 @@ void write_tlb(tlb_t tlb, uint32_t tag, uint32_t data)
 	tlb.item[i].data=data;
 	tlb.item[i].valid=1;
 }
+//Flush the tlb, clear all valid bits.
+//Occurs when changed CR3.
 void flush_tlb(tlb_t tlb)
 {
 	int i;

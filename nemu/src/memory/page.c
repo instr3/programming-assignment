@@ -11,6 +11,7 @@ hwaddr_t page_translate(lnaddr_t addr)
 	if(cpu.cr0.paging==0)return addr;//Page not enabled
 	linear_paged_addr_t tmp;
 	tmp.val=addr;
+	//If tlb is enabled, try to find in tlb first.
 #ifdef USE_TLB
 	bool success;
 	uint32_t data=find_tlb(tlb,addr>>PAGE_OFFSET_LEN,&success);
@@ -28,9 +29,8 @@ hwaddr_t page_translate(lnaddr_t addr)
 
 		printf("Level 1 Page Miss!\nLnaddr:[%x]\n",addr);
 		fflush(stdout);
-		//printf("(1)0x%x*4+0x%x\n",tmp.dir,base);
-		//printf("*=0x%x\n",pte.val);
 		page_info(addr);
+		//Kill the program immediately.
 		assert(0);
 	}
 	base=pte.page_frame << PAGE_OFFSET_LEN;
@@ -39,9 +39,8 @@ hwaddr_t page_translate(lnaddr_t addr)
 	{
 		printf("Level 2 Page Miss!\nLnaddr:[%x]\n",addr);
 		fflush(stdout);
-		//printf("(2)0x%x*4+0x%x\n",tmp.dir,base);
-		//printf("*=0x%x\n",pte.val);
 		page_info(addr);
+		//Kill the program immediately.
 		assert(0);
 		
 	}

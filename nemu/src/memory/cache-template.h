@@ -22,7 +22,7 @@ typedef struct
 //Define the cache structure.
 struct CACHE_T
 {
-	int hit_count,miss_count;//Simulated clock
+	int hit_count,miss_count;//Simulated clock, used in PA3 report
 	CACHEBLOCK_T cache[BID_LEN][WAY_NUM];
 	union{
 		//unalign_rw
@@ -46,8 +46,10 @@ struct CACHE_T
 
 };
 struct CACHE_T CACHE_ID;
-//void concat(CACHE_ID,modify_cache_at)(struct CACHE_T *this,hwaddr_t addr);
+
 //Test if an addr hit the cache, return the block if hit.
+//If miss, create a block for it and return the block.
+//If n-way is full, use random replace algorithm.
 CACHEBLOCK_T* concat(CACHE_ID,hit_or_create_cache_at)(struct CACHE_T *this,hwaddr_t addr)
 {
 	this->converter.addr=addr;
@@ -69,12 +71,12 @@ CACHEBLOCK_T* concat(CACHE_ID,hit_or_create_cache_at)(struct CACHE_T *this,hwadd
 	this->cache[this->converter.ch.bid][kick].tag=this->converter.ch.btag;
 	this->converter.ch.btag=temp;
 #ifdef CACHE_WRITE_BACK_AND_WRITE_ALLOCATE
+	//If the block is dirty, write back to the next memory interface.
 	if(this->cache[this->converter.ch.bid][kick].dirty)
 	{
 		uint32_t base_addr=this->converter.addr & ~OFFSET_MASK;
 		for(i=0;i<OFFSET_LEN;i+=4)
 		{
-			//printf("WriteCache:%x %x\n",base_addr,dram_read(base_addr,1)&0xff);
 			uint32_t data;
 			memcpy(&data,&this->cache[this->converter.ch.bid][kick].block[i],4);
 			slower_write(base_addr,4,data);
@@ -88,7 +90,6 @@ CACHEBLOCK_T* concat(CACHE_ID,hit_or_create_cache_at)(struct CACHE_T *this,hwadd
 	uint32_t base_addr=addr & ~OFFSET_MASK;
 	for(i=0;i<OFFSET_LEN;i+=4)
 	{
-		//printf("WriteCache:%x %x\n",base_addr,dram_read(base_addr,1)&0xff);
 		uint32_t data=slower_read(base_addr,4);
 		base_addr+=4;
 		memcpy(&this->cache[this->converter.ch.bid][kick].block[i],&data,4);
@@ -96,21 +97,22 @@ CACHEBLOCK_T* concat(CACHE_ID,hit_or_create_cache_at)(struct CACHE_T *this,hwadd
 	return &this->cache[this->converter.ch.bid][kick];
 
 }
-//void concat(CACHE_ID,cache_read_raw)(hwaddr_t addr,uint8_t *temp,CACHEBLOCK_T *ch)
-//{
-	//OFFSET_LEN should be greater or equal than BURST_MASK
-	//uint32_t cache_burst_offset = addr & (OFFSET_MASK ^ 3);//0000111100
-	//printf("addr:%x OFFSET_MASK:%x cache_burst_offset:%x OFFSET_LEN:%x\n",addr,OFFSET_MASK,cache_burst_offset,OFFSET_LEN);
+/*void concat(CACHE_ID,cache_read_raw)(hwaddr_t addr,uint8_t *temp,CACHEBLOCK_T *ch)
+{
+	OFFSET_LEN should be greater or equal than BURST_MASK
+	uint32_t cache_burst_offset = addr & (OFFSET_MASK ^ 3);//0000111100
+	printf("addr:%x OFFSET_MASK:%x cache_burst_offset:%x OFFSET_LEN:%x\n",addr,OFFSET_MASK,cache_burst_offset,OFFSET_LEN);
 	
-	//memcpy(temp, &ch->block[addr & OFFSET_MASK],4);
-//}
-//Read addr from a cache. If miss, read from next level memory interface.
+	memcpy(temp, &ch->block[addr & OFFSET_MASK],4);
+}*/
+
+//Read addr from a cache. 
+//If miss, create a cache block at range [addr & (OFFSET_MASK,addr & OFFSET_MASK) + len).
 uint32_t concat(CACHE_ID,read)(struct CACHE_T *this,hwaddr_t addr, size_t len) {
 	uint8_t temp[4];
 	uint32_t cache_offset = addr & OFFSET_MASK;
 	
 	CACHEBLOCK_T *ch=this->hit_or_create_cache_at(this, addr);
-	//this->cache_read_raw(addr, temp, ch);
 	memcpy(temp, &ch->block[addr & OFFSET_MASK],(len<OFFSET_LEN-cache_offset)?len:OFFSET_LEN-cache_offset);
 	if(cache_offset + len > OFFSET_LEN) {
 		/* data cross the cache boundary */
@@ -120,16 +122,17 @@ uint32_t concat(CACHE_ID,read)(struct CACHE_T *this,hwaddr_t addr, size_t len) {
 	
 	}
 	len = 0;
-	//Infact, it's align_rw
+	//In fact, it's align_rw
 	return unalign_rw(temp + len, 4);
 }
 //Write addr from a cache. 
-//If write-back, set the 
 void concat(CACHE_ID,write)(struct CACHE_T *this,hwaddr_t addr, size_t len, uint32_t data) {
-#ifdef CACHE_WRITE_BACK_AND_WRITE_ALLOCATE
+#ifdef CACHE_WRITE_BACK_AND_WRITE_ALLOCATE 
+	//If the cache is write_back and write_allocate
+	//If miss, create a cache block at range [addr & (OFFSET_MASK,addr & OFFSET_MASK) + len).
+	//Then modified the bits and set the dirty flag.
 	uint8_t temp[4];
 	memcpy(temp,&data,4);
-	//printf("0x%X:%x %x %x %x",data,temp[0],temp[1],temp[2],temp[3]);
 	uint32_t cache_offset = addr & OFFSET_MASK;
 	CACHEBLOCK_T *ch=this->hit_or_create_cache_at(this,addr);
 	ch->dirty=true;
@@ -142,6 +145,8 @@ void concat(CACHE_ID,write)(struct CACHE_T *this,hwaddr_t addr, size_t len, uint
 		memcpy(&ch->block[0], temp + 4 - more, more);
 	}
 #else
+	//If write_through and not write_allocate, 
+	//simply let it be done by next level memory interface.
 	this->converter.addr=addr;
 	uint32_t i;
 	for(i=0;i<WAY_NUM;++i)
@@ -162,6 +167,9 @@ void concat(CACHE_ID,write)(struct CACHE_T *this,hwaddr_t addr, size_t len, uint
 	slower_write(addr, len, data);
 #endif
 }
+
+//Print cache information of a hardware address
+//Used by monitor debug command 'cache'
 void concat(CACHE_ID,debug)(struct CACHE_T *this,hwaddr_t addr)
 {
 #define SNAME str(CACHE_ID)
@@ -192,6 +200,9 @@ void concat(CACHE_ID,debug)(struct CACHE_T *this,hwaddr_t addr)
 	);
 }
 
+//Install mothod for 'cache structure'
+//Well, this is not a good idea when
+//developing an actual project!!
 void concat(CACHE_ID,_init)(struct CACHE_T *this){
 	//install_method(modify_cache_at);
 	install_method(hit_or_create_cache_at);
