@@ -84,10 +84,13 @@ void debug_cache_address(hwaddr_t addr)
 		if(addr>=0xC0000000)addr-=0xC0000000;
 		if(addr>=0xC0000000-0x8000000)addr-=(0xC0000000-0x8000000);
 		if(addr>=0x8048000&&addr<=0x8048000+0x7000000)addr-=0x7048000;
-		if(addr>=HW_MEM_SIZE)printf("%x\n",addr);
+		//if(addr>=HW_MEM_SIZE)printf("%x\n",addr);
 		assert(addr<HW_MEM_SIZE);
-		int map_no=is_mmio(addr);
-		if(map_no!=-1)return mmio_read(addr,len,map_no);
+		if(addr>=0xa0000&&addr<=0xc0000)
+		{
+			int map_no=is_mmio(addr);
+			if(map_no!=-1)return mmio_read(addr,len,map_no);
+		}
 		if(len==4)return *(uint32_t *)(hw_mem+addr);
 		if(len==1)return hw_mem[addr];
 		return *(uint16_t *)(hw_mem+addr);
@@ -96,10 +99,13 @@ void debug_cache_address(hwaddr_t addr)
 		if(addr>=0xC0000000)addr-=0xC0000000;
 		if(addr>=0xC0000000-0x8000000)addr-=(0xC0000000-0x8000000);
 		if(addr>=0x8048000&&addr<=0x8048000+0x7000000)addr-=0x7048000;
-		if(addr>=HW_MEM_SIZE)printf("%x\n",addr);
+		//if(addr>=HW_MEM_SIZE)printf("%x\n",addr);
 		assert(addr<HW_MEM_SIZE);
-		int map_no=is_mmio(addr);
-		if(map_no!=-1){mmio_write(addr,len,data,map_no);return;}
+		if(addr>=0xa0000&&addr<=0xc0000)
+		{
+			int map_no=is_mmio(addr);
+			if(map_no!=-1){mmio_write(addr,len,data,map_no);return;}
+		}
 		if(len==4){*(uint32_t *)(hw_mem+addr)=data;return;}
 		if(len==1){hw_mem[addr]=data;return;}
 		*(uint16_t *)(hw_mem+addr)=data;
