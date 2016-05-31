@@ -91,6 +91,7 @@ void debug_cache_address(hwaddr_t addr)
 	}
 	void lnaddr_write(swaddr_t addr, size_t len, uint32_t data) {
 		if(addr>=0xC0000000)addr-=0xC0000000;
+		if(addr>=HW_MEM_SIZE)printf("%d\n",addr);
 		assert(addr<HW_MEM_SIZE);
 		int map_no=is_mmio(addr);
 		if(map_no!=-1){mmio_write(addr,len,data,map_no);return;}
