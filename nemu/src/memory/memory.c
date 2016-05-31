@@ -10,7 +10,7 @@ uint32_t simple_read(hwaddr_t addr, size_t len) {
 	int map_no=is_mmio(addr);
 	if(map_no!=-1)return mmio_read(addr,len,map_no);
 	printf("%X\n",addr);
-	assert(addr<(1<<23));
+	//assert(addr<(1<<23));
 	return hwaddr_read(addr,len);
 	if(len==4)return *(uint32_t *)(simple_memory+addr);
 	if(len==1)return simple_memory[addr];
@@ -19,7 +19,7 @@ uint32_t simple_read(hwaddr_t addr, size_t len) {
 void simple_write(swaddr_t addr, size_t len, uint32_t data) {
 	int map_no=is_mmio(addr);
 	if(map_no!=-1){mmio_write(addr,len,data,map_no);return;}
-	assert(addr<(1<<23));
+	//assert(addr<(1<<23));
 	hwaddr_write(addr,len,data);
 	return;
 	if(len==4)*(uint32_t *)(simple_memory+addr)=data;
