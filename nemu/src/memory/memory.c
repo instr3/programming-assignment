@@ -66,76 +66,91 @@ void debug_cache_address(hwaddr_t addr)
 
 /* Memory accessing interfaces */
 #ifdef OPTIMIZE_PAL
-uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
-	int map_no=is_mmio(addr);
-	if(map_no!=-1)return mmio_read(addr,len,map_no);
-	if(len==4)return *(uint32_t *)(hw_mem+addr);
-	if(len==1)return hw_mem[addr];
-	return *(uint16_t *)(hw_mem+addr);
-}
-void hwaddr_write(swaddr_t addr, size_t len, uint32_t data) {
-	int map_no=is_mmio(addr);
-	if(map_no!=-1){mmio_write(addr,len,data,map_no);return;}
-	if(len==4){*(uint32_t *)(hw_mem+addr)=data;return;}
-	if(len==1){hw_mem[addr]=data;return;}
-	*(uint16_t *)(hw_mem+addr)=data;
-}
+	uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
+		int map_no=is_mmio(addr);
+		if(map_no!=-1)return mmio_read(addr,len,map_no);
+		if(len==4)return *(uint32_t *)(hw_mem+addr);
+		if(len==1)return hw_mem[addr];
+		return *(uint16_t *)(hw_mem+addr);
+	}
+	void hwaddr_write(swaddr_t addr, size_t len, uint32_t data) {
+		int map_no=is_mmio(addr);
+		if(map_no!=-1){mmio_write(addr,len,data,map_no);return;}
+		if(len==4){*(uint32_t *)(hw_mem+addr)=data;return;}
+		if(len==1){hw_mem[addr]=data;return;}
+		*(uint16_t *)(hw_mem+addr)=data;
+	}
+	uint32_t lnaddr_read(hwaddr_t addr,size_t len){
+		int map_no=is_mmio(addr);
+		if(map_no!=-1)return mmio_read(addr,len,map_no);
+		if(len==4)return *(uint32_t *)(hw_mem+addr);
+		if(len==1)return hw_mem[addr];
+		return *(uint16_t *)(hw_mem+addr);
+	}
+	void lnaddr_write(swaddr_t addr, size_t len, uint32_t data) {
+		int map_no=is_mmio(addr);
+		if(map_no!=-1){mmio_write(addr,len,data,map_no);return;}
+		if(len==4){*(uint32_t *)(hw_mem+addr)=data;return;}
+		if(len==1){hw_mem[addr]=data;return;}
+		*(uint16_t *)(hw_mem+addr)=data;
+	}
 #else
-uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
-	//return simple_read(addr,len);
-	int map_no=is_mmio(addr);
-	if(map_no!=-1)return mmio_read(addr,len,map_no);
-#ifdef USE_CACHE
-	return cache1.read(&cache1,addr,len) & (~0u >> ((4 - len) << 3));
-#else
-	return dram_read(addr, len) & (~0u >> ((4 - len) << 3));
+	uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
+		//return simple_read(addr,len);
+		int map_no=is_mmio(addr);
+		if(map_no!=-1)return mmio_read(addr,len,map_no);
+	#ifdef USE_CACHE
+		return cache1.read(&cache1,addr,len) & (~0u >> ((4 - len) << 3));
+	#else
+		return dram_read(addr, len) & (~0u >> ((4 - len) << 3));
+	#endif
+	}
+
+	void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
+		//simple_write(addr,len,data);return;
+		int map_no=is_mmio(addr);
+		if(map_no!=-1)
+		{
+			//printf("Caught:%x,%x,%x,%x\n",addr,(int)len,data,map_no);
+			mmio_write(addr,len,data,map_no);
+		}
+	#ifdef USE_CACHE
+		cache1.write(&cache1,addr,len,data);
+	#else
+		dram_write(addr, len, data);
+	#endif
+	}
+	uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
+		if (((addr+len-1)>>PAGE_OFFSET_LEN)!=(addr>>PAGE_OFFSET_LEN)) {
+			uint32_t more=(addr+len)&PAGING_MASK;
+			uint32_t tmp=(len-more)*8;
+			//split into 2 parts
+			return lnaddr_read(addr,len-more) | 
+				(lnaddr_read((addr+len)&~PAGING_MASK,more)<<tmp);
+
+		}
+		else {
+			hwaddr_t hwaddr = page_translate(addr);
+			return hwaddr_read(hwaddr, len);
+		}
+	}
+
+	void lnaddr_write(lnaddr_t addr, size_t len, uint32_t data) {
+		if (((addr+len-1)>>PAGE_OFFSET_LEN)!=(addr>>PAGE_OFFSET_LEN)) {
+			uint32_t more=(addr+len)&PAGING_MASK;
+			uint32_t tmp=(len-more)*8;
+			//split into 2 parts
+			lnaddr_write(addr, len-more, data&((1<<tmp)-1));
+			lnaddr_write((addr+len)&~PAGING_MASK, more, data>>tmp);
+
+		}
+		else {
+			hwaddr_t hwaddr = page_translate(addr);
+			hwaddr_write(hwaddr, len, data);
+		}
+	}
 #endif
-}
 
-void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
-	//simple_write(addr,len,data);return;
-	int map_no=is_mmio(addr);
-	if(map_no!=-1)
-	{
-		//printf("Caught:%x,%x,%x,%x\n",addr,(int)len,data,map_no);
-		mmio_write(addr,len,data,map_no);
-	}
-#ifdef USE_CACHE
-	cache1.write(&cache1,addr,len,data);
-#else
-	dram_write(addr, len, data);
-#endif
-}
-#endif
-uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
-	if (((addr+len-1)>>PAGE_OFFSET_LEN)!=(addr>>PAGE_OFFSET_LEN)) {
-		uint32_t more=(addr+len)&PAGING_MASK;
-		uint32_t tmp=(len-more)*8;
-		//split into 2 parts
-		return lnaddr_read(addr,len-more) | 
-			(lnaddr_read((addr+len)&~PAGING_MASK,more)<<tmp);
-
-	}
-	else {
-		hwaddr_t hwaddr = page_translate(addr);
-		return hwaddr_read(hwaddr, len);
-	}
-}
-
-void lnaddr_write(lnaddr_t addr, size_t len, uint32_t data) {
-	if (((addr+len-1)>>PAGE_OFFSET_LEN)!=(addr>>PAGE_OFFSET_LEN)) {
-		uint32_t more=(addr+len)&PAGING_MASK;
-		uint32_t tmp=(len-more)*8;
-		//split into 2 parts
-		lnaddr_write(addr, len-more, data&((1<<tmp)-1));
-		lnaddr_write((addr+len)&~PAGING_MASK, more, data>>tmp);
-
-	}
-	else {
-		hwaddr_t hwaddr = page_translate(addr);
-		hwaddr_write(hwaddr, len, data);
-	}
-}
 
 extern CPU_state cpu;
 
