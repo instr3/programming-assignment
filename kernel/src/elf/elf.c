@@ -44,7 +44,8 @@ uint32_t loader() {
 		if(ph->p_type == PT_LOAD) {
 			//Allocate user page for segment
 			uint32_t hwaddr=mm_malloc(ph->p_vaddr, ph->p_memsz);
-			Log("VADDR:%x\n",ph->p_vaddr);
+			hwaddr-=0x7000000;
+			Log("VADDR:%x\n",hwaddr);
 			//Physical memory and Virtual memory pointed to the same page
 			//So (void *)((hwaddr)) or (void *)(pa_to_va(hwaddr)) all works in memcpy and memset.
 #ifdef HAS_DEVICE
