@@ -7,7 +7,7 @@
 #define IA32_INTR
 #define HAS_DEVICE
 
-//#define OPTIMIZE_PAL
+#define OPTIMIZE_PAL
 
 #ifndef __ASSEMBLER__
 /* The following code will be included if the source file is a "*.c" file. */
