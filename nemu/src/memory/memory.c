@@ -7,7 +7,6 @@ uint8_t simple_memory[1<<23];
 //#define swaddr_read simple_read
 //#define swaddr_write simple_write
 uint32_t simple_read(hwaddr_t addr, size_t len) {
-	if(addr>=0xC0000000)addr-=0xC0000000;
 	int map_no=is_mmio(addr);
 	if(map_no!=-1)return mmio_read(addr,len,map_no);
 	printf("%X\n",addr);
@@ -18,7 +17,6 @@ uint32_t simple_read(hwaddr_t addr, size_t len) {
 	return *(uint16_t *)(simple_memory+addr);
 }
 void simple_write(swaddr_t addr, size_t len, uint32_t data) {
-	if(addr>=0xC0000000)addr-=0xC0000000;
 	int map_no=is_mmio(addr);
 	if(map_no!=-1){mmio_write(addr,len,data,map_no);return;}
 	assert(addr<(1<<23));
@@ -113,7 +111,8 @@ void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
 	dram_write(addr, len, data);
 #endif
 }
-
+#define hwaddr_read simple_read
+#define hwaddr_write simple_write
 uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
 	if (((addr+len-1)>>PAGE_OFFSET_LEN)!=(addr>>PAGE_OFFSET_LEN)) {
 		uint32_t more=(addr+len)&PAGING_MASK;
