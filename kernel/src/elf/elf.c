@@ -2,7 +2,7 @@
 #include "memory.h"
 #include <string.h>
 #include <elf.h>
-
+#define mm_malloc(vaddr,memsz) vaddr
 #define ELF_OFFSET_IN_DISK 0
 #ifdef HAS_DEVICE
 void ide_read(uint8_t *, uint32_t, uint32_t);
@@ -63,7 +63,7 @@ uint32_t loader() {
 	volatile uint32_t entry = elf->e_entry;
 
 #ifdef IA32_PAGE
-	mm_malloc(KOFFSET - STACK_SIZE, STACK_SIZE);
+	//mm_malloc(KOFFSET - STACK_SIZE, STACK_SIZE);
 
 #ifdef HAS_DEVICE
 	create_video_mapping();
