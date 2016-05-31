@@ -3,7 +3,6 @@
 #include "memory/page.h"
 #include "memory/segment.h"
 #include "device/mmio.h"
-//uint8_t simple_memory[1<<27];
 //#define swaddr_read simple_read
 //#define swaddr_write simple_write
 uint32_t simple_read(hwaddr_t addr, size_t len) {
@@ -22,7 +21,6 @@ void simple_write(swaddr_t addr, size_t len, uint32_t data) {
 	if(map_no!=-1){mmio_write(addr,len,data,map_no);return;}
 	printf("w %x,%u\n",addr,(unsigned)len);
 	assert(addr<(1<<27));
-	hwaddr_write(addr,len,data);return;
 	if(len==4){*(uint32_t *)(hw_mem+addr)=data;return;}
 	if(len==1){hw_mem[addr]=data;return;}
 	*(uint16_t *)(hw_mem+addr)=data;
