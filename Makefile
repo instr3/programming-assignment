@@ -62,6 +62,11 @@ run: $(nemu_BIN) $(USERPROG) entry
 	$(call git_commit, "run")
 	$(nemu_BIN) $(USERPROG)
 
+perf: $(nemu_BIN) $(USERPROG) entry
+	$(call git_commit, "run")
+	perf record $(nemu_BIN) $(USERPROG)
+	perf report
+
 gdb: $(nemu_BIN) $(USERPROG) entry
 	gdb -s $(nemu_BIN) --args $(nemu_BIN) $(USERPROG)
 
