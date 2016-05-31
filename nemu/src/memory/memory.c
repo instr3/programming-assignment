@@ -8,18 +8,19 @@ uint8_t simple_memory[1<<23];
 //#define swaddr_write simple_write
 uint32_t simple_read(hwaddr_t addr, size_t len) {
 	if(addr>=0xC0000000)addr-=0xC0000000;
-	assert(addr<(1<<23));
 	int map_no=is_mmio(addr);
 	if(map_no!=-1)return mmio_read(addr,len,map_no);
+	printf("%d\n",addr);
+	assert(addr<(1<<23));
 	if(len==4)return *(uint32_t *)(simple_memory+addr);
 	if(len==1)return simple_memory[addr];
 	return *(uint16_t *)(simple_memory+addr);
 }
 void simple_write(swaddr_t addr, size_t len, uint32_t data) {
 	if(addr>=0xC0000000)addr-=0xC0000000;
-	assert(addr<(1<<23));
 	int map_no=is_mmio(addr);
 	if(map_no!=-1){mmio_write(addr,len,data,map_no);return;}
+	assert(addr<(1<<23));
 	if(len==4)*(uint32_t *)(simple_memory+addr)=data;
 	if(len==1)simple_memory[addr]=data;
 	*(uint16_t *)(simple_memory+addr)=data;
