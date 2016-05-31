@@ -13,6 +13,8 @@
 //#define DEBUG
 //#define LOG_FILE
 
+#define OPTIMIZE_PAL
+
 #include "debug.h"
 #include "macro.h"
 
