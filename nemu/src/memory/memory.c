@@ -4,7 +4,8 @@
 #include "memory/segment.h"
 #include "device/mmio.h"
 uint8_t simple_memory[1<<23];
-
+//#define swaddr_read simple_read
+//#define swaddr_write simple_write
 uint32_t simple_read(hwaddr_t addr, size_t len) {
 	if(addr>0xC0000000)addr-=0xC0000000;
 	int map_no=is_mmio(addr);
@@ -12,6 +13,14 @@ uint32_t simple_read(hwaddr_t addr, size_t len) {
 	if(len==4)return *(uint32_t *)(simple_memory+addr);
 	if(len==1)return simple_memory[addr];
 	return *(uint16_t *)(simple_memory+addr);
+}
+void simple_write(swaddr_t addr, size_t len, uint32_t data, uint8_t sreg) {
+	if(addr>0xC0000000)addr-=0xC0000000;
+	int map_no=is_mmio(addr);
+	if(map_no!=-1){mmio_write(addr,len,data,map_no);return;}
+	if(len==4)*(uint32_t *)(simple_memory+addr)=data;
+	if(len==1)simple_memory[addr]=data;
+	*(uint16_t *)(simple_memory+addr)=data;
 }
 
 uint32_t dram_read(hwaddr_t, size_t);
@@ -128,7 +137,6 @@ void lnaddr_write(lnaddr_t addr, size_t len, uint32_t data) {
 }
 
 extern CPU_state cpu;
-
 
 uint32_t swaddr_read(swaddr_t addr, size_t len, uint8_t sreg) {
 #ifdef DEBUG
