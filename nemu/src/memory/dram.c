@@ -52,7 +52,6 @@ void init_ddr3() {
 }
 
 static void ddr3_read(hwaddr_t addr, void *data) {
-	printf("Should not reach here!");
 	Assert(addr < HW_MEM_SIZE, "physical address %x is outside of the physical memory!", addr);
 
 	dram_addr temp;

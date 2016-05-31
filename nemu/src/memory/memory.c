@@ -5,20 +5,7 @@
 #include "device/mmio.h"
 //#define swaddr_read simple_read
 //#define swaddr_write simple_write
-uint32_t simple_read(hwaddr_t addr, size_t len) {
-	int map_no=is_mmio(addr);
-	if(map_no!=-1)return mmio_read(addr,len,map_no);
-	if(len==4)return *(uint32_t *)(hw_mem+addr);
-	if(len==1)return hw_mem[addr];
-	return *(uint16_t *)(hw_mem+addr);
-}
-void simple_write(swaddr_t addr, size_t len, uint32_t data) {
-	int map_no=is_mmio(addr);
-	if(map_no!=-1){mmio_write(addr,len,data,map_no);return;}
-	if(len==4){*(uint32_t *)(hw_mem+addr)=data;return;}
-	if(len==1){hw_mem[addr]=data;return;}
-	*(uint16_t *)(hw_mem+addr)=data;
-}
+
 
 uint32_t dram_read(hwaddr_t, size_t);
 void dram_write(hwaddr_t, size_t, uint32_t);
@@ -104,8 +91,23 @@ void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
 	dram_write(addr, len, data);
 #endif
 }
+uint32_t simple_read(hwaddr_t addr, size_t len) {
+	int map_no=is_mmio(addr);
+	if(map_no!=-1)return mmio_read(addr,len,map_no);
+	if(len==4)return *(uint32_t *)(hw_mem+addr);
+	if(len==1)return hw_mem[addr];
+	return *(uint16_t *)(hw_mem+addr);
+}
+void simple_write(swaddr_t addr, size_t len, uint32_t data) {
+	int map_no=is_mmio(addr);
+	if(map_no!=-1){mmio_write(addr,len,data,map_no);return;}
+	if(len==4){*(uint32_t *)(hw_mem+addr)=data;return;}
+	if(len==1){hw_mem[addr]=data;return;}
+	*(uint16_t *)(hw_mem+addr)=data;
+}
 #define hwaddr_read simple_read
 #define hwaddr_write simple_write
+#define dram_read 
 uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
 	if (((addr+len-1)>>PAGE_OFFSET_LEN)!=(addr>>PAGE_OFFSET_LEN)) {
 		uint32_t more=(addr+len)&PAGING_MASK;
