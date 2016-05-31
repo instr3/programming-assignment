@@ -14,9 +14,11 @@ uint32_t brk = 0;
 
 /* The brk() system call handler. */
 void mm_brk(uint32_t new_brk) {
+#ifndef OPTIMIZE_PAL
 	if(new_brk > brk) {
 		mm_malloc(brk, new_brk - brk);
 	}
+#endif
 	brk = new_brk;
 }
 
