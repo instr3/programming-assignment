@@ -12,6 +12,7 @@ uint32_t simple_read(hwaddr_t addr, size_t len) {
 	if(map_no!=-1)return mmio_read(addr,len,map_no);
 	printf("%X\n",addr);
 	assert(addr<(1<<23));
+	return hwaddr_read(addr,len);
 	if(len==4)return *(uint32_t *)(simple_memory+addr);
 	if(len==1)return simple_memory[addr];
 	return *(uint16_t *)(simple_memory+addr);
@@ -21,6 +22,8 @@ void simple_write(swaddr_t addr, size_t len, uint32_t data) {
 	int map_no=is_mmio(addr);
 	if(map_no!=-1){mmio_write(addr,len,data,map_no);return;}
 	assert(addr<(1<<23));
+	hwaddr_write(addr,len,data);
+	return;
 	if(len==4)*(uint32_t *)(simple_memory+addr)=data;
 	if(len==1)simple_memory[addr]=data;
 	*(uint16_t *)(simple_memory+addr)=data;
@@ -112,7 +115,7 @@ void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
 }
 
 uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
-	//return simple_read(addr,len);
+	return simple_read(addr,len);
 	if (((addr+len-1)>>PAGE_OFFSET_LEN)!=(addr>>PAGE_OFFSET_LEN)) {
 		uint32_t more=(addr+len)&PAGING_MASK;
 		uint32_t tmp=(len-more)*8;
@@ -128,7 +131,7 @@ uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
 }
 
 void lnaddr_write(lnaddr_t addr, size_t len, uint32_t data) {
-	//simple_write(addr,len,data);return;
+	simple_write(addr,len,data);return;
 	if (((addr+len-1)>>PAGE_OFFSET_LEN)!=(addr>>PAGE_OFFSET_LEN)) {
 		uint32_t more=(addr+len)&PAGING_MASK;
 		uint32_t tmp=(len-more)*8;
@@ -146,8 +149,8 @@ void lnaddr_write(lnaddr_t addr, size_t len, uint32_t data) {
 extern CPU_state cpu;
 
 uint32_t swaddr_read(swaddr_t addr, size_t len, uint8_t sreg) {
-	printf("%x\n",addr);
-	//return simple_read(addr,len);
+	//printf("%x\n",addr);
+	return simple_read(addr,len);
 #ifdef DEBUG
 	assert(len == 1 || len == 2 || len == 4);
 #endif
@@ -156,7 +159,7 @@ uint32_t swaddr_read(swaddr_t addr, size_t len, uint8_t sreg) {
 }
 
 void swaddr_write(swaddr_t addr, size_t len, uint32_t data, uint8_t sreg) {
-	//simple_write(addr,len,data);return;
+	simple_write(addr,len,data);return;
 #ifdef DEBUG
 	assert(len == 1 || len == 2 || len == 4);
 #endif
