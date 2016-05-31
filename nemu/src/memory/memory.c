@@ -12,6 +12,7 @@ uint32_t simple_read(hwaddr_t addr, size_t len) {
 	uint32_t res=hwaddr_read(addr,len);
 	printf("r %x,%u,%x\n",addr,(unsigned)len,res);
 	assert(addr<(1<<27));
+	return res;
 	if(len==4)return *(uint32_t *)(simple_memory+addr);
 	if(len==1)return simple_memory[addr];
 	return *(uint16_t *)(simple_memory+addr);
