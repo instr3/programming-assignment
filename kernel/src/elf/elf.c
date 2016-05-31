@@ -45,7 +45,7 @@ uint32_t loader() {
 			//Allocate user page for segment
 			uint32_t hwaddr=mm_malloc(ph->p_vaddr, ph->p_memsz);
 #ifdef OPTIMIZE_PAL
-			hwaddr-=0x7000000;
+			hwaddr-=0x7048000;
 #endif
 			//Log("HADDR:%x\n",hwaddr);
 			//Physical memory and Virtual memory pointed to the same page
