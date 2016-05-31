@@ -11,6 +11,10 @@ uint32_t simple_read(hwaddr_t addr, size_t len) {
 	if(map_no!=-1)return mmio_read(addr,len,map_no);
 	printf("%X\n",addr);
 	fflush(stdout);
+	if(addr>=(1<<23))
+	{
+		printf("%x fuck\n",addr);
+	}
 	assert(addr<(1<<23));
 	return hwaddr_read(addr,len);
 	if(len==4)return *(uint32_t *)(simple_memory+addr);
