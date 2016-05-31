@@ -31,6 +31,8 @@ make_helper(concat(jcc_, SUFFIX)) {
 	optest(8,"js",f(SF)==1);
 #undef f
 #undef optest
+	jname=jname;
+#ifdef DEBUG
 	extern char *PrintAddressInFunction(uint32_t,bool);//elf.c
 	char *infun=PrintAddressInFunction(cpu.eip+addr+1+DATA_BYTE,true);
 	jname=jname;
@@ -38,6 +40,7 @@ make_helper(concat(jcc_, SUFFIX)) {
 		print_asm("%s %x %s",jname,cpu.eip+addr+1+DATA_BYTE,infun);
 	else
 		print_asm("%s %x",jname,cpu.eip+addr+1+DATA_BYTE);
+#endif
 	if(cond)
 	{
 		cpu.eip+=addr;

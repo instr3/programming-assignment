@@ -7,9 +7,12 @@ static void concat(do_execute,direct)(uint32_t len)
 {
 	push_data(cpu.eip+len,DATA_BYTE);
 	cpu.eip=op_src->val-len;
-	swaddr_t newop=cpu.eip+len;
 #if DATA_BYTE==2
 	cpu.eip&=0xFFFF;
+#endif
+#ifdef DEBUG
+	swaddr_t newop=cpu.eip+len;
+#if DATA_BYTE==2
 	newop&=0xFFFF;
 #endif
 	extern char *PrintAddressInFunction(swaddr_t,bool);//elf.c
@@ -20,6 +23,7 @@ static void concat(do_execute,direct)(uint32_t len)
 	else
 		print_asm("call %x", newop);
 	//}
+#endif
 
 }
 
