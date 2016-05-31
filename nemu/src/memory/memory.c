@@ -3,19 +3,19 @@
 #include "memory/page.h"
 #include "memory/segment.h"
 #include "device/mmio.h"
-uint8_t simple_memory[1<<27];
+//uint8_t simple_memory[1<<27];
 //#define swaddr_read simple_read
 //#define swaddr_write simple_write
 uint32_t simple_read(hwaddr_t addr, size_t len) {
 	int map_no=is_mmio(addr);
 	if(map_no!=-1)return mmio_read(addr,len,map_no);
-	uint32_t res=hwaddr_read(addr,len);
-	printf("r %x,%u,%x\n",addr,(unsigned)len,res);
-	assert(addr<(1<<27));
-	return res;
-	if(len==4)return *(uint32_t *)(simple_memory+addr);
-	if(len==1)return simple_memory[addr];
-	return *(uint16_t *)(simple_memory+addr);
+	//uint32_t res=hwaddr_read(addr,len);
+	//printf("r %x,%u,%x\n",addr,(unsigned)len,res);
+	//assert(addr<(1<<27));
+	//return res;
+	if(len==4)return *(uint32_t *)(hw_mem+addr);
+	if(len==1)return hw_mem[addr];
+	return *(uint16_t *)(hw_mem+addr);
 }
 void simple_write(swaddr_t addr, size_t len, uint32_t data) {
 	int map_no=is_mmio(addr);
@@ -23,9 +23,9 @@ void simple_write(swaddr_t addr, size_t len, uint32_t data) {
 	printf("w %x,%u\n",addr,(unsigned)len);
 	assert(addr<(1<<27));
 	hwaddr_write(addr,len,data);return;
-	if(len==4){*(uint32_t *)(simple_memory+addr)=data;return;}
-	if(len==1){simple_memory[addr]=data;return;}
-	*(uint16_t *)(simple_memory+addr)=data;
+	if(len==4){*(uint32_t *)(hw_mem+addr)=data;return;}
+	if(len==1){hw_mem[addr]=data;return;}
+	*(uint16_t *)(hw_mem+addr)=data;
 }
 
 uint32_t dram_read(hwaddr_t, size_t);
