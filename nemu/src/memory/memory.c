@@ -83,6 +83,7 @@ void debug_cache_address(hwaddr_t addr)
 	uint32_t lnaddr_read(hwaddr_t addr,size_t len){
 		if(addr<0xC0000000)
 		{
+			printf("r %x -> %x\n",addr,page_translate(addr));
 			assert(addr<HW_MEM_SIZE);
 		}
 		if (((addr+len-1)>>PAGE_OFFSET_LEN)!=(addr>>PAGE_OFFSET_LEN)) {
@@ -101,6 +102,7 @@ void debug_cache_address(hwaddr_t addr)
 	void lnaddr_write(swaddr_t addr, size_t len, uint32_t data) {
 		if(addr<0xC0000000)
 		{
+			printf("w %x -> %x\n",addr,page_translate(addr));
 			assert(addr<HW_MEM_SIZE);
 		}
 		if (((addr+len-1)>>PAGE_OFFSET_LEN)!=(addr>>PAGE_OFFSET_LEN)) {
