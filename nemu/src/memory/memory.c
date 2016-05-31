@@ -115,7 +115,9 @@ void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
 }
 
 uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
-	return simple_read(addr,len);
+	if(addr>=0xC0000000)addr-=0xC0000000;
+	return hwaddr_read(addr,len);
+	//return simple_read(addr,len);
 	if (((addr+len-1)>>PAGE_OFFSET_LEN)!=(addr>>PAGE_OFFSET_LEN)) {
 		uint32_t more=(addr+len)&PAGING_MASK;
 		uint32_t tmp=(len-more)*8;
@@ -131,7 +133,9 @@ uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
 }
 
 void lnaddr_write(lnaddr_t addr, size_t len, uint32_t data) {
-	simple_write(addr,len,data);return;
+	if(addr>=0xC0000000)addr-=0xC0000000;
+	hwaddr_write(addr,len,data);return;
+	//simple_write(addr,len,data);return;
 	if (((addr+len-1)>>PAGE_OFFSET_LEN)!=(addr>>PAGE_OFFSET_LEN)) {
 		uint32_t more=(addr+len)&PAGING_MASK;
 		uint32_t tmp=(len-more)*8;
@@ -149,8 +153,8 @@ void lnaddr_write(lnaddr_t addr, size_t len, uint32_t data) {
 extern CPU_state cpu;
 
 uint32_t swaddr_read(swaddr_t addr, size_t len, uint8_t sreg) {
-	//printf("%x\n",addr);
-	return simple_read(addr,len);
+	return lnaddr_read(addr,len);
+	//return simple_read(addr,len);
 #ifdef DEBUG
 	assert(len == 1 || len == 2 || len == 4);
 #endif
@@ -159,7 +163,8 @@ uint32_t swaddr_read(swaddr_t addr, size_t len, uint8_t sreg) {
 }
 
 void swaddr_write(swaddr_t addr, size_t len, uint32_t data, uint8_t sreg) {
-	simple_write(addr,len,data);return;
+	lnaddr_write(addr,len,data);return;
+	//simple_write(addr,len,data);return;
 #ifdef DEBUG
 	assert(len == 1 || len == 2 || len == 4);
 #endif
