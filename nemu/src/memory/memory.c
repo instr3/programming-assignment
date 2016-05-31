@@ -24,6 +24,8 @@ uint32_t simple_read(hwaddr_t addr, size_t len) {
 void simple_write(swaddr_t addr, size_t len, uint32_t data) {
 	int map_no=is_mmio(addr);
 	if(map_no!=-1){mmio_write(addr,len,data,map_no);return;}
+	printf("%X\n",addr);
+	fflush(stdout);
 	assert(addr<(1<<23));
 	hwaddr_write(addr,len,data);
 	return;
