@@ -72,12 +72,13 @@ void cpu_exec(volatile uint32_t n) {
 			printf("%s\n", asm_buf);
 		}
 #endif
-
+#ifndef OPTIMIZE_PAL
 		extern bool wp_check_change();
 		if (wp_check_change())
 		{
 			nemu_state = STOP;
 		}
+#endif
 
 		if(nemu_state != RUNNING) { return; }
 		if(cpu.INTR & reg_flag(EFLAGS_IF)) {
