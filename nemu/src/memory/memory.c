@@ -9,7 +9,8 @@ uint8_t simple_memory[1<<27];
 uint32_t simple_read(hwaddr_t addr, size_t len) {
 	int map_no=is_mmio(addr);
 	if(map_no!=-1)return mmio_read(addr,len,map_no);
-	printf("r %x,%u\n",addr,(unsigned)len);
+	uint32_t res=hwaddr_read(addr,len);
+	printf("r %x,%u,%x\n",addr,(unsigned)len,res);
 	assert(addr<(1<<27));
 	if(len==4)return *(uint32_t *)(simple_memory+addr);
 	if(len==1)return simple_memory[addr];

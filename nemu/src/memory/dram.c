@@ -52,7 +52,6 @@ void init_ddr3() {
 }
 
 static void ddr3_read(hwaddr_t addr, void *data) {
-	assert(0&&"Not implement");
 	Assert(addr < HW_MEM_SIZE, "physical address %x is outside of the physical memory!", addr);
 
 	dram_addr temp;
@@ -74,7 +73,6 @@ static void ddr3_read(hwaddr_t addr, void *data) {
 }
 
 static void ddr3_write(hwaddr_t addr, void *data, uint8_t *mask) {
-	assert(0&&"Not implement");
 	Assert(addr < HW_MEM_SIZE, "physical address %x is outside of the physical memory!", addr);
 
 	dram_addr temp;
