@@ -86,7 +86,7 @@ void debug_cache_address(hwaddr_t addr)
 			if(addr>=HW_MEM_SIZE)
 			{
 				printf("r %x -> %x\n",addr,page_translate(addr));
-				assert(addr<HW_MEM_SIZE);
+				//assert(addr<HW_MEM_SIZE);
 			}
 		}
 		if (((addr+len-1)>>PAGE_OFFSET_LEN)!=(addr>>PAGE_OFFSET_LEN)) {
@@ -108,7 +108,7 @@ void debug_cache_address(hwaddr_t addr)
 			if(addr>=HW_MEM_SIZE)
 			{
 				printf("w %x -> %x\n",addr,page_translate(addr));
-				assert(addr<HW_MEM_SIZE);
+				//assert(addr<HW_MEM_SIZE);
 			}
 		}
 		if (((addr+len-1)>>PAGE_OFFSET_LEN)!=(addr>>PAGE_OFFSET_LEN)) {
