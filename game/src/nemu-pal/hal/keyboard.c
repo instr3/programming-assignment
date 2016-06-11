@@ -26,8 +26,8 @@ keyboard_event(void) {
 			if(keycode_array[i]==key_code)
 			{
 				Log("Current:%x\n",key_state[i]);
-				if(key_state[i]==KEY_STATE_RELEASE)
-					key_state[i]=KEY_STATE_PRESS;
+				if(key_state[i]!=KEY_STATE_WAIT_RELEASE)
+				key_state[i]=KEY_STATE_PRESS;
 				return;
 			}
 		}
@@ -38,8 +38,7 @@ keyboard_event(void) {
 		{
 			if(keycode_array[i]==key_code-0x80)
 			{
-				Log("Current Release:%x\n",key_state[i]);
-				key_state[i]=KEY_STATE_WAIT_RELEASE;
+				key_state[i]=KEY_STATE_RELEASE;
 				//release_key(i);
 				return;
 			}
@@ -90,12 +89,12 @@ process_keys(void (*key_press_callback)(int), void (*key_release_callback)(int))
 	{
 		if(key_state[i]==KEY_STATE_PRESS)
 		{
-			key_state[i]=KEY_STATE_EMPTY;
+			key_state[i]=KEY_STATE_WAIT_RELEASE;
 			key_press_callback(get_keycode(i));
 		}
-		else if(key_state[i]==KEY_STATE_WAIT_RELEASE)
+		else if(key_state[i]==KEY_STATE_RELEASE)
 		{
-			key_state[i]=KEY_STATE_RELEASE;
+			key_state[i]=KEY_STATE_EMPTY;
 			key_release_callback(get_keycode(i));
 		}
 	}
