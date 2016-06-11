@@ -42,8 +42,9 @@ keyboard_event(void) {
 		}
 
 	}
+	Log("No such key!");
 	/* TODO: Fetch the scancode and update the key states. */
-	assert(0);
+	//assert(0);
 }
 
 static inline int
