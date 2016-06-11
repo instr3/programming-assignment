@@ -26,7 +26,7 @@ keyboard_event(void) {
 			if(keycode_array[i]==key_code)
 			{
 				Log("Current:%x\n",key_state[i]);
-				key_state[i]=KEY_STATE_PRESS;
+				//key_state[i]=KEY_STATE_PRESS;
 				return;
 			}
 		}
@@ -38,7 +38,8 @@ keyboard_event(void) {
 			if(keycode_array[i]==key_code-0x80)
 			{
 				Log("Current Release:%x\n",key_state[i]);
-				key_state[i]=KEY_STATE_EMPTY;
+				key_state[i]=KEY_STATE_WAIT_RELEASE;
+				//release_key(i);
 				return;
 			}
 		}
