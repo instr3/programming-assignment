@@ -144,6 +144,7 @@ static inline int check_reg_index(int index) {
 #define influence_zf(res) reg_flag_set(EFLAGS_ZF,!(res))
 
 uint8_t buildout_popcount(uint8_t res);
+
 #define influence_pf(res) reg_flag_set(EFLAGS_PF,~buildout_popcount(/*0xff&*/(res))&1)
 #define influence_sf(res) reg_flag_set(EFLAGS_SF,highestbit(res))
 #define influence_of(res,op1,op2) reg_flag_set(EFLAGS_OF,highestbit(op1)==highestbit(op2)&& \
