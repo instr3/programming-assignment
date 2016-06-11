@@ -26,7 +26,7 @@ keyboard_event(void) {
 			if(keycode_array[i]==key_code)
 			{
 				Log("Current:%x\n",key_state[i]);
-				if(key_state[i]==KEY_STATE_EMPTY)
+				if(key_state[i]==KEY_STATE_EMPTY||key_state[i]==KEY_STATE_RELEASE)
 					key_state[i]=KEY_STATE_PRESS;
 				return;
 			}
