@@ -143,3 +143,11 @@ void reg_test() {
 	assert(eip_sample == cpu.eip);
 }
 
+
+inline uint8_t buildout_popcount(uint8_t res)
+{
+	res=res^(res>>1);
+	res=res^(res>>2);
+	res=res^(res>>4);
+	return res&1;
+}
