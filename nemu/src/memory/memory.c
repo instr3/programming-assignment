@@ -110,6 +110,14 @@ void debug_cache_address(hwaddr_t addr)
 		if(len==1){hw_mem[addr]=data;return;}
 		*(uint16_t *)(hw_mem+addr)=data;
 	}
+	uint32_t swaddr_read(swaddr_t addr, size_t len, uint8_t sreg) {
+		return lnaddr_read(addr,len);
+	}
+
+	void swaddr_write(swaddr_t addr, size_t len, uint32_t data, uint8_t sreg) {
+		lnaddr_write(addr,len,data);return;
+	}
+
 #else
 	uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
 		//return simple_read(addr,len);
@@ -165,28 +173,24 @@ void debug_cache_address(hwaddr_t addr)
 			hwaddr_write(hwaddr, len, data);
 		}
 	}
+	uint32_t swaddr_read(swaddr_t addr, size_t len, uint8_t sreg) {
+	#ifdef DEBUG
+		assert(len == 1 || len == 2 || len == 4);
+	#endif
+		lnaddr_t lnaddr = seg_translate(addr, len, sreg);
+		return lnaddr_read(lnaddr, len);
+	}
+
+	void swaddr_write(swaddr_t addr, size_t len, uint32_t data, uint8_t sreg) {
+	#ifdef DEBUG
+		assert(len == 1 || len == 2 || len == 4);
+	#endif
+		lnaddr_t lnaddr = seg_translate(addr, len, sreg);
+		lnaddr_write(lnaddr, len, data);
+	}
+
 #endif
 
 
 extern CPU_state cpu;
-
-uint32_t swaddr_read(swaddr_t addr, size_t len, uint8_t sreg) {
-	return lnaddr_read(addr,len);
-	//return simple_read(addr,len);
-#ifdef DEBUG
-	assert(len == 1 || len == 2 || len == 4);
-#endif
-	lnaddr_t lnaddr = seg_translate(addr, len, sreg);
-	return lnaddr_read(lnaddr, len);
-}
-
-void swaddr_write(swaddr_t addr, size_t len, uint32_t data, uint8_t sreg) {
-	lnaddr_write(addr,len,data);return;
-	//simple_write(addr,len,data);return;
-#ifdef DEBUG
-	assert(len == 1 || len == 2 || len == 4);
-#endif
-	lnaddr_t lnaddr = seg_translate(addr, len, sreg);
-	lnaddr_write(lnaddr, len, data);
-}
 
