@@ -63,7 +63,8 @@ main_loop(void) {
 			if (now % (HZ / CHARACTER_PER_SECOND) == 0) {
 				create_new_letter();
 			}
-			while(rand()%2==0)create_new_letter();
+			//取消注释可获得困难版
+			//while(rand()%2==0)create_new_letter();
 			/* 每隔一定时间更新屏幕上字符的位置 */
 			if (now % (HZ / UPDATE_PER_SECOND) == 0) {
 				update_letter_pos();
