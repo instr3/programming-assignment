@@ -50,7 +50,7 @@ void do_syscall(TrapFrame *tf) {
 					serial_printc(*(c+i));
 				//This is an old method
 				//asm volatile (".byte 0xd6" : : "a"(2), "c"(tf->ecx), "d"(tf->edx));
-				//tf->eax=tf->edx;
+				tf->eax=tf->edx;
 				break;
 			}
 			else
