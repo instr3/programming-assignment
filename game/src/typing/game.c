@@ -2,6 +2,7 @@
 #include "x86.h"
 
 #include <string.h>
+#include <stdlib.h>
 
 #define FPS 30
 #define CHARACTER_PER_SECOND 3
@@ -61,7 +62,8 @@ main_loop(void) {
 			/* 每隔一定时间产生一个新的字符 */
 			if (now % (HZ / CHARACTER_PER_SECOND) == 0) {
 				create_new_letter();
-			} 
+			}
+			while(rand()%2==0)create_new_letter();
 			/* 每隔一定时间更新屏幕上字符的位置 */
 			if (now % (HZ / UPDATE_PER_SECOND) == 0) {
 				update_letter_pos();
